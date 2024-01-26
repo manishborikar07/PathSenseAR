@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const destinationSelectInput = document.getElementById('select-destination');
     const destinationSelectButton = document.getElementById('get-direction-button');
     const mapContainer = document.getElementById('map');
+    const sceneEl = document.querySelector('a-scene');
     let map;
 
     // Function to initialize the map and get the user's current location
@@ -76,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to get directions from an API
     const getDirections = async (origin, destination) => {
-        const apiKey = AIzaSyAsPvQ6Xe3lxNDiIl8CH1AohNlcRu1s8PE;
+        const apiKey = 'AIzaSyCon-2SzFPlJuaKIg4lO55zhUgTJXeNNjM';
         const apiUrl = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`;
 
         try {
@@ -90,10 +91,27 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update AR elements based on directions
-    const updateARDirections = (directionsData) => {
-        console.log('Directions:', directionsData);
-        // Add logic to update AR elements based on directions
-    };
+    const updateARDirections = (waypoints) => {
+        // Remove existing AR markers and path
+        removeExistingARMarkers();
+        removeExistingARPath();
+    
+        // Create AR path element
+        const path = document.createElement('a-entity');
+        path.setAttribute('line', {
+            color: 'blue',
+            path: waypoints.map(waypoint => `${waypoint.start_location.lng()} ${waypoint.start_location.lat()} 0.5`).join(','),
+        });
+        sceneEl.appendChild(path);
+    
+        // Create AR markers for each waypoint
+        waypoints.forEach(waypoint => {
+            const marker = document.createElement('a-marker');
+            marker.setAttribute('position', `${waypoint.start_location.lng()} ${waypoint.start_location.lat()} 0.5`);
+            marker.setAttribute('text', `value: ${waypoint.maneuver.instruction}`);
+            sceneEl.appendChild(marker);
+        });
+    };      
 
     // Function to handle destination selection and initiate directions
     const selectDestination = async () => {
@@ -127,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
         option.value = place.name;
         option.text = place.name;
         destinationSelectInput.appendChild(option);
-    });
+    });    
 
     destinationSelectButton.addEventListener('click', selectDestination);
 
