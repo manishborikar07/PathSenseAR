@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>EnRouteAR</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+
+    <!-- Google Maps API script -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAsPvQ6Xe3lxNDiIl8CH1AohNlcRu1s8PE&libraries=places&callback=initMap" async defer></script>
+
+    <script>
+        // Set the base URL for AR.js
+        THREEx.ArToolkitContext.baseURL = 'https://raw.githack.com/jeromeetienne/ar.js/master/three.js/';
+    </script>
+    <link rel="stylesheet" href="styles/index.css">
+</head>
+<body style="margin: 0; overflow: hidden;">
+    <div class="container">
+        <div id="destination-select-container">
+            <select id="select-destination">
+                <option value="example">Select Destination</option>
+                <!-- Add more destination options here -->
+            </select>
+            <button id="get-direction-button">Get Directions</button>
+        </div>
+        <a-scene cursor="rayOrigin: mouse; fuse: true; fuseTimeout: 0;" raycaster="objects: [gps-entity-place];" vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam; sourceWidth: 1920; sourceHeight: 1080; displayWidth: 100%; displayHeight: 100%; debugUIEnabled: true;">
+            <a-camera gps-camera="minDistance: 10; videoTexture: true;" rotation-reader></a-camera>
+        </a-scene>
+
+        <!-- Container for the 2D map -->
+        <div id="map-container">
+            <div id="map"></div>
+        </div>
+    </div>
+    <script src="scripts/places.js"></script>
+    <script src="scripts/gps-entity-place.js"></script>
+    <script src="scripts/gps-camera.js"></script>
+    <script src="scripts/gps-camera-debug.js"></script>
+    <script src="scripts/script.js"></script>
+</body>
+</html>
