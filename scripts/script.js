@@ -6,25 +6,14 @@ document.addEventListener('DOMContentLoaded', function () {
     let map;
 
     // Function to initialize the map with Mapbox
-    const initMap = async () => {
-        try {
-            // Initialize the map with Mapbox
-            mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnFjZzBoMG11eTJsbXJwNzZ5YW0ycyJ9.l4xfJem8x103cBLHcw1PLQ';
-            map = new mapboxgl.Map({
-                container: 'map',
-                style: 'mapbox://styles/mapbox/streets-v11',
-                center: [0, 0],
-                zoom: 15,
-            });
-    
-            // Get the user's current location
-            const userLocation = await getCurrentLocation();
-    
-            // Update map with user's current location
-            updateMapCenter(userLocation.latitude, userLocation.longitude);
-        } catch (error) {
-            console.error('Error initializing map and getting initial location:', error);
-        }
+    const initMap = () => {
+        mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnFjZzBoMG11eTJsbXJwNzZ5YW0ycyJ9.l4xfJem8x103cBLHcw1PLQ';
+        map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [0, 0],
+            zoom: 15,
+        });
     };
 
     // Function to get the user's current location
@@ -76,34 +65,32 @@ document.addEventListener('DOMContentLoaded', function () {
         coordinates.unshift([origin.longitude, origin.latitude]);
         coordinates.push([destination.longitude, destination.latitude]);
 
-        map.on('load', function () {
-            // Add a GeoJSON source with the route coordinates
-            map.addSource('route', {
-                'type': 'geojson',
-                'data': {
-                    'type': 'Feature',
-                    'properties': {},
-                    'geometry': {
-                        'type': 'LineString',
-                        'coordinates': coordinates
-                    }
+        // Add a GeoJSON source with the route coordinates
+        map.addSource('route', {
+            'type': 'geojson',
+            'data': {
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'LineString',
+                    'coordinates': coordinates
                 }
-            });
+            }
+        });
 
-            // Add a layer with the route
-            map.addLayer({
-                'id': 'route',
-                'type': 'line',
-                'source': 'route',
-                'layout': {
-                    'line-join': 'round',
-                    'line-cap': 'round'
-                },
-                'paint': {
-                    'line-color': 'blue',
-                    'line-width': 8
-                }
-            });
+        // Add a layer with the route
+        map.addLayer({
+            'id': 'route',
+            'type': 'line',
+            'source': 'route',
+            'layout': {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            'paint': {
+                'line-color': 'blue',
+                'line-width': 8
+            }
         });
     };
 
