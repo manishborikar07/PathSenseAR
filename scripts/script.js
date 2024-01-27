@@ -53,6 +53,49 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    // Function to update the map with the route (replace with Mapbox routing service)
+    const updateMapWithRoute = (origin, destination, waypoints) => {
+        // Extract coordinates from waypoints
+        const coordinates = waypoints.map(waypoint => [
+            waypoint.maneuver.location[0],
+            waypoint.maneuver.location[1]
+        ]);
+
+        // Add origin and destination coordinates
+        coordinates.unshift([origin.longitude, origin.latitude]);
+        coordinates.push([destination.longitude, destination.latitude]);
+
+        map.on('load', function () {
+            // Add a GeoJSON source with the route coordinates
+            map.addSource('route', {
+                'type': 'geojson',
+                'data': {
+                    'type': 'Feature',
+                    'properties': {},
+                    'geometry': {
+                        'type': 'LineString',
+                        'coordinates': coordinates
+                    }
+                }
+            });
+
+            // Add a layer with the route
+            map.addLayer({
+                'id': 'route',
+                'type': 'line',
+                'source': 'route',
+                'layout': {
+                    'line-join': 'round',
+                    'line-cap': 'round'
+                },
+                'paint': {
+                    'line-color': 'blue',
+                    'line-width': 8
+                }
+            });
+        });
+    };
+
     // Function to update AR elements based on directions
     const updateARDirections = (waypoints) => {
         // Remove existing AR markers and path
@@ -81,17 +124,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectDestination = async () => {
         const selectedDestination = destinationSelectInput.value;
         const destination = places.find(place => place.name === selectedDestination);
-
+    
         if (destination) {
             try {
                 const userLocation = await getCurrentLocation();
                 // Update map with user's current location
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
-
+    
                 const directionsData = await getDirections(userLocation, destination);
                 // Update AR elements
                 updateARDirections(directionsData);
-
+    
+                // Update map with route
+                updateMapWithRoute(userLocation, destination, directionsData);
+                
                 // Disable AR.js debug UI
                 AR.debugUIEnabled = false;
             } catch (error) {
@@ -102,6 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Handle case when the selected destination is not found
         }
     };
+    
 
     // Populate the dropdown with places from places.js
     places.forEach(place => {
