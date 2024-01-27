@@ -8,17 +8,20 @@
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://raw.githack.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
 
-    <!-- Mapbox script -->
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
+    <!-- Mapbox script tags -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css' rel='stylesheet' />
+
+    <!-- AR.js script tags -->
+    <script src='https://cdn.rawgit.com/jeromeetienne/AR.js/2.0.8/aframe/build/aframe-ar.js'></script>
 
     <script>
-        // Set your Mapbox Access Token here
+        // Set the Mapbox access token
         mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnFjZzBoMG11eTJsbXJwNzZ5YW0ycyJ9.l4xfJem8x103cBLHcw1PLQ';
         // Set the base URL for AR.js
         THREEx.ArToolkitContext.baseURL = 'https://raw.githack.com/jeromeetienne/ar.js/master/three.js/';
     </script>
-
+    
     <link rel="stylesheet" href="styles/index.css">
 </head>
 <body style="margin: 0; overflow: hidden;">
@@ -30,9 +33,10 @@
             </select>
             <button id="get-direction-button">Get Directions</button>
         </div>
-        <a-scene cursor="rayOrigin: mouse; fuse: true; fuseTimeout: 0;" raycaster="objects: [gps-entity-place];" vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam; sourceWidth: 1920; sourceHeight: 1080; displayWidth: 100%; displayHeight: 100%; debugUIEnabled: true;">
+        <a-scene cursor="rayOrigin: mouse; fuse: true; fuseTimeout: 0;" raycaster="objects: [gps-entity-place];" vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam; sourceWidth: 1920; sourceHeight: 1080; displayWidth: 100%; displayHeight: 100%; debugUIEnabled: false;">
             <a-camera gps-camera="minDistance: 10; videoTexture: true;" rotation-reader></a-camera>
         </a-scene>
+               
 
         <!-- Container for the 2D map -->
         <div id="map-container">
