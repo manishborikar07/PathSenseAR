@@ -5,26 +5,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const sceneEl = document.querySelector('a-scene');
     let map;
 
-    // Function to initialize the map and get the user's current location
-    const initMapAndLocation = async () => {
-        try {
-            // Initialize the map with Mapbox
-            mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnFjZzBoMG11eTJsbXJwNzZ5YW0ycyJ9.l4xfJem8x103cBLHcw1PLQ';
-            map = new mapboxgl.Map({
-                container: 'map',
-                style: 'mapbox://styles/mapbox/streets-v11',
-                center: [0, 0],
-                zoom: 15,
-            });
-
-            // Get the user's current location
-            const userLocation = await getCurrentLocation();
-
-            // Update map with user's current location
-            updateMapCenter(userLocation.latitude, userLocation.longitude);
-        } catch (error) {
-            console.error('Error initializing map and getting initial location:', error);
-        }
+    // Function to initialize the map with Mapbox
+    const initMap = () => {
+        mapboxgl.accessToken = 'pk.eyJ1Ijoic2F1ZGFtaW5pNDMyMDAzIiwiYSI6ImNscnZvemNpYTBlNzcyanRreDE5ZzhoZWIifQ.5ju-8M5p0icYTlMbhOf1wg';
+        map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [0, 0],
+            zoom: 15,
+        });
     };
 
     // Function to get the user's current location
@@ -49,15 +38,9 @@ document.addEventListener('DOMContentLoaded', function () {
         map.setCenter([longitude, latitude]);
     };
 
-    // Function to update the map with the route (replace with Mapbox routing service)
-    const updateMapWithRoute = (origin, destination) => {
-        // Use Mapbox routing service here
-        // ...
-    };
-
-    // Function to get directions from an API
+    // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
-        const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnFjZzBoMG11eTJsbXJwNzZ5YW0ycyJ9.l4xfJem8x103cBLHcw1PLQ'; // Replace with Mapbox API key
+        const apiKey = 'pk.eyJ1Ijoic2F1ZGFtaW5pNDMyMDAzIiwiYSI6ImNscnZvemNpYTBlNzcyanRreDE5ZzhoZWIifQ.5ju-8M5p0icYTlMbhOf1wg';
         const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}`;
 
         try {
@@ -95,33 +78,30 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to handle destination selection and initiate directions
-const selectDestination = async () => {
-    const selectedDestination = destinationSelectInput.value;
-    const destination = places.find(place => place.name === selectedDestination);
+    const selectDestination = async () => {
+        const selectedDestination = destinationSelectInput.value;
+        const destination = places.find(place => place.name === selectedDestination);
 
-    if (destination) {
-        try {
-            const userLocation = await getCurrentLocation();
-            // Update map with user's current location
-            updateMapCenter(userLocation.latitude, userLocation.longitude);
+        if (destination) {
+            try {
+                const userLocation = await getCurrentLocation();
+                // Update map with user's current location
+                updateMapCenter(userLocation.latitude, userLocation.longitude);
 
-            const directionsData = await getDirections(userLocation, destination);
-            // Update AR elements
-            updateARDirections(directionsData);
+                const directionsData = await getDirections(userLocation, destination);
+                // Update AR elements
+                updateARDirections(directionsData);
 
-            // Update map with route
-            updateMapWithRoute(userLocation, destination);
-
-            // Disable AR.js debug UI
-            AR.debugUIEnabled = false;
-        } catch (error) {
-            console.error('Error in retrieving position', error);
+                // Disable AR.js debug UI
+                AR.debugUIEnabled = false;
+            } catch (error) {
+                console.error('Error in retrieving position', error);
+            }
+        } else {
+            console.log('Destination not found:', selectedDestination);
+            // Handle case when the selected destination is not found
         }
-    } else {
-        console.log('Destination not found:', selectedDestination);
-        // Handle case when the selected destination is not found
-    }
-};
+    };
 
     // Populate the dropdown with places from places.js
     places.forEach(place => {
@@ -134,5 +114,5 @@ const selectDestination = async () => {
     destinationSelectButton.addEventListener('click', selectDestination);
 
     // End of the 'DOMContentLoaded' event listener
-    initMapAndLocation(); // Call the function to initialize map and location
+    initMap(); // Call the function to initialize map
 });
