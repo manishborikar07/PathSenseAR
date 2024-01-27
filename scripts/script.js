@@ -8,11 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
         try {
-            // Initialize the map
-            map = new google.maps.Map(mapContainer, {
-                center: { lat: 0, lng: 0 },
-                zoom: 15,
-            });
+            // Initialize the map (Note: Mapbox does not require an explicit map initialization like Google Maps)
+            map = L.map(mapContainer).setView([0, 0], 20);
 
             // Get the user's current location
             const userLocation = await getCurrentLocation();
@@ -43,42 +40,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update the 2D map center
     const updateMapCenter = (latitude, longitude) => {
-        map.setCenter(new google.maps.LatLng(latitude, longitude));
+        map.setView([latitude, longitude], 20);
     };
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (origin, destination) => {
-        const directionsService = new google.maps.DirectionsService();
-        const directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
-
-        directionsService.route(
-            {
-                origin: new google.maps.LatLng(origin.latitude, origin.longitude),
-                destination: new google.maps.LatLng(destination.latitude, destination.longitude),
-                travelMode: 'WALKING', // Adjust as needed (WALKING, DRIVING, etc.)
-            },
-            (response, status) => {
-                if (status === 'OK') {
-                    directionsRenderer.setDirections(response);
-
-                    // Place a marker at the user's current location
-                    const userMarker = new google.maps.Marker({
-                        position: new google.maps.LatLng(origin.latitude, origin.longitude),
-                        map: map,
-                        title: 'You are here!',
-                        icon: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png', // Customize the marker icon
-                    });
-                } else {
-                    console.error('Directions request failed:', status);
-                }
-            }
-        );
+        // Note: Mapbox Directions API integration will go here
+        // You will make a request to the Mapbox Directions API to get route information
     };
 
-    // Function to get directions from an API
+    // Function to get directions from the Mapbox Directions API
     const getDirections = async (origin, destination) => {
-        const apiKey = 'AIzaSyCon-2SzFPlJuaKIg4lO55zhUgTJXeNNjM';
-        const apiUrl = `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}&destination=${destination.latitude},${destination.longitude}&key=${apiKey}`;
+        const accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnFjZzBoMG11eTJsbXJwNzZ5YW0ycyJ9.l4xfJem8x103cBLHcw1PLQ';
+        const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${accessToken}`;
 
         try {
             const response = await fetch(apiUrl);
@@ -100,15 +74,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const path = document.createElement('a-entity');
         path.setAttribute('line', {
             color: 'blue',
-            path: waypoints.map(waypoint => `${waypoint.start_location.lng()} ${waypoint.start_location.lat()} 0.5`).join(','),
+            path: waypoints.map(waypoint => `${waypoint.location[0]} ${waypoint.location[1]} 0.5`).join(','),
         });
         sceneEl.appendChild(path);
     
         // Create AR markers for each waypoint
         waypoints.forEach(waypoint => {
             const marker = document.createElement('a-marker');
-            marker.setAttribute('position', `${waypoint.start_location.lng()} ${waypoint.start_location.lat()} 0.5`);
-            marker.setAttribute('text', `value: ${waypoint.maneuver.instruction}`);
+            marker.setAttribute('position', `${waypoint.location[0]} ${waypoint.location[1]} 0.5`);
+            marker.setAttribute('text', `value: ${waypoint.instruction}`);
             sceneEl.appendChild(marker);
         });
     };      
@@ -126,8 +100,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const directionsData = await getDirections(userLocation, destination);
                 // Update AR elements
-                updateARDirections(directionsData);
-
+                updateARDirections(directionsData.routes[0].legs[0].steps);
+                
                 // Update 2D map with route
                 updateMapWithRoute(userLocation, destination);
             } catch (error) {
