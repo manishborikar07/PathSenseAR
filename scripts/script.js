@@ -6,14 +6,25 @@ document.addEventListener('DOMContentLoaded', function () {
     let map;
 
     // Function to initialize the map with Mapbox
-    const initMap = () => {
-        mapboxgl.accessToken = 'pk.eyJ1Ijoic2F1ZGFtaW5pNDMyMDAzIiwiYSI6ImNscnZvemNpYTBlNzcyanRreDE5ZzhoZWIifQ.5ju-8M5p0icYTlMbhOf1wg';
-        map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v11',
-            center: [0, 0],
-            zoom: 15,
-        });
+    const initMap = async () => {
+        try {
+            // Initialize the map with Mapbox
+            mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnFjZzBoMG11eTJsbXJwNzZ5YW0ycyJ9.l4xfJem8x103cBLHcw1PLQ';
+            map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [0, 0],
+                zoom: 15,
+            });
+    
+            // Get the user's current location
+            const userLocation = await getCurrentLocation();
+    
+            // Update map with user's current location
+            updateMapCenter(userLocation.latitude, userLocation.longitude);
+        } catch (error) {
+            console.error('Error initializing map and getting initial location:', error);
+        }
     };
 
     // Function to get the user's current location
@@ -40,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
-        const apiKey = 'pk.eyJ1Ijoic2F1ZGFtaW5pNDMyMDAzIiwiYSI6ImNscnZvemNpYTBlNzcyanRreDE5ZzhoZWIifQ.5ju-8M5p0icYTlMbhOf1wg';
+        const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnFjZzBoMG11eTJsbXJwNzZ5YW0ycyJ9.l4xfJem8x103cBLHcw1PLQ';
         const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}`;
 
         try {
