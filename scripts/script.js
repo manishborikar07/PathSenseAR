@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         scene = document.querySelector('a-scene');
-
+        
         try {
             // Initialize the map with Mapbox
             mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
@@ -36,6 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude
                     };
+
+                    updateMapCenter(userLocation.latitude, userLocation.longitude);
 
                     // If the current location marker exists, update its position; otherwise, create a new marker
                     if (currentLocationMarker) {
