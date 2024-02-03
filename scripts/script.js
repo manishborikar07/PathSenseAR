@@ -78,11 +78,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
-    // Function to update the 2D map center
-    const updateMapCenter = (latitude, longitude) => {
-        map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
-    };
-
     // Function to update AR elements based on Mapbox directions
 const updateARDirections = (directionsData) => {
     console.log('Directions:', directionsData);
