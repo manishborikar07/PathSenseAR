@@ -30,8 +30,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         longitude: position.coords.longitude
                     };
 
-                    updateMapCenter(userLocation.latitude, userLocation.longitude);
-
                     // If the current location marker exists, update its position; otherwise, create a new marker
                     if (currentLocationMarker) {
                         updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
