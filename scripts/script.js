@@ -11,14 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let destinationMarker;
 
     // Function to initialize the map and get the user's current location
-    const initMapAndLocation = async () => {
-        if (typeof mapboxgl === 'undefined') {
-            console.error('Mapbox not loaded. Check your Mapbox script.');
-            return;
-        }
-
-        scene = document.querySelector('a-scene');
-        
+    const initMapAndLocation = async () => { 
         try {
             // Initialize the map with Mapbox
             mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
