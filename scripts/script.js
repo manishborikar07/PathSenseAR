@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const destinationSelectInput = document.getElementById('select-destination');
     const destinationSelectButton = document.getElementById('get-direction-button');
     const mapContainer = document.getElementById('map');
+    const scene = document.querySelector('a-scene');
     let map;
     // To keep track of the marker at the current location
     let currentLocationMarker; 
@@ -11,6 +12,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
+        if (typeof mapboxgl === 'undefined') {
+            console.error('Mapbox not loaded. Check your Mapbox script.');
+            return;
+        }
+
+        scene = document.querySelector('a-scene');
+        
         try {
             // Initialize the map with Mapbox
             mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
@@ -85,10 +93,24 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update AR elements based on Mapbox directions
-    const updateARDirections = (directionsData) => {
-        console.log('Directions:', directionsData);
-        // Add logic to update AR elements based on Mapbox directions
-    };
+const updateARDirections = (directionsData) => {
+    console.log('Directions:', directionsData);
+  
+    // Extract coordinates from Mapbox directions data
+    const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+  
+    // Add GPS Arrows for each waypoint
+    routeCoordinates.forEach(coord => {
+      const arrow = document.createElement('a-entity');
+      arrow.setAttribute('gps-arrow', { latitude: coord[1], longitude: coord[0], color: '#ff0000' });
+      scene.appendChild(arrow);
+    });
+  
+    // Add GPS Path
+    const path = document.createElement('a-entity');
+    path.setAttribute('gps-path', { coordinates: routeCoordinates, color: '#00ff00' });
+    scene.appendChild(path);
+  };
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
