@@ -86,7 +86,67 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Add an AR route that shows a blue conveyor belt on the route.
+        // Ensure AR.js is available
+        if (THREEx && THREEx.LocationBased) {
+            const scene = document.querySelector('a-scene');
+            const camera = document.querySelector('a-camera');
+
+            // Create an AR Location-Based object
+            const locationBased = new THREEx.LocationBased(scene, camera);
+
+            // Check if AR.js has the necessary components
+            if (locationBased && locationBased.add && locationBased.setProjection) {
+                // Set projection to Spherical Mercator
+                locationBased.setProjection(new THREEx.LocationBased.SphericalMercator());
+
+                // Assuming 'directionsData' contains route information
+                if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+                    // Extract route coordinates from Mapbox directions data
+                    const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+
+                    // Define a material for the conveyor belt (you can customize this)
+                    const conveyorBeltMaterial = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+
+                    // Iterate through route coordinates to add conveyor belt elements
+                    for (let i = 0; i < routeCoordinates.length - 1; i++) {
+                        const startPoint = routeCoordinates[i];
+                        const endPoint = routeCoordinates[i + 1];
+
+                        // Convert latitude and longitude to world coordinates
+                        const startWorldCoords = locationBased.lonLatToWorldCoords(startPoint[0], startPoint[1]);
+                        const endWorldCoords = locationBased.lonLatToWorldCoords(endPoint[0], endPoint[1]);
+
+                        // Calculate conveyor belt dimensions
+                        const conveyorBeltWidth = 0.2; // Adjust as needed
+                        const conveyorBeltHeight = 0.02; // Adjust as needed
+
+                        // Create a conveyor belt element (a simple plane for demonstration)
+                        const conveyorBeltGeometry = new THREE.PlaneGeometry(conveyorBeltWidth, conveyorBeltHeight);
+                        const conveyorBelt = new THREE.Mesh(conveyorBeltGeometry, conveyorBeltMaterial);
+
+                        // Position the conveyor belt in the middle of the road (adjust height as needed)
+                        const conveyorBeltPosition = new THREE.Vector3(
+                            (startWorldCoords[0] + endWorldCoords[0]) / 2,
+                            startWorldCoords[1] + conveyorBeltHeight / 2,
+                            (startWorldCoords[2] + endWorldCoords[2]) / 2
+                        );
+                        conveyorBelt.position.copy(conveyorBeltPosition);
+
+                        // Orient the conveyor belt along the road
+                        conveyorBelt.lookAt(new THREE.Vector3(endWorldCoords[0], startWorldCoords[1], endWorldCoords[2]));
+
+                        // Add the conveyor belt to the scene
+                        locationBased.add(conveyorBelt);
+                    }
+                } else {
+                    console.error('Invalid directionsData or missing route coordinates.');
+                }
+            } else {
+                console.error('AR.js Location-Based components not available.');
+            }
+        } else {
+            console.error('AR.js not available.');
+        }
     };
 
     // Function to update the 2D map with the route
