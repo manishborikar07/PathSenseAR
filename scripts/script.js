@@ -86,45 +86,39 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Wait for AR.js to be ready
-        AFRAME.registerComponent('ar-ready', {
-            init: function () {
-                const arScene = document.querySelector('a-scene').systems.arjs.scene;
-                // Check if AR route exists, remove if it does
-                const existingARRoute = document.getElementById('ar-route');
-                if (existingARRoute) {
-                    existingARRoute.parentNode.removeChild(existingARRoute);
-                }
-    
-                // Create a new AR route line
-                const arRoute = document.createElement('a-entity');
-                arRoute.setAttribute('id', 'ar-route');
-                arRoute.setAttribute('line', {
-                    color: '#3882f6',  // Blue color for the route
-                    opacity: 0.75,
-                    path: directionsData.routes[0].geometry.coordinates.map(coord => ({
-                        latitude: coord[1],
-                        longitude: coord[0],
-                    })),
-                });
-    
-                // Add the AR route to the AR.js scene
-                arScene.appendChild(arRoute);
-    
-                // Remove the 'ar-ready' component once AR.js is ready
-                this.el.parentNode.removeChild(this.el);
-            },
-        });
-    
-        // Check if AR.js is ready
+        // Ensure AR.js is available
         if (AFRAME.AR && AFRAME.AR.jsAR) {
             // Access the AR.js scene
             const arScene = document.querySelector('a-scene').systems.arjs.scene;
     
-            // Create a placeholder entity to trigger the 'ar-ready' component
-            const arReadyEntity = document.createElement('a-entity');
-            arReadyEntity.setAttribute('ar-ready', '');
-            arScene.appendChild(arReadyEntity);
+            // Check if AR route exists, remove if it does
+            const existingARRoute = document.getElementById('ar-route');
+            if (existingARRoute) {
+                existingARRoute.parentNode.removeChild(existingARRoute);
+            }
+    
+            // Create a new AR route line
+            const arRoute = document.createElement('a-entity');
+            arRoute.setAttribute('id', 'ar-route');
+    
+            // Get the GPS camera component
+            const gpsCamera = document.querySelector('[gps-new-camera]');
+    
+            // Convert Mapbox coordinates to world coordinates
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates.map(coord => {
+                const [x, z] = gpsCamera.components['gps-new-camera'].latLonToWorld(coord[1], coord[0]);
+                return { x, z };
+            });
+    
+            // Set attributes for the AR route line
+            arRoute.setAttribute('line', {
+                color: '#3882f6',  // Blue color for the route
+                opacity: 0.75,
+                path: routeCoordinates,
+            });
+    
+            // Add the AR route to the AR.js scene
+            arScene.appendChild(arRoute);
         } else {
             console.warn('AR.js not available. Unable to display AR route.');
         }
@@ -226,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Create an A-Frame entity for the 3D model
         const modelEntity = document.createElement('a-entity');
-        modelEntity.setAttribute('gps-entity-place', { latitude, longitude });
+        modelEntity.setAttribute('gps-new-entity-place', { latitude, longitude });
         modelEntity.setAttribute('position', '100 -100 0.1');
     
         // Use the destination name to construct the file paths for OBJ and MTL
