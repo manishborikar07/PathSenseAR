@@ -86,42 +86,50 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Ensure AR.js is available
-        if (AFRAME.AR && AFRAME.AR.jsAR) {
-            // Access the AR.js scene
-            const arScene = document.querySelector('a-scene').systems.arjs.scene;
-    
-            // Check if AR route exists, remove if it does
-            const existingARRoute = document.getElementById('ar-route');
-            if (existingARRoute) {
-                existingARRoute.parentNode.removeChild(existingARRoute);
-            }
-    
-            // Create a new AR route line
-            const arRoute = document.createElement('a-entity');
-            arRoute.setAttribute('id', 'ar-route');
-    
-            // Get the GPS camera component
-            const gpsCamera = document.querySelector('[gps-new-camera]');
-    
-            // Convert Mapbox coordinates to world coordinates
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates.map(coord => {
-                const [x, z] = gpsCamera.components['gps-new-camera'].latLonToWorld(coord[1], coord[0]);
-                return { x, z };
-            });
-    
-            // Set attributes for the AR route line
-            arRoute.setAttribute('line', {
-                color: '#3882f6',  // Blue color for the route
-                opacity: 0.75,
-                path: routeCoordinates,
-            });
-    
-            // Add the AR route to the AR.js scene
-            arScene.appendChild(arRoute);
-        } else {
-            console.warn('AR.js not available. Unable to display AR route.');
+        // Check if AR.js is available
+        if (!window.ARController) {
+            console.error('ARController not available. Unable to update AR directions.');
+            return;
         }
+
+        // Check if AR markers plugin (arMarkers) is available
+        if (!window.ARController.plugins || !window.ARController.plugins.markers) {
+            console.error('AR markers plugin not available. Unable to update AR directions.');
+            return;
+        }
+
+        // Remove existing AR route elements
+        const existingARRoute = document.getElementById('ar-route');
+        if (existingARRoute) {
+            existingARRoute.remove();
+        }
+
+        // Create a new AR route element
+        const arRoute = document.createElement('a-entity');
+        arRoute.id = 'ar-route';
+
+        // Access Mapbox geometry data
+        const geometry = directionsData.routes[0].geometry;
+
+        // Extract route coordinates
+        const routeCoordinates = geometry.coordinates;
+
+        // Convert route coordinates to AR world coordinates
+        const arWorldCoordinates = routeCoordinates.map(coordinate => {
+            const arCoordinate = ARController.calcARMatrixFromGeoLocation(coordinate[1], coordinate[0]);
+            return `${arCoordinate.x} ${arCoordinate.y} ${arCoordinate.z}`;
+        });
+
+        // Set line attributes for the AR route
+        arRoute.setAttribute('line', {
+            path: arWorldCoordinates.join(','),
+            color: '#00f', // Blue color
+            opacity: 0.7,
+            lineWidth: 5,
+        });
+
+        // Append the AR route to the AR scene
+        document.querySelector('a-scene').appendChild(arRoute);
     };
 
     // Function to update the 2D map with the route
@@ -221,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create an A-Frame entity for the 3D model
         const modelEntity = document.createElement('a-entity');
         modelEntity.setAttribute('gps-new-entity-place', { latitude, longitude });
-        modelEntity.setAttribute('position', '100 -100 0.1');
+        modelEntity.setAttribute('position', '0 0 0');
     
         // Use the destination name to construct the file paths for OBJ and MTL
         const objPath = `../models/${destinationName}.obj`;
