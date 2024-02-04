@@ -86,23 +86,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        console.log('Directions:', directionsData);
-      
-        // Extract coordinates from Mapbox directions data
-        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-      
-        // Add GPS Arrows for each waypoint
-        routeCoordinates.forEach(coord => {
-          const arrow = document.createElement('a-entity');
-          arrow.setAttribute('gps-arrow', { latitude: coord[1], longitude: coord[0], color: '#ff0000' });
-          scene.appendChild(arrow);
-        });
-      
-        // Add GPS Path
-        const path = document.createElement('a-entity');
-        path.setAttribute('gps-path', { coordinates: routeCoordinates, color: '#00ff00' });
-        scene.appendChild(path);
-      };
+        // Ensure AR.js is available
+        if (AFRAME.AR.jsAR) {
+            // Access the AR.js scene
+            const arScene = document.querySelector('a-scene').systems.arjs.scene;
+
+            // Check if AR route exists, remove if it does
+            const existingARRoute = document.getElementById('ar-route');
+            if (existingARRoute) {
+                existingARRoute.parentNode.removeChild(existingARRoute);
+            }
+
+            // Create a new AR route line
+            const arRoute = document.createElement('a-entity');
+            arRoute.setAttribute('id', 'ar-route');
+            arRoute.setAttribute('line', {
+                color: '#3882f6',  // Blue color for the route
+                opacity: 0.75,
+                path: directionsData.routes[0].geometry.coordinates.map(coord => ({
+                    latitude: coord[1],
+                    longitude: coord[0],
+                })),
+            });
+
+            // Add the AR route to the AR.js scene
+            arScene.appendChild(arRoute);
+        } else {
+            console.warn('AR.js not available. Unable to display AR route.');
+        }
+    };
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
@@ -195,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to add a 3D model at the destination based on the destination name
-    const add3DModelAtDestination = (latitude, longitude, destinationName, altitude = 0) => {
+    const add3DModelAtDestination = (latitude, longitude, destinationName) => {
         const scene = document.querySelector('a-scene');
     
         // Create an A-Frame entity for the 3D model
