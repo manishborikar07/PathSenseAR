@@ -86,50 +86,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Check if AR.js is available
-        if (!window.ARController) {
-            console.error('ARController not available. Unable to update AR directions.');
-            return;
+        // Check if A-Frame is available
+        if (typeof AFRAME !== 'undefined') {
+            // Access the A-Frame scene
+            const scene = document.querySelector('a-scene');
+
+            // Create a new A-Frame entity for the AR route (blue conveyor belt)
+            const arRouteEntity = document.createElement('a-entity');
+            arRouteEntity.setAttribute('line', {
+                color: 'blue',     // Set the color to blue
+                opacity: 0.7,       // Set opacity as needed
+                lineWidth: 10        // Adjust line width based on preference
+            });
+
+            // Extract route coordinates from Mapbox directions data
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+
+            // Create an array to store the vertices of the line
+            const lineVertices = [];
+
+            // Populate the lineVertices array with coordinates
+            routeCoordinates.forEach(coord => {
+                lineVertices.push(`${coord[0]} ${coord[1]} 1`); // Z-coordinate set to 1 for visibility
+            });
+
+            // Set the line geometry based on the lineVertices array
+            arRouteEntity.setAttribute('line', { vertices: lineVertices.join(', ') });
+
+            // Append the AR route entity to the scene
+            scene.appendChild(arRouteEntity);
+        } else {
+            console.warn('AFRAME not detected. AR route cannot be added.');
         }
-
-        // Check if AR markers plugin (arMarkers) is available
-        if (!window.ARController.plugins || !window.ARController.plugins.markers) {
-            console.error('AR markers plugin not available. Unable to update AR directions.');
-            return;
-        }
-
-        // Remove existing AR route elements
-        const existingARRoute = document.getElementById('ar-route');
-        if (existingARRoute) {
-            existingARRoute.remove();
-        }
-
-        // Create a new AR route element
-        const arRoute = document.createElement('a-entity');
-        arRoute.id = 'ar-route';
-
-        // Access Mapbox geometry data
-        const geometry = directionsData.routes[0].geometry;
-
-        // Extract route coordinates
-        const routeCoordinates = geometry.coordinates;
-
-        // Convert route coordinates to AR world coordinates
-        const arWorldCoordinates = routeCoordinates.map(coordinate => {
-            const arCoordinate = ARController.calcARMatrixFromGeoLocation(coordinate[1], coordinate[0]);
-            return `${arCoordinate.x} ${arCoordinate.y} ${arCoordinate.z}`;
-        });
-
-        // Set line attributes for the AR route
-        arRoute.setAttribute('line', {
-            path: arWorldCoordinates.join(','),
-            color: '#00f', // Blue color
-            opacity: 0.7,
-            lineWidth: 5,
-        });
-
-        // Append the AR route to the AR scene
-        document.querySelector('a-scene').appendChild(arRoute);
     };
 
     // Function to update the 2D map with the route

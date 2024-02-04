@@ -58,7 +58,7 @@ body, html {
   position: fixed;
   bottom: 4px;
   left: 50%;
-  transform: translateX(-50.50%); /* Corrected for centering */
+  transform: translateX(-50%); /* Corrected for centering */
   width: 98%;
   max-width: 450px;
   height: 23vh;
