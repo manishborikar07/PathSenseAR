@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const destinationSelectInput = document.getElementById('select-destination');
     const destinationSelectButton = document.getElementById('get-direction-button');
     const mapContainer = document.getElementById('map');
-    const scene = document.querySelector('a-scene');
     let map;
     // To keep track of the marker at the current location
     let currentLocationMarker; 
@@ -11,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let destinationMarker;
 
     // Function to initialize the map and get the user's current location
-    const initMapAndLocation = async () => { 
+    const initMapAndLocation = async () => {
         try {
             // Initialize the map with Mapbox
             mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
@@ -29,6 +28,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         latitude: position.coords.latitude,
                         longitude: position.coords.longitude
                     };
+
+                    updateMapCenter(userLocation.latitude, userLocation.longitude);
 
                     // If the current location marker exists, update its position; otherwise, create a new marker
                     if (currentLocationMarker) {
@@ -78,25 +79,30 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    // Function to update the 2D map center
+    const updateMapCenter = (latitude, longitude) => {
+        map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
+    };
+
     // Function to update AR elements based on Mapbox directions
-const updateARDirections = (directionsData) => {
-    console.log('Directions:', directionsData);
-  
-    // Extract coordinates from Mapbox directions data
-    const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-  
-    // Add GPS Arrows for each waypoint
-    routeCoordinates.forEach(coord => {
-      const arrow = document.createElement('a-entity');
-      arrow.setAttribute('gps-arrow', { latitude: coord[1], longitude: coord[0], color: '#ff0000' });
-      scene.appendChild(arrow);
-    });
-  
-    // Add GPS Path
-    const path = document.createElement('a-entity');
-    path.setAttribute('gps-path', { coordinates: routeCoordinates, color: '#00ff00' });
-    scene.appendChild(path);
-  };
+    const updateARDirections = (directionsData) => {
+        console.log('Directions:', directionsData);
+      
+        // Extract coordinates from Mapbox directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+      
+        // Add GPS Arrows for each waypoint
+        routeCoordinates.forEach(coord => {
+          const arrow = document.createElement('a-entity');
+          arrow.setAttribute('gps-arrow', { latitude: coord[1], longitude: coord[0], color: '#ff0000' });
+          scene.appendChild(arrow);
+        });
+      
+        // Add GPS Path
+        const path = document.createElement('a-entity');
+        path.setAttribute('gps-path', { coordinates: routeCoordinates, color: '#00ff00' });
+        scene.appendChild(path);
+      };
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
@@ -188,6 +194,29 @@ const updateARDirections = (directionsData) => {
         return destinationMarker;
     };
 
+    // Function to add a 3D model at the destination based on the destination name
+    const add3DModelAtDestination = (latitude, longitude, destinationName, altitude = 0) => {
+        const scene = document.querySelector('a-scene');
+    
+        // Create an A-Frame entity for the 3D model
+        const modelEntity = document.createElement('a-entity');
+        modelEntity.setAttribute('gps-entity-place', { latitude, longitude });
+        modelEntity.setAttribute('position', { x: longitude, y: altitude, z: latitude }); // Adjust the altitude
+    
+        // Use the destination name to construct the file paths for OBJ and MTL
+        const objPath = `../models/${destinationName}.obj`;
+        const mtlPath = `../models/${destinationName}.mtl`;
+    
+        // Set the OBJ model component
+        modelEntity.setAttribute('obj-model', { obj: objPath, mtl: mtlPath });
+        modelEntity.setAttribute('scale', '0.1 0.1 0.1'); // Adjust the scale as needed
+    
+        // Additional attributes or animations can be added as needed
+    
+        // Append the entity to the scene
+        scene.appendChild(modelEntity);
+    };
+
     // Function to handle destination selection and initiate directions
     const selectDestination = async () => {
         const selectedDestination = destinationSelectInput.value;
@@ -203,7 +232,10 @@ const updateARDirections = (directionsData) => {
     
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
-    
+                
+                // Add 3D model at the selected destination
+                add3DModelAtDestination(destination.latitude, destination.longitude, destination.name);
+
                 // Update AR elements
                 updateARDirections(directionsData);
     
