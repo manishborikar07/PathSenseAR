@@ -86,38 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Check if A-Frame is available
-        if (typeof AFRAME !== 'undefined') {
-            // Access the A-Frame scene
-            const scene = document.querySelector('a-scene');
-
-            // Create a new A-Frame entity for the AR route (blue conveyor belt)
-            const arRouteEntity = document.createElement('a-entity');
-            arRouteEntity.setAttribute('line', {
-                color: 'blue',     // Set the color to blue
-                opacity: 0.7,       // Set opacity as needed
-                lineWidth: 10        // Adjust line width based on preference
-            });
-
-            // Extract route coordinates from Mapbox directions data
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-
-            // Create an array to store the vertices of the line
-            const lineVertices = [];
-
-            // Populate the lineVertices array with coordinates
-            routeCoordinates.forEach(coord => {
-                lineVertices.push(`${coord[0]} ${coord[1]} 1`); // Z-coordinate set to 1 for visibility
-            });
-
-            // Set the line geometry based on the lineVertices array
-            arRouteEntity.setAttribute('line', { vertices: lineVertices.join(', ') });
-
-            // Append the AR route entity to the scene
-            scene.appendChild(arRouteEntity);
-        } else {
-            console.warn('AFRAME not detected. AR route cannot be added.');
-        }
+        // Add an AR route that shows a blue conveyor belt on the route.
     };
 
     // Function to update the 2D map with the route
