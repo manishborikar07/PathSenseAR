@@ -86,31 +86,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Ensure AR.js is available
-        if (AFRAME.AR.jsAR) {
+        // Wait for AR.js to be ready
+        AFRAME.registerComponent('ar-ready', {
+            init: function () {
+                const arScene = document.querySelector('a-scene').systems.arjs.scene;
+                // Check if AR route exists, remove if it does
+                const existingARRoute = document.getElementById('ar-route');
+                if (existingARRoute) {
+                    existingARRoute.parentNode.removeChild(existingARRoute);
+                }
+    
+                // Create a new AR route line
+                const arRoute = document.createElement('a-entity');
+                arRoute.setAttribute('id', 'ar-route');
+                arRoute.setAttribute('line', {
+                    color: '#3882f6',  // Blue color for the route
+                    opacity: 0.75,
+                    path: directionsData.routes[0].geometry.coordinates.map(coord => ({
+                        latitude: coord[1],
+                        longitude: coord[0],
+                    })),
+                });
+    
+                // Add the AR route to the AR.js scene
+                arScene.appendChild(arRoute);
+    
+                // Remove the 'ar-ready' component once AR.js is ready
+                this.el.parentNode.removeChild(this.el);
+            },
+        });
+    
+        // Check if AR.js is ready
+        if (AFRAME.AR && AFRAME.AR.jsAR) {
             // Access the AR.js scene
             const arScene = document.querySelector('a-scene').systems.arjs.scene;
-
-            // Check if AR route exists, remove if it does
-            const existingARRoute = document.getElementById('ar-route');
-            if (existingARRoute) {
-                existingARRoute.parentNode.removeChild(existingARRoute);
-            }
-
-            // Create a new AR route line
-            const arRoute = document.createElement('a-entity');
-            arRoute.setAttribute('id', 'ar-route');
-            arRoute.setAttribute('line', {
-                color: '#3882f6',  // Blue color for the route
-                opacity: 0.75,
-                path: directionsData.routes[0].geometry.coordinates.map(coord => ({
-                    latitude: coord[1],
-                    longitude: coord[0],
-                })),
-            });
-
-            // Add the AR route to the AR.js scene
-            arScene.appendChild(arRoute);
+    
+            // Create a placeholder entity to trigger the 'ar-ready' component
+            const arReadyEntity = document.createElement('a-entity');
+            arReadyEntity.setAttribute('ar-ready', '');
+            arScene.appendChild(arReadyEntity);
         } else {
             console.warn('AR.js not available. Unable to display AR route.');
         }
@@ -221,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Set the OBJ model component
         modelEntity.setAttribute('obj-model', { obj: objPath, mtl: mtlPath });
-        modelEntity.setAttribute('scale', '0.1 0.1 0.1'); // Adjust the scale as needed
+        modelEntity.setAttribute('scale', '0.6 0.6 0.6'); // Adjust the scale as needed
     
         // Additional attributes or animations can be added as needed
     
