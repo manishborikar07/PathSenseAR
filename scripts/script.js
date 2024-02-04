@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create an A-Frame entity for the 3D model
         const modelEntity = document.createElement('a-entity');
         modelEntity.setAttribute('gps-entity-place', { latitude, longitude });
-        modelEntity.setAttribute('position', { 100 -100 0.1 }); // Adjust the altitude
+        modelEntity.setAttribute('position', '100 -100 0.1');
     
         // Use the destination name to construct the file paths for OBJ and MTL
         const objPath = `../models/${destinationName}.obj`;
