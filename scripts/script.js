@@ -79,9 +79,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const handleOrientation = (event) => {
             const compassRotation = event.alpha; // Rotation in degrees
             compass.style.transform = `rotate(${360 - compassRotation}deg)`;
+            
+            // Set the bearing of the Mapbox map to achieve rotation
+            map.setBearing(compassRotation);
 
             // Rotate only the Mapbox map container
-            map.getCanvas().style.transform = `rotate(${compassRotation}deg)`;
+           // map.getCanvas().style.transform = `rotate(${compassRotation}deg)`;
         };
 
     // Function to get the user's current location
