@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const destinationSelectButton = document.getElementById('get-direction-button');
     const mapContainer = document.getElementById('map');
     let map;
+    let compass;
     // To keep track of the marker at the current location
     let currentLocationMarker; 
     // Define a global variable to keep track of the current destination marker
@@ -20,6 +21,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 center: [0, 0], // Default center
                 zoom: 15,
             });
+
+            // Create a compass element
+            compass = document.createElement('div');
+            compass.className = 'compass';
+            compass.innerHTML = '<img src="../models/current-location-10.png" alt="Compass Icon">';
+
+            // Add compass to the compass container
+            const compassContainer = document.getElementById('compass-container');
+            compassContainer.appendChild(compass);
+
+            // Watch for changes in the device's orientation
+            window.addEventListener('deviceorientation', handleOrientation);
 
             // Get and update the user's current location
             navigator.geolocation.watchPosition(
@@ -61,6 +74,15 @@ document.addEventListener('DOMContentLoaded', function () {
             .setPopup(new mapboxgl.Popup().setHTML(title))
             .addTo(map);
     };
+        
+        // Function to handle changes in device orientation
+        const handleOrientation = (event) => {
+            const compassRotation = event.alpha; // Rotation in degrees
+            compass.style.transform = `rotate(${360 - compassRotation}deg)`;
+
+            // Rotate the map container
+            mapContainer.style.transform = `rotate(${compassRotation}deg)`;
+        };
 
     // Function to get the user's current location
     const getCurrentLocation = () => {
@@ -202,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function () {
         arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
         arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
         arLabel.setAttribute('color', '#0100ff'); // Set the text color
-        arLabel.setAttribute('scale', '1 1 1'); // Adjust scale as needed
+        arLabel.setAttribute('scale', '5 5 5'); // Adjust scale as needed
 
         // Append the label to the A-Frame scene
         document.querySelector('#ar-destination-label').appendChild(arLabel);
