@@ -184,7 +184,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const addDestinationARLabel = (latitude, longitude, name) => {
         // Remove existing text entities
         const existingLabels = document.querySelectorAll('a-scene');
-        existingLabels.forEach(label => label.remove());
+
+        if (existingLabels.length > 0) {
+            console.log('Removing existing text entities:', existingLabels.length);
+            existingLabels.forEach(label => label.remove());
+        } else {
+            console.log('No existing text entities to remove.');
+        }
 
         console.log('Adding AR label for:', name, 'at', latitude, longitude);
 
@@ -194,12 +200,14 @@ document.addEventListener('DOMContentLoaded', function () {
         // Set attributes for the label
         arLabel.setAttribute('value', name);
         arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
+        arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
         arLabel.setAttribute('color', '#0100ff'); // Set the text color
         arLabel.setAttribute('scale', '10 10 10'); // Adjust scale as needed
 
-        // Append the 3D marker to the A-Frame scene
-        document.querySelector('a-scene').appendChild(arMarker);
+        // Append the label to the container with the id "ar-destination-label"
+        document.querySelector('a-scene').appendChild(arLabel);
     };
+
 
     // Function to handle destination selection and initiate directions
     const selectDestination = async () => {
