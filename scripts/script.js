@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // Function to handle changes in device orientation
         const handleOrientation = (event) => {
-            const compassRotation = event.alpha; // Rotation in degrees
+            const compassRotation = 360 - event.alpha; // Rotation in degrees
             compass.style.transform = `rotate(${360 - compassRotation}deg)`;
             
             // Set the bearing of the Mapbox map to achieve rotation
