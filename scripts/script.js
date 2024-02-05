@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Get HTML elements
     const destinationSelectInput = document.getElementById('select-destination');
     const destinationSelectButton = document.getElementById('get-direction-button');
-    const mapContainer = document.getElementById('map-container');
+    const mapContainer = document.getElementById('map');
     let map;
     let compass;
     // To keep track of the marker at the current location
