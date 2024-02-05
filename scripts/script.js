@@ -23,6 +23,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 pitch: 0, // Initial pitch
             });
 
+            // Enable map controls (zoom, pan, rotate)
+            map.addControl(new mapboxgl.NavigationControl());
+
             // Create a compass element
             compass = document.createElement('div');
             compass.className = 'compass';
