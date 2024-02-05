@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
             compass.style.transform = `rotate(${360 - compassRotation}deg)`;
 
             // Rotate the map container
-            mapContainer.style.transform = `rotate(${compassRotation}deg)`;
+            map.style.transform = `rotate(${compassRotation}deg)`;
         };
 
     // Function to get the user's current location
