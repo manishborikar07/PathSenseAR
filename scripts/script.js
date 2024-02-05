@@ -80,8 +80,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const compassRotation = event.alpha; // Rotation in degrees
             compass.style.transform = `rotate(${360 - compassRotation}deg)`;
 
-            // Rotate the map container
-            map.style.transform = `rotate(${compassRotation}deg)`;
+            // Rotate only the Mapbox map container
+            map.getCanvas().style.transform = `rotate(${compassRotation}deg)`;
         };
 
     // Function to get the user's current location
