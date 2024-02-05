@@ -98,30 +98,67 @@ document.addEventListener('DOMContentLoaded', function () {
         const existingARRouteEntities = document.querySelectorAll('.ar-route');
         existingARRouteEntities.forEach(entity => entity.parentNode.removeChild(entity));
 
+        console.log('Existing AR route entities cleared.');
+
         // Check if directionsData is defined and contains route information
         if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
             // Extract route coordinates from Mapbox directions data
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
+            console.log('Route coordinates:', routeCoordinates);
+
             // Create AR route entity
             const arRouteEntity = document.createElement('a-entity');
             arRouteEntity.classList.add('ar-route');
 
-            // Create a line entity to represent the road
-            const roadLine = document.createElement('a-entity');
-            roadLine.setAttribute('line', {
-                path: routeCoordinates.map(coord => `${coord[0]} 0 ${coord[1]}`).join(','),
+            // Create a colored plane (representing the road)
+            const roadPlane = document.createElement('a-plane');
+            roadPlane.setAttribute('material', {
                 color: '#3882f6', // Replace with your desired color
+                side: 'double',
+                opacity: 0.7, // Adjust transparency if needed
             });
 
-            // Append the line to the AR route entity
-            arRouteEntity.appendChild(roadLine);
+            // Calculate the midpoint of the route for positioning
+            const midpointIndex = Math.floor(routeCoordinates.length / 2);
+            const midpoint = routeCoordinates[midpointIndex];
+
+            // Set the position and rotation of the AR route entity
+            arRouteEntity.setAttribute('position', {
+                x: midpoint[0],
+                y: -0.5, // Adjust the height as needed
+                z: midpoint[1],
+            });
+            arRouteEntity.setAttribute('rotation', { x: 0, y: -90, z: 0 }); // Adjust rotation for alignment
+
+            // Set the scale of the road plane based on the length of the route
+            const routeLength = calculateRouteLength(routeCoordinates);
+            roadPlane.setAttribute('scale', { x: routeLength, y: 1, z: 2 }); // Adjust scale for better visibility
+
+            // Append the plane to the AR route entity
+            arRouteEntity.appendChild(roadPlane);
 
             // Append the AR route entity to the A-Frame scene
             document.querySelector('a-scene').appendChild(arRouteEntity);
+
+            console.log('AR route entity added to the A-Frame scene. Route displayed in AR.');
         } else {
-            console.error('Invalid directionsData or missing route coordinates.');
+            console.error('Invalid directionsData or missing route coordinates. Route not displayed in AR.');
         }
+    };
+
+    // Function to calculate the total length of the route
+    const calculateRouteLength = (coordinates) => {
+        let length = 0;
+
+        for (let i = 1; i < coordinates.length; i++) {
+            const prevCoord = coordinates[i - 1];
+            const currentCoord = coordinates[i];
+            const segmentLength = calculateDistance(prevCoord[0], prevCoord[1], currentCoord[0], currentCoord[1]);
+            length += segmentLength;
+        }
+
+        return length;
     };
 
     // Function to update the 2D map with the route
