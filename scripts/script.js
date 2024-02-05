@@ -3,12 +3,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const destinationSelectInput = document.getElementById('select-destination');
     const destinationSelectButton = document.getElementById('get-direction-button');
     const mapContainer = document.getElementById('map');
+    let shouldUpdateBearing = true; // Flag to control whether to update the bearing
     let map;
     let compass;
-    // To keep track of the marker at the current location
-    let currentLocationMarker; 
-    // Define a global variable to keep track of the current destination marker
-    let destinationMarker;
+    let currentLocationMarker; // To keep track of the marker at the current location
+    let destinationMarker; // Define a global variable to keep track of the current destination marker
 
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
@@ -86,6 +85,15 @@ document.addEventListener('DOMContentLoaded', function () {
             // Rotate only the Mapbox map container
            // map.getCanvas().style.transform = `rotate(${compassRotation}deg)`;
         };
+
+        // Function to toggle the bearing update based on user interaction
+        const toggleBearingUpdate = (update) => {
+            shouldUpdateBearing = update;
+        };
+
+        // Listen for the 'touchstart' and 'touchend' events to toggle bearing update
+        document.addEventListener('touchstart', () => toggleBearingUpdate(false));
+        document.addEventListener('touchend', () => toggleBearingUpdate(true));
 
     // Function to get the user's current location
     const getCurrentLocation = () => {
