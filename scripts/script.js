@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const destinationSelectInput = document.getElementById('select-destination');
     const destinationSelectButton = document.getElementById('get-direction-button');
     const mapContainer = document.getElementById('map');
-    let shouldUpdateBearing = true; // Flag to control whether to update the bearing
     let map;
     let compass;
     let currentLocationMarker; // To keep track of the marker at the current location
@@ -60,6 +59,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
             );
+
+            // Watch for changes in the device's orientation
+            window.addEventListener('deviceorientation', handleOrientation);
+
+            // Disable map rotation with right-click or two-finger rotation gesture
+            map.dragRotate.disable();
+            map.touchZoomRotate.disableRotation(); // Disable rotation with two-finger touch
+
         } catch (error) {
             console.error('Error initializing map and getting initial location:', error);
         }
@@ -86,19 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // Set the bearing of the Mapbox map to achieve rotation
             map.setBearing(compassRotation);
-
-            // Rotate only the Mapbox map container
-           // map.getCanvas().style.transform = `rotate(${compassRotation}deg)`;
         };
-
-        // Function to toggle the bearing update based on user interaction
-        const toggleBearingUpdate = (update) => {
-            shouldUpdateBearing = update;
-        };
-
-        // Listen for the 'touchstart' and 'touchend' events to toggle bearing update
-        document.addEventListener('touchstart', () => toggleBearingUpdate(false));
-        document.addEventListener('touchend', () => toggleBearingUpdate(true));
 
     // Function to get the user's current location
     const getCurrentLocation = () => {
