@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 style: 'mapbox://styles/mapbox/streets-v11',
                 center: [0, 0], // Default center
                 zoom: 15,
+                bearing: 0, // Initial bearing
+                pitch: 0, // Initial pitch
             });
 
             // Create a compass element
