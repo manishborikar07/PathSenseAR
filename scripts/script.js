@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create a new A-Frame entity (a-marker) for the 3D marker
         const arMarker = document.createElement('a-marker');
         arMarker.setAttribute('gps-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
-        arMarker.setAttribute('scale', '1 1 1'); // Adjust scale as needed
+        arMarker.setAttribute('scale', '10 10 10'); // Adjust scale as needed
 
         // Create a new A-Frame entity (a-text) for the destination label
         const arLabel = document.createElement('a-text');
@@ -200,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function () {
         arLabel.setAttribute('value', name);
         arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
         arLabel.setAttribute('color', textColor); // Set the text color
-        arLabel.setAttribute('scale', '1 1 1'); // Adjust scale as needed
+        arLabel.setAttribute('scale', '10 10 10'); // Adjust scale as needed
 
         // Append the label to the 3D marker entity
         arMarker.appendChild(arLabel);
