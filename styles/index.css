@@ -56,7 +56,7 @@ body, html {
 
 #map-container {
   position: fixed;
-  bottom: 4px;
+  bottom: 2px;
   left: 50%;
   transform: translateX(-50%); /* Corrected for centering */
   width: 98%;
@@ -68,15 +68,15 @@ body, html {
 #map {
   width: 100%;
   height: 100%;
-  border: 1px solid white;
+  border: 3px solid white;
 }
 
 .compass {
   position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 40px;
-  height: 40px;
+  bottom: 180px;
+  right: 7px;
+  width: 70px;
+  height: 70px;
   cursor: pointer;
   transform-origin: center center;
 }
