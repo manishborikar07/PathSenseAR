@@ -83,16 +83,21 @@ document.addEventListener('DOMContentLoaded', function () {
         // Rotate only the Mapbox map container
         map.getCanvas().style.transform = `rotate(${compassRotation}deg)`;
     
-        // Update the rotation of the current location marker
-        updateMarkerRotation(currentLocationMarker, compassRotation);
+        // Update the position of the current location marker
+        if (currentLocationMarker) {
+            updateMarkerRotation(currentLocationMarker, compassRotation);
+        }
     
-        // Update the rotation of the destination marker
-        updateMarkerRotation(destinationMarker, compassRotation);
+        // Update the position of the destination marker
+        if (destinationMarker) {
+            updateMarkerRotation(destinationMarker, compassRotation);
+        }
     };
     
     // Function to update the rotation of a marker
     const updateMarkerRotation = (marker, rotationAngle) => {
-        marker.setRotation(rotationAngle);
+        const markerElement = marker.getElement();
+        markerElement.style.transform = `rotate(${-rotationAngle}deg)`;
     };
 
     // Function to get the user's current location
