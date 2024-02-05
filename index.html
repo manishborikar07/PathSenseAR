@@ -36,9 +36,16 @@
             <button id="get-direction-button">Get Directions</button>
         </div>
         <a-scene cursor="rayOrigin: mouse; fuse: true; fuseTimeout: 0;" raycaster="objects: [gps-new-entity-place];" vr-mode-ui="enabled: false" embedded arjs="sourceType: webcam; sourceWidth: 1920; sourceHeight: 1080; displayWidth: 100%; displayHeight: 100%; debugUIEnabled: false;">
-            <a-camera gps-new-camera="minDistance: 10; videoTexture: true;" rotation-reader position="0 1.6 0"></a-camera>
-
+            <a-camera gps-new-camera="minDistance: 10; videoTexture: true;" rotation-reader></a-camera>
+            
+            <!-- This entity will be dynamically added for the selected destination -->
+            <!-- Adjust attributes and styling based on your preferences -->
+            <!-- This entity will look at the camera and be placed at the selected destination -->
+            <!-- Scale and position can be adjusted based on your AR scene requirements -->
+            <!-- The id 'ar-destination-label' is used for later identification/removal -->
+            <a-entity id="ar-destination-label"></a-entity>
         </a-scene>
+        
 
         <!-- Container for the 2D map -->
         <div id="map-container">

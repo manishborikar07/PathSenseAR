@@ -180,6 +180,21 @@ document.addEventListener('DOMContentLoaded', function () {
         return destinationMarker;
     };
 
+    // Function to add AR label for the selected destination
+    const addDestinationARLabel = (latitude, longitude, name) => {
+        // Create a new A-Frame entity (a-text) for the destination label
+        const arLabel = document.createElement('a-text');
+        
+        // Set attributes for the label
+        arLabel.setAttribute('value', name);
+        arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
+        arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
+        arLabel.setAttribute('scale', '50 50 50'); // Adjust scale as needed
+        
+        // Append the label to the A-Frame scene
+        document.querySelector('a-scene').appendChild(arLabel);
+    };
+
     // Function to handle destination selection and initiate directions
     const selectDestination = async () => {
         const selectedDestination = destinationSelectInput.value;
@@ -195,6 +210,9 @@ document.addEventListener('DOMContentLoaded', function () {
     
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
+
+                // Add AR label for the selected destination
+                addDestinationARLabel(destination.latitude, destination.longitude, destination.name);
 
                 // Update AR elements
                 updateARDirections(directionsData);
