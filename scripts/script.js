@@ -119,6 +119,8 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
+        console.log('Updating AR directions...');
+        
         // Ensure A-Frame is initialized
         const aFrameInitialized = AFRAME.scenes.length > 0;
       
