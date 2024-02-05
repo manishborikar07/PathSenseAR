@@ -56,31 +56,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to add a marker on the map
     const addMarker = (latitude, longitude, title) => {
-
-        const customMarkerUrl = '../models/current-location-10.png';
-
-        // Load the custom marker image
-        map.loadImage(customMarkerUrl, (error, image) => {
-            if (error) {
-                console.error('Error loading custom marker image:', error);
-                return null;
-            }
-
-            // Add the custom marker image to the map's style
-            map.addImage('custom-marker', image);
-
-            // Create a new marker with the custom image
-            const customMarker = new mapboxgl.Marker()
-                .setLngLat([longitude, latitude])
-                .setPopup(new mapboxgl.Popup().setHTML(title))
-                .addTo(map);
-
-            // Set the custom marker image
-            customMarker.getElement().style.backgroundImage = `url("${customMarkerUrl}")`;
-            customMarker.getElement().style.backgroundSize = 'cover';
-
-            return customMarker;
-        });
+        return new mapboxgl.Marker({
+            element: new Image(30, 30).src = '../models/current-location-10.png', // Set the custom image directly
+        })
+            .setLngLat([longitude, latitude])
+            .setPopup(new mapboxgl.Popup().setHTML(title))
+            .addTo(map);
     };
 
     // Function to get the user's current location
