@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Create a compass element
             compass = document.createElement('div');
             compass.className = 'compass';
-            compass.innerHTML = '<img src="../models/current-location-10.png" alt="Compass Icon">';
+            compass.innerHTML = '<img src="../models/compass.png" alt="Compass Icon">';
 
             // Add compass to the compass container
             const compassContainer = document.getElementById('compass-container');
