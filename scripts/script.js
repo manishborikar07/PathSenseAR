@@ -84,6 +84,25 @@ document.addEventListener('DOMContentLoaded', function () {
         map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
     };
 
+    // Function to calculate the distance between two points using the Haversine formula
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+        const R = 6371; // Earth radius in kilometers
+        const dLat = degToRad(lat2 - lat1);
+        const dLon = degToRad(lon2 - lon1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+
+        return distance;
+    };
+
+    // Function to convert degrees to radians
+    const degToRad = (degrees) => {
+        return degrees * (Math.PI / 180);
+    };
+
    // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
         // Ensure A-Frame is initialized
@@ -145,20 +164,6 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             console.error('Invalid directionsData or missing route coordinates. Route not displayed in AR.');
         }
-    };
-
-    // Function to calculate the total length of the route
-    const calculateRouteLength = (coordinates) => {
-        let length = 0;
-
-        for (let i = 1; i < coordinates.length; i++) {
-            const prevCoord = coordinates[i - 1];
-            const currentCoord = coordinates[i];
-            const segmentLength = calculateDistance(prevCoord[0], prevCoord[1], currentCoord[0], currentCoord[1]);
-            length += segmentLength;
-        }
-
-        return length;
     };
 
     // Function to update the 2D map with the route
