@@ -86,34 +86,92 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Ensure AR.js is available
-        if (THREEx && THREEx.LocationBased) {
-            const scene = document.querySelector('a-scene');
-            const camera = document.querySelector('a-camera');
+        // Ensure A-Frame is initialized
+        const aFrameInitialized = AFRAME.scenes.length > 0;
 
-            // Create an AR Location-Based object
-            const locationBased = new THREEx.LocationBased(scene, camera);
-
-            // Check if AR.js has the necessary components
-            if (locationBased && locationBased.add && THREEx.LocationBased.SphericalMercator) {
-                // Set projection to Spherical Mercator
-                locationBased.setProjection(THREEx.LocationBased.SphericalMercator);
-
-                // Assuming 'directionsData' contains route information
-                if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-                    // Extract route coordinates from Mapbox directions data
-                    const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-
-                    // ... (rest of the code remains unchanged)
-                } else {
-                    console.error('Invalid directionsData or missing route coordinates.');
-                }
-            } else {
-                console.error('AR.js Location-Based components not available.');
-            }
-        } else {
-            console.error('AR.js not available.');
+        if (!aFrameInitialized) {
+            console.error('A-Frame not initialized. Unable to update AR directions.');
+            return;
         }
+
+        // Clear existing AR route entities
+        const existingARRouteEntities = document.querySelectorAll('.ar-route');
+        existingARRouteEntities.forEach(entity => entity.parentNode.removeChild(entity));
+
+        // Check if directionsData is defined and contains route information
+        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+            // Extract route coordinates from Mapbox directions data
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+
+            // Create AR route entity
+            const arRouteEntity = document.createElement('a-entity');
+            arRouteEntity.classList.add('ar-route');
+            
+            // Create a plane (conveyor belt texture) along the route
+            const roadPlane = document.createElement('a-plane');
+            roadPlane.setAttribute('material', {
+                src: 'path-to-conveyor-belt-texture.jpg', // Replace with your conveyor belt texture path
+                side: 'double',
+                repeat: '20 1', // Adjust repeat value based on the texture size
+            });
+
+            // Calculate the midpoint of the route for positioning
+            const midpointIndex = Math.floor(routeCoordinates.length / 2);
+            const midpoint = routeCoordinates[midpointIndex];
+            
+            // Set the position and rotation of the AR route entity
+            arRouteEntity.setAttribute('position', {
+                x: midpoint[0],
+                y: 0, // Adjust the height as needed
+                z: midpoint[1],
+            });
+            arRouteEntity.setAttribute('rotation', { x: 0, y: -90, z: 0 }); // Adjust rotation for alignment
+
+            // Set the scale of the road plane based on the length of the route
+            const routeLength = calculateRouteLength(routeCoordinates);
+            roadPlane.setAttribute('scale', { x: routeLength, y: 1, z: 1 });
+
+            // Append the plane to the AR route entity
+            arRouteEntity.appendChild(roadPlane);
+
+            // Append the AR route entity to the A-Frame scene
+            document.querySelector('a-scene').appendChild(arRouteEntity);
+        } else {
+            console.error('Invalid directionsData or missing route coordinates.');
+        }
+    };
+
+    // Function to calculate the total length of the route
+    const calculateRouteLength = (coordinates) => {
+        let length = 0;
+
+        for (let i = 1; i < coordinates.length; i++) {
+            const prevCoord = coordinates[i - 1];
+            const currentCoord = coordinates[i];
+            const segmentLength = calculateDistance(prevCoord[0], prevCoord[1], currentCoord[0], currentCoord[1]);
+            length += segmentLength;
+        }
+
+        return length;
+    };
+
+    // Function to calculate the distance between two points using the Haversine formula
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+        const R = 6371; // Earth radius in kilometers
+        const dLat = degToRad(lat2 - lat1);
+        const dLon = degToRad(lon2 - lon1);
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(degToRad(lat1)) * Math.cos(degToRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+
+        return distance;
+    };
+
+    // Function to convert degrees to radians
+    const degToRad = (degrees) => {
+        return degrees * (Math.PI / 180);
     };
 
     // Function to update the 2D map with the route
@@ -206,29 +264,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return destinationMarker;
     };
 
-    // Function to add a 3D model at the destination based on the destination name
-    const add3DModelAtDestination = (latitude, longitude, destinationName) => {
-        const scene = document.querySelector('a-scene');
-    
-        // Create an A-Frame entity for the 3D model
-        const modelEntity = document.createElement('a-entity');
-        modelEntity.setAttribute('gps-new-entity-place', { latitude, longitude });
-        modelEntity.setAttribute('position', '0 0 0');
-    
-        // Use the destination name to construct the file paths for OBJ and MTL
-        const objPath = `../models/${destinationName}.obj`;
-        const mtlPath = `../models/${destinationName}.mtl`;
-    
-        // Set the OBJ model component
-        modelEntity.setAttribute('obj-model', { obj: objPath, mtl: mtlPath });
-        modelEntity.setAttribute('scale', '0.6 0.6 0.6'); // Adjust the scale as needed
-    
-        // Additional attributes or animations can be added as needed
-    
-        // Append the entity to the scene
-        scene.appendChild(modelEntity);
-    };
-
     // Function to handle destination selection and initiate directions
     const selectDestination = async () => {
         const selectedDestination = destinationSelectInput.value;
@@ -244,9 +279,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
-                
-                // Add 3D model at the selected destination
-                add3DModelAtDestination(destination.latitude, destination.longitude, destination.name);
 
                 // Update AR elements
                 updateARDirections(directionsData);
