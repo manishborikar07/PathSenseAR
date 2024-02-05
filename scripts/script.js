@@ -182,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to add AR label for the selected destination
     const addDestinationARLabel = (latitude, longitude, name) => {
+        console.log('Adding AR label for:', name, 'at', latitude, longitude);
         // Create a new A-Frame entity (a-text) for the destination label
         const arLabel = document.createElement('a-text');
         
