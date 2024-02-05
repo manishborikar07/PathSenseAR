@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Create a plane (conveyor belt texture) along the route
             const roadPlane = document.createElement('a-plane');
             roadPlane.setAttribute('material', {
-                src: 'path-to-conveyor-belt-texture.jpg', // Replace with your conveyor belt texture path
+                src: '../models/road.png', // Replace with your conveyor belt texture path
                 side: 'double',
                 repeat: '20 1', // Adjust repeat value based on the texture size
             });
