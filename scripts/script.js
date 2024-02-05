@@ -75,14 +75,30 @@ document.addEventListener('DOMContentLoaded', function () {
             .addTo(map);
     };
         
-        // Function to handle changes in device orientation
-        const handleOrientation = (event) => {
-            const compassRotation = event.alpha; // Rotation in degrees
-            compass.style.transform = `rotate(${360 - compassRotation}deg)`;
-
-            // Rotate only the Mapbox map container
-            map.getCanvas().style.transform = `rotate(${compassRotation}deg)`;
-        };
+    // Function to handle changes in device orientation
+    const handleOrientation = (event) => {
+        const compassRotation = event.alpha; // Rotation in degrees
+        compass.style.transform = `rotate(${360 - compassRotation}deg)`;
+    
+        // Rotate only the Mapbox map container
+        map.getCanvas().style.transform = `rotate(${compassRotation}deg)`;
+    
+        // Update the position of the current location marker
+        if (currentLocationMarker) {
+            updateMarkerRotation(currentLocationMarker, compassRotation);
+        }
+    
+        // Update the position of the destination marker
+        if (destinationMarker) {
+            updateMarkerRotation(destinationMarker, compassRotation);
+        }
+    };
+    
+    // Function to update the rotation of a marker
+    const updateMarkerRotation = (marker, rotationAngle) => {
+        const markerElement = marker.getElement();
+        markerElement.style.transform = `rotate(${-rotationAngle}deg)`;
+    };
 
     // Function to get the user's current location
     const getCurrentLocation = () => {
