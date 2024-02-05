@@ -4,8 +4,12 @@
     
         // Create an A-Frame entity for the 3D model
         const modelEntity = document.createElement('a-entity');
-        modelEntity.setAttribute('gps-new-entity-place', { latitude, longitude });
-        modelEntity.setAttribute('position', '0 0 0');
+
+         // Set attributes for the label
+        modelEntity.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
+        modelEntity.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
+        modelEntity.setAttribute('scale', '1 1 1'); // Adjust scale as needed
+        modelEntity.setAttribute('position', '0 -20 0');
     
         // Use the destination name to construct the file paths for OBJ and MTL
         const objPath = `../models/${destinationName}.obj`;
