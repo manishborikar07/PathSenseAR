@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let map;
     let compass;  
     let mapBearing = 0; // Global variable to store the map's bearing
-    let compassRotation = 0;
     let currentLocationMarker; // To keep track of the marker at the current location
     let destinationMarker; // Define a global variable to keep track of the current destination marker
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
@@ -68,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to handle changes in device orientation
     const handleOrientation = (event) => {
-        compassRotation = 360 - event.alpha; // Rotation in degrees
+        const compassRotation = 360 - event.alpha; // Rotation in degrees
         compass.style.transform = `rotate(${360 - compassRotation}deg)`;
     
         // Update or create the current location marker
@@ -284,25 +283,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // End of the 'DOMContentLoaded' event listener
     initMapAndLocation(); // Call the function to initialize map and location
-
-    // Watch for changes in the map's bearing
-    map.on('rotate', (event) => {
-        // Update the map's bearing variable when the map is rotated
-        mapBearing = event.target.getBearing();
-    
-        // Update the current location marker's rotation based on the map's bearing
-        if (currentLocationMarker) {
-            const markerRotation = compassRotation - mapBearing;
-            currentLocationMarker.setRotation(markerRotation);
-            
-            // Update the CSS variable to apply rotation to the custom marker
-            mapContainer.style.setProperty('--map-rotation', `${mapBearing}deg`);
-            mapContainer.setAttribute('data-rotation', ''); // Add the attribute
-        }
-    });
-    
-    // Listen for the map's dragend event to remove the data-rotation attribute
-    map.on('dragend', () => {
-        mapContainer.removeAttribute('data-rotation'); // Remove the attribute
-    });
 });
