@@ -81,10 +81,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to add a marker on the map
     const addMarker = (latitude, longitude, title, markerImage) => {
-        return new mapboxgl.Marker({ element: createCustomMarker(markerImage) })
-                   .setLngLat([longitude, latitude])
-                   .setPopup(new mapboxgl.Popup().setHTML(title))
-                   .addTo(map);
+        const markerOptions = {};
+    
+        // Check if a custom marker image is provided
+        if (markerImage) {
+            markerOptions.element = createCustomMarker(markerImage);
+        } else {
+            // Use the default Mapbox marker with a red color
+            markerOptions.color = '#FF0000'; // Red color
+        }
+    
+        return new mapboxgl.Marker(markerOptions)
+            .setLngLat([longitude, latitude])
+            .setPopup(new mapboxgl.Popup().setHTML(title))
+            .addTo(map);
     };
     
     // Function to create a custom marker element
@@ -105,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     
         // Add a new marker at the destination with a popup
-        destinationMarker = addMarker(latitude, longitude, title, '../models/destination.png');
+        destinationMarker = addMarker(latitude, longitude, title);
         return destinationMarker;
     };
 
