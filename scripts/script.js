@@ -294,11 +294,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (customMarker) {
             customMarker.style.transform = `rotate(${mapBearing}deg)`;
         }
-
-        // Update the current location marker's rotation based on the map's bearing
-        if (currentLocationMarker) {
-            const markerRotation = 360 - mapBearing; // Adjust as needed
-            currentLocationMarker.setRotation(markerRotation);
-        }
+        
     });
 });
