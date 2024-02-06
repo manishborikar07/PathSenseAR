@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Update or create the current location marker
                     currentLocationMarker
                         ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                        : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!'));
+                        : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/compass.png'));
                 },
                 (error) => console.error('Error in retrieving position', error),
                 { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
@@ -80,11 +80,21 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to add a marker on the map
-    const addMarker = (latitude, longitude, title) => {
-        return new mapboxgl.Marker()
-            .setLngLat([longitude, latitude])
-            .setPopup(new mapboxgl.Popup().setHTML(title))
-            .addTo(map);
+    const addMarker = (latitude, longitude, title, markerImage) => {
+        return new mapboxgl.Marker({ element: createCustomMarker(markerImage) })
+                   .setLngLat([longitude, latitude])
+                   .setPopup(new mapboxgl.Popup().setHTML(title))
+                   .addTo(map);
+    };
+    
+    // Function to create a custom marker element
+    const createCustomMarker = (markerImage) => {
+        const element = document.createElement('div');
+        element.className = 'custom-marker';
+        element.style.backgroundImage = `url(${markerImage})`;
+        element.style.width = '30px';  // Set the width of your custom marker
+        element.style.height = '30px'; // Set the height of your custom marker
+        return element;
     };
 
     // Function to add a marker for a location on the map
