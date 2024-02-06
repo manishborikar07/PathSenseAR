@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let compass;
     let currentLocationMarker; // To keep track of the marker at the current location
     let destinationMarker; // Define a global variable to keep track of the current destination marker
+    let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
 
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
@@ -21,55 +22,50 @@ document.addEventListener('DOMContentLoaded', function () {
                 bearing: 0, // Initial bearing
                 pitch: 0, // Initial pitch
             });
-
+    
             // Enable map controls (zoom, pan, rotate)
             map.addControl(new mapboxgl.NavigationControl());
-
-            // Create a compass element
-            compass = document.createElement('div');
-            compass.className = 'compass';
-            compass.innerHTML = '<img src="../models/compass.png" alt="Compass Icon">';
-
-            // Add compass to the compass container
+    
+            // Create and append compass element
             const compassContainer = document.getElementById('compass-container');
-            compassContainer.appendChild(compass);
-
+            compassContainer.innerHTML = '<div class="compass"><img src="../models/compass.png" alt="Compass Icon"></div>';
+    
             // Watch for changes in the device's orientation
             window.addEventListener('deviceorientation', handleOrientation);
-
-            // Get and update the user's current location
+    
+            // Watch for changes in the user's location
             navigator.geolocation.watchPosition(
                 (position) => {
-                    const userLocation = {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude
-                    };
-
-                    updateMapCenter(userLocation.latitude, userLocation.longitude);
-
-                    // If the current location marker exists, update its position; otherwise, create a new marker
-                    if (currentLocationMarker) {
-                        updateMarker(currentLocationMarker, userLocation.latitude, userLocation.longitude, 'You are here!');
-                    } else {
-                        currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!');
-                    }
+                    const { latitude, longitude } = position.coords;
+                    userLocation = { latitude, longitude }; // Update global userLocation
+                    updateMapCenter(latitude, longitude);
+    
+                    // Update or create the current location marker
+                    currentLocationMarker
+                        ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
+                        : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!'));
                 },
-                (error) => {
-                    console.error('Error in retrieving position', error);
-                },
+                (error) => console.error('Error in retrieving position', error),
                 { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
             );
-
-            // Watch for changes in the device's orientation
-            window.addEventListener('deviceorientation', handleOrientation);
-
-            // Disable map rotation with right-click or two-finger rotation gesture
-            map.dragRotate.disable();
-            map.touchZoomRotate.disableRotation(); // Disable rotation with two-finger touch
-
+    
         } catch (error) {
             console.error('Error initializing map and getting initial location:', error);
         }
+    };
+
+    // Function to update the 2D map center
+    const updateMapCenter = (latitude, longitude) => {
+        map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
+    };
+
+    // Function to handle changes in device orientation
+    const handleOrientation = (event) => {
+        const compassRotation = 360 - event.alpha; // Rotation in degrees
+        compass.style.transform = `rotate(${360 - compassRotation}deg)`;
+        
+        // Set the bearing of the Mapbox map to achieve rotation
+        map.setBearing(compassRotation);
     };
 
     // Function to update the marker on the map
@@ -85,36 +81,45 @@ document.addEventListener('DOMContentLoaded', function () {
             .setPopup(new mapboxgl.Popup().setHTML(title))
             .addTo(map);
     };
-        
-        // Function to handle changes in device orientation
-        const handleOrientation = (event) => {
-            const compassRotation = 360 - event.alpha; // Rotation in degrees
-            compass.style.transform = `rotate(${360 - compassRotation}deg)`;
-            
-            // Set the bearing of the Mapbox map to achieve rotation
-            map.setBearing(compassRotation);
-        };
 
-    // Function to get the user's current location
-    const getCurrentLocation = () => {
-        return new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(
-                position => resolve({
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
-                }),
-                error => {
-                    console.error('Error in retrieving position', error);
-                    reject(error);
-                },
-                { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
-            );
-        });
+    // Function to add a marker for a location on the map
+    const addDestinationMarker = (latitude, longitude, title) => {
+        // Remove the previous destination marker if it exists
+        if (destinationMarker) {
+            destinationMarker.remove();
+        }
+    
+        // Add a new marker at the destination with a popup
+        destinationMarker = addMarker(latitude, longitude, title);
+        return destinationMarker;
     };
 
-    // Function to update the 2D map center
-    const updateMapCenter = (latitude, longitude) => {
-        map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
+    // Function to add AR label for the selected destination
+    const addDestinationARLabel = (latitude, longitude, name) => {
+        // Remove existing text entities
+        const existingLabels = document.querySelectorAll('#ar-destination-label a-text');
+        
+        if (existingLabels.length > 0) {
+            console.log('Removing existing text entities:', existingLabels.length);
+            existingLabels.forEach(label => label.remove());
+        } else {
+            console.log('No existing text entities to remove.');
+        }
+    
+        console.log('Adding AR label for:', name, 'at', latitude, longitude);
+        
+        // Create a new A-Frame entity (a-text) for the destination label
+        const arLabel = document.createElement('a-text');
+
+        // Set attributes for the label
+        arLabel.setAttribute('value', name);
+        arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
+        arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
+        arLabel.setAttribute('color', '#0100ff'); // Set the text color
+        arLabel.setAttribute('scale', '5 5 5'); // Adjust scale as needed
+
+        // Append the label to the A-Frame scene
+        document.querySelector('#ar-destination-label').appendChild(arLabel);
     };
 
     // Function to update AR elements based on Mapbox directions
@@ -199,46 +204,6 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Error fetching directions:', error);
             throw error;
         }
-    };
-
-    // Function to add a marker for a location on the map
-    const addDestinationMarker = (latitude, longitude, title) => {
-        // Remove the previous destination marker if it exists
-        if (destinationMarker) {
-            destinationMarker.remove();
-        }
-    
-        // Add a new marker at the destination with a popup
-        destinationMarker = addMarker(latitude, longitude, title);
-        return destinationMarker;
-    };
-
-    // Function to add AR label for the selected destination
-    const addDestinationARLabel = (latitude, longitude, name) => {
-        // Remove existing text entities
-        const existingLabels = document.querySelectorAll('#ar-destination-label a-text');
-        
-        if (existingLabels.length > 0) {
-            console.log('Removing existing text entities:', existingLabels.length);
-            existingLabels.forEach(label => label.remove());
-        } else {
-            console.log('No existing text entities to remove.');
-        }
-    
-        console.log('Adding AR label for:', name, 'at', latitude, longitude);
-        
-        // Create a new A-Frame entity (a-text) for the destination label
-        const arLabel = document.createElement('a-text');
-
-        // Set attributes for the label
-        arLabel.setAttribute('value', name);
-        arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
-        arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
-        arLabel.setAttribute('color', '#0100ff'); // Set the text color
-        arLabel.setAttribute('scale', '5 5 5'); // Adjust scale as needed
-
-        // Append the label to the A-Frame scene
-        document.querySelector('#ar-destination-label').appendChild(arLabel);
     };
 
     // Function to handle destination selection and initiate directions
