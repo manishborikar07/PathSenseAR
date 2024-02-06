@@ -89,5 +89,4 @@ body, html {
 .custom-marker {
   background-size: cover;
   border-radius: 50%;
-  transform: rotate(0deg); /* Initial rotation value */
 }
