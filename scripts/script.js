@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
             currentLocationMarker.setRotation(compassRotation);
         } else {
             // If the marker doesn't exist, create a new one with the updated rotation
-            currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current1.png');
+            currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current.png');
             currentLocationMarker.setRotation(compassRotation);
         }
     };
@@ -252,6 +252,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
     
                 const directionsData = await getDirections(userLocation, destination);
+
+                // Add new current location marker icon after selecting destination
+                currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current1.png');
     
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
