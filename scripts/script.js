@@ -288,12 +288,13 @@ document.addEventListener('DOMContentLoaded', function () {
     map.on('rotate', (event) => {
         // Update the map's bearing variable when the map is rotated
         const mapBearing = event.target.getBearing();
-
-        // Update the rotation of the .custom-marker based on the map's bearing
-        const customMarker = document.querySelector('.compass img');
-        if (customMarker) {
-            customMarker.style.transform = `rotate(${mapBearing}deg)`;
+    
+        // Update the rotation of the current location marker image based on the map's bearing
+        if (currentLocationMarker) {
+            const markerImage = currentLocationMarker.getElement();
+            if (markerImage) {
+                markerImage.style.transform = `rotate(${360 - mapBearing}deg)`;
+            }
         }
-        
     });
 });
