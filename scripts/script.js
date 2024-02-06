@@ -71,6 +71,16 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // Set the bearing of the Mapbox map to achieve rotation
         //map.setBearing(compassRotation);
+
+        // Update or create the current location marker
+        if (currentLocationMarker) {
+            // Update the marker's rotation
+            currentLocationMarker.setRotation(compassRotation);
+        } else {
+            // If the marker doesn't exist, create a new one with the updated rotation
+            currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current.png');
+            currentLocationMarker.setRotation(compassRotation);
+        }
     };
 
     // Function to update the marker on the map
