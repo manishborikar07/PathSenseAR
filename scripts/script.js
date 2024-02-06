@@ -283,4 +283,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // End of the 'DOMContentLoaded' event listener
     initMapAndLocation(); // Call the function to initialize map and location
+
+    // Watch for changes in the map's bearing
+    map.on('rotate', (event) => {
+        // Update the map's bearing variable when the map is rotated
+        const mapBearing = event.target.getBearing();
+
+        // Update the rotation of the .custom-marker based on the map's bearing
+        const customMarker = document.querySelector('.custom-marker');
+        if (customMarker) {
+            customMarker.style.transform = `rotate(${mapBearing}deg)`;
+        }
+
+        // Update the current location marker's rotation based on the map's bearing
+        if (currentLocationMarker) {
+            const markerRotation = 360 - mapBearing; // Adjust as needed
+            currentLocationMarker.setRotation(markerRotation);
+        }
+    });
 });
