@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let map;
     let compass;  
     let mapBearing = 0; // Global variable to store the map's bearing
-    let compassRotation = 0; // Declare compassRotation globally
     let currentLocationMarker; // To keep track of the marker at the current location
     let destinationMarker; // Define a global variable to keep track of the current destination marker
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
@@ -292,8 +291,15 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Update the current location marker's rotation based on the map's bearing
         if (currentLocationMarker) {
-            const markerRotation = compassRotation - mapBearing;
-            currentLocationMarker.setRotation(markerRotation);
+            currentLocationMarker.setRotation(mapBearing);
         }
     });
+    
+    // Update the map's bearing and the current location marker's rotation together
+    const updateMapAndMarkerRotation = (rotation) => {
+        map.easeTo({ bearing: rotation });
+        if (currentLocationMarker) {
+            currentLocationMarker.setRotation(rotation);
+        }
+    };
 });
