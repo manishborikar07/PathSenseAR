@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Update or create the current location marker
                     currentLocationMarker
                         ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                        : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
+                        : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
                 },
                 (error) => console.error('Error in retrieving position', error),
                 { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
         compass.style.transform = `rotate(${360 - compassRotation}deg)`;
         
         // Set the bearing of the Mapbox map to achieve rotation
-        map.setBearing(compassRotation);
+        //map.setBearing(compassRotation);
     };
 
     // Function to update the marker on the map
