@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Update or create the current location marker
         if (currentLocationMarker) {
             // Update the marker's rotation based on the device's orientation
-            currentLocationMarker.setRotation(compassRotation);
+            currentLocationMarker.setRotation(compassRotation - mapBearing);
         } else {
             // If the marker doesn't exist, create a new one with the updated rotation
             currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current1.png');
@@ -287,14 +287,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Watch for changes in the map's bearing
     map.on('rotate', (event) => {
         // Update the map's bearing variable when the map is rotated
-        const mapBearing = event.target.getBearing();
-    
-        // Update the rotation of the current location marker image based on the map's bearing
-        if (currentLocationMarker) {
-            const markerImage = currentLocationMarker.getElement();
-            if (markerImage) {
-                markerImage.style.transform = `rotate(${360 - mapBearing}deg)`;
-            }
-        }
+        mapBearing = event.target.getBearing();
     });
 });
