@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const mapBearing = event.target.getBearing();
 
         // Update the rotation of the .custom-marker based on the map's bearing
-        const customMarker = document.querySelector('.custom-marker');
+        const customMarker = document.querySelector('.compass img');
         if (customMarker) {
             customMarker.style.transform = `rotate(${mapBearing}deg)`;
         }
