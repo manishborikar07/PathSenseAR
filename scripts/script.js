@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Update or create the current location marker
         if (currentLocationMarker) {
-            // Update the marker's rotation based on the device's orientation
+            // Update the marker's rotation based on the device's orientation and map's bearing
             currentLocationMarker.setRotation(compassRotation - mapBearing);
         } else {
             // If the marker doesn't exist, create a new one with the updated rotation
