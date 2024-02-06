@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentLocationMarker; // To keep track of the marker at the current location
     let destinationMarker; // Define a global variable to keep track of the current destination marker
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
+    // Add these global variables to track map state
+    let isMapCentered = false;
+    let isMapBearingOn = false;
 
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
@@ -44,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     userLocation = { latitude, longitude }; // Update global userLocation
-                    updateMapCenter(latitude, longitude);
     
                     // Update or create the current location marker
                     currentLocationMarker
@@ -60,9 +62,24 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Function to update the 2D map center
-    const updateMapCenter = (latitude, longitude) => {
-        map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
+    // Add a function to toggle map control
+    const toggleMapControl = () => {
+        if (!isMapCentered) {
+            // If the map is not centered, set it to the center
+            map.flyTo({ center: [userLocation.longitude, userLocation.latitude], essential: true });
+            isMapCentered = true;
+        } else {
+            // If the map is centered, toggle map bearing
+            isMapBearingOn = !isMapBearingOn;
+
+            if (isMapBearingOn) {
+                // If bearing is on, set the bearing to the current compass rotation
+                map.easeTo({ bearing: compassRotation, duration: 1000, essential: true });
+            } else {
+                // If bearing is off, reset the bearing to 0
+                map.easeTo({ bearing: 0, duration: 1000, essential: true });
+            }
+        }
     };
 
     // Function to handle changes in device orientation
@@ -248,9 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
         if (destination) {
             try {
-                // Update 2D map with user's current location
-                updateMapCenter(userLocation.latitude, userLocation.longitude);
-    
+
                 const directionsData = await getDirections(userLocation, destination);
     
                 // If the destination marker exists, update its position; otherwise, create a new marker
