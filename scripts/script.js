@@ -27,9 +27,14 @@ document.addEventListener('DOMContentLoaded', function () {
             map.addControl(new mapboxgl.NavigationControl());
     
             // Create and append compass element
+            compass = document.createElement('div');
+            compass.className = 'compass';
+            compass.innerHTML = '<img src="../models/compass.png" alt="Compass Icon">';
+
+            // Add compass to the compass container
             const compassContainer = document.getElementById('compass-container');
-            compassContainer.innerHTML = '<div class="compass"><img src="../models/compass.png" alt="Compass Icon"></div>';
-    
+            compassContainer.appendChild(compass);
+
             // Watch for changes in the device's orientation
             window.addEventListener('deviceorientation', handleOrientation);
     
