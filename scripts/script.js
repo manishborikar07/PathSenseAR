@@ -80,18 +80,6 @@ document.addEventListener('DOMContentLoaded', function () {
             currentLocationMarker.setRotation(compassRotation);
         }
     };
-    
-    // Watch for changes in the map's bearing
-    map.on('rotate', (event) => {
-        // Update the map's bearing variable when the map is rotated
-        mapBearing = event.target.getBearing();
-    
-        // Update the current location marker's rotation based on the map's bearing
-        if (currentLocationMarker) {
-            const markerRotation = compassRotation - mapBearing;
-            currentLocationMarker.setRotation(markerRotation);
-        }
-    });
 
     // Function to update the marker on the map
     const updateMarker = (marker, latitude, longitude, title) => {
@@ -295,4 +283,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // End of the 'DOMContentLoaded' event listener
     initMapAndLocation(); // Call the function to initialize map and location
+    
+    // Watch for changes in the map's bearing
+    map.on('rotate', (event) => {
+        // Update the map's bearing variable when the map is rotated
+        mapBearing = event.target.getBearing();
+    
+        // Update the current location marker's rotation based on the map's bearing
+        if (currentLocationMarker) {
+            const markerRotation = compassRotation - mapBearing;
+            currentLocationMarker.setRotation(markerRotation);
+        }
+    });
 });
