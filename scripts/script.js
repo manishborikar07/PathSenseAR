@@ -228,7 +228,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
         if (destination) {
             try {
-                const userLocation = await getCurrentLocation();
                 // Update 2D map with user's current location
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
     
