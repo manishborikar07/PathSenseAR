@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Create and append compass element
             compass = document.createElement('div');
             compass.className = 'compass';
-            compass.innerHTML = '<img src="../models/compass1.png" alt="Compass Icon">';
+            compass.innerHTML = '<img src="../models/compass.png" alt="Compass Icon">';
 
             // Add compass to the compass container
             const compassContainer = document.getElementById('compass-container');
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
             currentLocationMarker.setRotation(compassRotation);
         } else {
             // If the marker doesn't exist, create a new one with the updated rotation
-            currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current.png');
+            currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current1.png');
             currentLocationMarker.setRotation(compassRotation);
         }
     };
