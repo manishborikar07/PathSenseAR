@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let map;
     let compass;  
     let mapBearing = 0; // Global variable to store the map's bearing
+    let compassRotation = 0;
     let currentLocationMarker; // To keep track of the marker at the current location
     let destinationMarker; // Define a global variable to keep track of the current destination marker
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
@@ -67,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to handle changes in device orientation
     const handleOrientation = (event) => {
-        const compassRotation = 360 - event.alpha; // Rotation in degrees
+        compassRotation = 360 - event.alpha; // Rotation in degrees
         compass.style.transform = `rotate(${360 - compassRotation}deg)`;
     
         // Update or create the current location marker
