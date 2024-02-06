@@ -254,6 +254,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const directionsData = await getDirections(userLocation, destination);
 
                 // Add new current location marker icon after selecting destination
+                currentLocationMarker.remove();
                 currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current1.png');
     
                 // If the destination marker exists, update its position; otherwise, create a new marker
