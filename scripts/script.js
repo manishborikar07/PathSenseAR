@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let map;
     let compass;  
     let mapBearing = 0; // Global variable to store the map's bearing
-    let mapPitch = 0;   // Global variable to store the map's pitch
     let currentLocationMarker; // To keep track of the marker at the current location
     let destinationMarker; // Define a global variable to keep track of the current destination marker
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
@@ -75,11 +74,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (currentLocationMarker) {
             // Update the marker's rotation based on the device's orientation and map's bearing
             currentLocationMarker.setRotation(compassRotation - mapBearing);
-            currentLocationMarker.setPitch(-mapPitch); // Adjust for inverted pitch
+            currentLocationMarker.setPitchAlignment('map'); // Set pitchAlignment to 'map'
         } else {
             // If the marker doesn't exist, create a new one with the updated rotation
             currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current1.png');
             currentLocationMarker.setRotation(compassRotation);
+            currentLocationMarker.setPitchAlignment('map'); // Set pitchAlignment to 'map'
         }
     };
 
@@ -291,9 +291,5 @@ document.addEventListener('DOMContentLoaded', function () {
         // Update the map's bearing variable when the map is rotated
         mapBearing = event.target.getBearing();
     });
-    
-    map.on('pitch', (event) => {
-        // Update the map's pitch variable when the pitch changes
-        mapPitch = event.target.getPitch();
-    });
+
 });
