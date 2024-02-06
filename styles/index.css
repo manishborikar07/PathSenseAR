@@ -89,4 +89,10 @@ body, html {
 .custom-marker {
   background-size: cover;
   border-radius: 50%;
+  transition: transform 0.3s ease; /* Add a transition for smooth rotation */
+}
+
+/* Apply rotation based on the map's bearing */
+#map-container[data-rotation] .custom-marker {
+  transform: rotate(calc(-1 * var(--map-rotation)));
 }

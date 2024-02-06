@@ -291,15 +291,17 @@ document.addEventListener('DOMContentLoaded', function () {
     
         // Update the current location marker's rotation based on the map's bearing
         if (currentLocationMarker) {
-            currentLocationMarker.setRotation(mapBearing);
+            const markerRotation = compassRotation - mapBearing;
+            currentLocationMarker.setRotation(markerRotation);
+            
+            // Update the CSS variable to apply rotation to the custom marker
+            mapContainer.style.setProperty('--map-rotation', `${mapBearing}deg`);
+            mapContainer.setAttribute('data-rotation', ''); // Add the attribute
         }
     });
     
-    // Update the map's bearing and the current location marker's rotation together
-    const updateMapAndMarkerRotation = (rotation) => {
-        map.easeTo({ bearing: rotation });
-        if (currentLocationMarker) {
-            currentLocationMarker.setRotation(rotation);
-        }
-    };
+    // Listen for the map's dragend event to remove the data-rotation attribute
+    map.on('dragend', () => {
+        mapContainer.removeAttribute('data-rotation'); // Remove the attribute
+    });
 });
