@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Update or create the current location marker
                     currentLocationMarker
                         ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                        : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/compass.png'));
+                        : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
                 },
                 (error) => console.error('Error in retrieving position', error),
                 { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     
         // Add a new marker at the destination with a popup
-        destinationMarker = addMarker(latitude, longitude, title);
+        destinationMarker = addMarker(latitude, longitude, title, '../models/destination.png');
         return destinationMarker;
     };
 
