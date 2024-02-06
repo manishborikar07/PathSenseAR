@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const destinationSelectButton = document.getElementById('get-direction-button');
     const mapContainer = document.getElementById('map');
     let map;
-    let compass;
+    let compass;  
+    let mapBearing = 0; // Global variable to store the map's bearing
     let currentLocationMarker; // To keep track of the marker at the current location
     let destinationMarker; // Define a global variable to keep track of the current destination marker
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
@@ -48,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Update or create the current location marker
                     currentLocationMarker
                         ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                        : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
+                        : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
                 },
                 (error) => console.error('Error in retrieving position', error),
                 { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
@@ -68,20 +69,29 @@ document.addEventListener('DOMContentLoaded', function () {
     const handleOrientation = (event) => {
         const compassRotation = 360 - event.alpha; // Rotation in degrees
         compass.style.transform = `rotate(${360 - compassRotation}deg)`;
-        
-        // Set the bearing of the Mapbox map to achieve rotation
-        //map.setBearing(compassRotation);
-
+    
         // Update or create the current location marker
         if (currentLocationMarker) {
-            // Update the marker's rotation
+            // Update the marker's rotation based on the device's orientation
             currentLocationMarker.setRotation(compassRotation);
         } else {
             // If the marker doesn't exist, create a new one with the updated rotation
-            currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current.png');
+            currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current1.png');
             currentLocationMarker.setRotation(compassRotation);
         }
     };
+    
+    // Watch for changes in the map's bearing
+    map.on('rotate', (event) => {
+        // Update the map's bearing variable when the map is rotated
+        mapBearing = event.target.getBearing();
+    
+        // Update the current location marker's rotation based on the map's bearing
+        if (currentLocationMarker) {
+            const markerRotation = compassRotation - mapBearing;
+            currentLocationMarker.setRotation(markerRotation);
+        }
+    });
 
     // Function to update the marker on the map
     const updateMarker = (marker, latitude, longitude, title) => {
@@ -252,10 +262,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
     
                 const directionsData = await getDirections(userLocation, destination);
-
-                // Add new current location marker icon after selecting destination
-                currentLocationMarker.remove();
-                currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current1.png');
     
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
