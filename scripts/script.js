@@ -72,6 +72,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add a click event listener for the recenter button
     const recenterButton = document.getElementById('recenter-button');
     recenterButton.addEventListener('click', () => {
+        // Stop the map rotation
+        map.setBearing(0);
+
+        // Remove the route
+        removeRoute();
+
+        // Reset the destination
+        destination = null;
+        
         // Set the isUserInteraction flag to false after recentering
         isUserInteraction = false;
 
@@ -252,6 +261,22 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         } else {
             console.error('Invalid directionsData or missing route coordinates.');
+        }
+    };
+
+    // Function to remove the route from the map
+    const removeRoute = () => {
+        const sourceId = 'route';
+
+        // Check if the 'route' source and layer exist
+        if (map.getSource(sourceId) && map.getLayer(sourceId)) {
+            try {
+                // Remove the existing source and layer
+                map.removeLayer(sourceId);
+                map.removeSource(sourceId);
+            } catch (error) {
+                console.error('Error removing existing route:', error);
+            }
         }
     };
 
