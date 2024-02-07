@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     
             // Enable map controls (zoom, pan, rotate)
-            map.addControl(new mapboxgl.NavigationControl());
+            //map.addControl(new mapboxgl.NavigationControl());
     
             // Create and append compass element
             compass = document.createElement('div');
