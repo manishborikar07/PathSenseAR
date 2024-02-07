@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function () {
             isMapBearingOn = !isMapBearingOn;
             if (isMapBearingOn) {
                 // Set the bearing of the Mapbox map to achieve rotation
-                 map.setBearing(compassRotation);
+                 map.setBearing(deviceRotation);
             }
         }
 
