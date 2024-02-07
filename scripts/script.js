@@ -271,10 +271,15 @@ document.addEventListener('DOMContentLoaded', function () {
     
         if (destination) {
             try {
+                const directionsData = await getDirections(userLocation, destination);
+
                 // Update 2D map with user's current location
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
-    
-                const directionsData = await getDirections(userLocation, destination);
+
+                // Update map bearing based on user's orientation
+                const userOrientation = /* Get user orientation from your device or sensor */;
+                map.setBearing(userOrientation);
+
     
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
