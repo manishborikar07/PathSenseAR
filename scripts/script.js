@@ -244,16 +244,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     'line-width': 3,
                 },
             });
-
-            // Calculate the angle between the start and end points of the route
-            const angle = Math.atan2(
-                routeCoordinates[routeCoordinates.length - 1][1] - routeCoordinates[0][1],
-                routeCoordinates[routeCoordinates.length - 1][0] - routeCoordinates[0][0]
-            );
-
-            // Set the map's bearing to the calculated angle
-            map.setBearing(angle * (180 / Math.PI));
-
         } else {
             console.error('Invalid directionsData or missing route coordinates.');
         }
