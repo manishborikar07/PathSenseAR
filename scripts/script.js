@@ -180,9 +180,42 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('#ar-destination-label').appendChild(arLabel);
     };
 
+    const updateMapBearing = (bearing) => {
+        mapBearing = bearing;
+        map.setBearing(bearing);
+    };
+    
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Add an AR route that shows a blue conveyor belt on the route.
+        // Extract the route coordinates from Mapbox directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+    
+        // Calculate the initial bearing between the first two points of the route
+        const initialBearing = turf.bearing(
+            turf.point(routeCoordinates[0]),
+            turf.point(routeCoordinates[1])
+        );
+    
+        // Update the map's bearing with the initial bearing
+        updateMapBearing(initialBearing);
+    
+        // Watch for changes in the user's location and update the map's bearing
+        navigator.geolocation.watchPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+    
+                // Calculate the bearing between the user's location and the next point on the route
+                const nextBearing = turf.bearing(
+                    turf.point([longitude, latitude]),
+                    turf.point(routeCoordinates[1])
+                );
+    
+                // Update the map's bearing with the calculated bearing
+                updateMapBearing(nextBearing);
+            },
+            (error) => console.error('Error in retrieving position', error),
+            { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
+        );
     };
       
 
