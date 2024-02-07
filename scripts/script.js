@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const mapContainer = document.getElementById('map');
     let map;
     let compass;  
-    let deviceRotation = 0;
     let isMapCentered = true; // Variable to track if the map is currently centered
     let isMapBearingOn = false; // Variable to track if the map's bearing is currently on
     let mapBearing = 0; // Global variable to store the map's bearing
@@ -73,38 +72,13 @@ document.addEventListener('DOMContentLoaded', function () {
         controlButton.src = isMapBearingOn ? mapBearingImage : mapCenterImage;
     };
 
-    // Function to toggle between map centering and bearing
-    const toggleMapControl = () => {
-        if (!isMapCentered) {
-            // If map is not centered, turn on map centering
-            isMapCentered = true;
-            isMapBearingOn = false; // Ensure bearing is turned off
-            updateMapCenter(userLocation.latitude, userLocation.longitude);
-        } else {
-            // If map is centered, toggle bearing
-            isMapBearingOn = !isMapBearingOn;
-            if (isMapBearingOn) {
-                // Set the bearing of the Mapbox map to achieve rotation
-                 map.setBearing(deviceRotation);
-            }
-        }
-
-        updateMapToggleImage(); // Update the image based on the new state
-    };
-
-    // Function to update the 2D map center
-    const updateMapCenter = (latitude, longitude) => {
-        map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
-    };
-
     // Function to handle changes in device orientation
     const handleOrientation = (event) => {
         const compassRotation = 360 - event.alpha; // Rotation in degrees
         compass.style.transform = `rotate(${360 - compassRotation}deg)`;
-        
+        // Set the bearing of the Mapbox map to achieve rotation
+        map.setBearing(compassRotation);
 
-        deviceRotation = compassRotation;
-    
         // Update or create the current location marker
         if (currentLocationMarker) {
             // Update the marker's rotation based on the device's orientation and map's bearing
@@ -116,6 +90,29 @@ document.addEventListener('DOMContentLoaded', function () {
             currentLocationMarker.setRotation(compassRotation);
             currentLocationMarker.setPitchAlignment('map'); // Set pitchAlignment to 'map'
         }
+    };
+
+    // Function to toggle between map centering and bearing
+    const toggleMapControl = () => {
+        if (!isMapCentered) {
+            // If map is not centered, turn on map centering
+            isMapCentered = true;
+            isMapBearingOn = false; // Ensure bearing is turned off
+            updateMapCenter(userLocation.latitude, userLocation.longitude);
+        } else {
+            // If map is centered, toggle bearing
+            isMapBearingOn = !isMapBearingOn;
+            if (isMapBearingOn) {
+                handleOrientation();
+            }
+        }
+
+        updateMapToggleImage(); // Update the image based on the new state
+    };
+
+    // Function to update the 2D map center
+    const updateMapCenter = (latitude, longitude) => {
+        map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
     };
 
     // Function to update the marker on the map
