@@ -1,0 +1,24 @@
+Read care fully every sentence make changes according to it:
+Give script.js code and make a button in index.html with two images (map centering and map bearing) on map that will do two works (map centering and map bearing) :
+1. Map centering is turned on in "navigator.geolocation.watchPosition" by "const updateMapCenter".
+2. Initially button is working for turn on map bearing on click, when map centering is on in "navigator.geolocation.watchPosition" by "const updateMapCenter".
+3. Whether map bearing is on or off, map centering will remain on, it will be turned off only when the user interacts with the map.
+4. When the user interacts with the map by finger/touch (like drags, zooms) while map centering or map bearing is on, then turn off map centering in "navigator.geolocation.watchPosition" and map bearing and set button to work for turn on Map centering in "navigator.geolocation.watchPosition" by "const updateMapCenter".
+5. When map is not centred and also map bearing is off, then if user click on the button, so turn on map centering in "navigator.geolocation.watchPosition",
+6. Map bearing only turn on when map centering is in "navigator.geolocation.watchPosition", else button will works to turn on Map centering in "navigator.geolocation.watchPosition".
+
+
+
+
+
+1. Map centering is enabled through `navigator.geolocation.watchPosition` using the `updateMapCenter` function.
+
+2. Initially, the button is set to enable map bearing when clicked, but map centering is always on if enabled through `navigator.geolocation.watchPosition` and controlled by `updateMapCenter`.
+
+3. Map centering remains on at all times, and it is only turned off when the user interacts with the map (e.g., drags or zooms).
+
+4. If the user interacts with the map while map centering or map bearing is on, both are turned off, and the button is set to enable map centering again.
+
+5. If the map is not centered and map bearing is off, clicking the button turns on map centering through `navigator.geolocation.watchPosition`.
+
+6. Map bearing is only enabled when map centering is active through `navigator.geolocation.watchPosition`. Otherwise, the button works to turn on map centering.
