@@ -182,34 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Add an AR route that points upward and rotates according to the route direction
-        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-    
-        // Calculate the angle between two consecutive points in the route
-        const calculateAngle = (point1, point2) => {
-            return Math.atan2(point2[1] - point1[1], point2[0] - point1[0]) * (180 / Math.PI);
-        };
-    
-        for (let i = 0; i < routeCoordinates.length - 1; i++) {
-            const angle = calculateAngle(routeCoordinates[i], routeCoordinates[i + 1]);
-    
-            // Add an AR entity for each segment of the route
-            const arEntity = document.createElement('a-entity');
-            arEntity.setAttribute('gps-new-entity-place', {
-                latitude: routeCoordinates[i][1],
-                longitude: routeCoordinates[i][0],
-            });
-    
-            // Rotate the AR entity to point upward
-            arEntity.setAttribute('rotation', `0 ${angle + 90} 0`);
-    
-            // Customize other attributes as needed
-            arEntity.setAttribute('geometry', 'primitive: box; width: 5; height: 0.1; depth: 0.1');
-            arEntity.setAttribute('material', 'color: blue');
-    
-            // Append the AR entity to the A-Frame scene
-            document.querySelector('a-scene').appendChild(arEntity);
-        }
+        // Add an AR route that shows a blue conveyor belt on the route.
     };
       
 
