@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentLocationMarker; // To keep track of the marker at the current location
     let destinationMarker; // Define a global variable to keep track of the current destination marker
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
+    let destination;
 
     // Function to initialize the map and get the user's current location
     const initMap = async () => {
@@ -92,6 +93,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const handleOrientation = (event) => {
         const compassRotation = 360 - event.alpha; // Rotation in degrees
         compass.style.transform = `rotate(${360 - compassRotation}deg)`;
+
+        if(destination) {
+            // Set the bearing of the Mapbox map to achieve rotation
+            map.setBearing(compassRotation);
+        }
     
         // Update or create the current location marker
         if (currentLocationMarker) {
@@ -267,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to handle destination selection and initiate directions
     const selectDestination = async () => {
         const selectedDestination = destinationSelectInput.value;
-        const destination = places.find(place => place.name === selectedDestination);
+        destination = places.find(place => place.name === selectedDestination);
     
         if (destination) {
             try {
@@ -276,9 +282,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Update 2D map with user's current location
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
 
-                map.setBearing(userOrientation);
-
-    
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
 
