@@ -93,9 +93,8 @@ body, html {
 
 #recenter-container {
   position: fixed;
-  bottom: 20px; /* Adjust the position as needed */
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 1px; /* Adjust the position as needed */
+  right: 10px;
   z-index: 2; /* Higher z-index for the recenter button */
 }
 
@@ -107,6 +106,6 @@ body, html {
 }
 
 #recenter-button img {
-  width: 30px; /* Adjust the size of the image */
-  height: 30px; /* Adjust the size of the image */
+  width: 45px; /* Adjust the size of the image */
+  height: 45px; /* Adjust the size of the image */
 }

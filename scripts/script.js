@@ -79,8 +79,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Function to update the 2D map center
-    const updateMapCenter = (latitude, longitude) => {
+    const updateMapCenter = (latitude, longitude, zoomLevel = 15) => {
         map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
+        map.setZoom(zoomLevel); // Set the desired zoom level
     };
 
     // Function to handle changes in device orientation
