@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     userLocation = { latitude, longitude }; // Update global userLocation
                     if (isMapCentered) {
                         updateMapCenter(latitude, longitude);
-                    }        
-    
+                    } 
+                    
                     // Update or create the current location marker
                     currentLocationMarker
                         ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
@@ -117,6 +117,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const handleOrientation = (event) => {
         const compassRotation = 360 - event.alpha; // Rotation in degrees
         compass.style.transform = `rotate(${360 - compassRotation}deg)`;
+
+        if (isMapBearingOn) {
+            // Set the bearing of the Mapbox map to achieve rotation
+             map.setBearing(compassRotation);
+        } 
     
         // Update or create the current location marker
         if (currentLocationMarker) {
