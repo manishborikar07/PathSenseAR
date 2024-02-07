@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentLocationMarker; // To keep track of the marker at the current location
     let destinationMarker; // Define a global variable to keep track of the current destination marker
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
-
+    
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
         try {
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     
             // Enable map controls (zoom, pan, rotate)
-            //map.addControl(new mapboxgl.NavigationControl());
+            map.addControl(new mapboxgl.NavigationControl());
     
             // Create and append compass element
             compass = document.createElement('div');
@@ -49,7 +49,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (isMapCentered) {
                         updateMapCenter(latitude, longitude);
                     } 
-                    
+
+                    console.log('isMapCentered', isMapCentered);
+                    console.log('isMapBearingOn', isMapBearingOn);
                     // Update or create the current location marker
                     currentLocationMarker
                         ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
@@ -70,6 +72,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const mapCenterImage = '../models/centered-image.png'; // Replace with the path to your map center image
         const mapBearingImage = '../models/bearing-image.png'; // Replace with the path to your map bearing image
         controlButton.src = isMapBearingOn ? mapBearingImage : mapCenterImage;
+        console.log('isMapCentered', isMapCentered);
+        console.log('isMapBearingOn', isMapBearingOn);
     };
 
     // Function to handle changes in device orientation
@@ -106,6 +110,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 handleOrientation();
             }
         }
+        console.log('isMapCentered', isMapCentered);
+        console.log('isMapBearingOn', isMapBearingOn);
 
         updateMapToggleImage(); // Update the image based on the new state
     };
@@ -337,7 +343,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // If map bearing is on, turn it off
         if (isMapBearingOn) {
-            map.easeTo({ bearing: 0 }); // Reset the map's bearing to 0
             isMapBearingOn = false;
         }
     });
