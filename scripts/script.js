@@ -64,30 +64,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Function to create a control button with image toggle
-    const createControlButton = () => {
-        // Store references to the images for toggle
-        const mapCenterImage = '../models/centered-image.png'; // Replace with the path to your map center image
-        const mapBearingImage = '../models/bearing-image.png'; // Replace with the path to your map bearing image
-        
-        // Create an image element for the button
-        const controlButton = document.createElement('img');
-        controlButton.src = mapCenterImage; // Replace with the path to your default image
-        controlButton.alt = 'Toggle Map';
-        controlButton.onclick = toggleMapControl;
-        controlButton.style.position = 'absolute';
-        controlButton.style.bottom = '3px'; // Adjust the positioning as needed
-        controlButton.style.right = '3px';
-        controlButton.style.zIndex = '2'; // Ensure the button is above the map
-        mapContainer.appendChild(controlButton);
-
-        // Function to update the image based on the current state
-        const updateMapToggleImage = () => {
-            controlButton.src = isMapBearingOn ? mapBearingImage : mapCenterImage;
-        };
-        
-        // Initial update of the image based on the initial state
-        updateMapToggleImage();
+    // Function to update the image based on the current state
+    const updateMapToggleImage = () => {
+        const controlButton = document.getElementById('toggle-map-button');
+        const mapCenterImage = 'path-to-mapcenter-image'; // Replace with the path to your map center image
+        const mapBearingImage = 'path-to-mapbearing-image'; // Replace with the path to your map bearing image
+        controlButton.src = isMapBearingOn ? mapBearingImage : mapCenterImage;
     };
 
     // Function to toggle between map centering and bearing
@@ -339,8 +321,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Call the function to initialize map and location
     initMapAndLocation();
 
-    // Call the function to create the control button
-    createControlButton();
+    // Initial update of the image based on the initial state
+    updateMapToggleImage();
+    document.getElementById('toggle-map-button').addEventListener('click', toggleMapControl);
 
     // Watch for changes in the map's bearing
     map.on('rotate', (event) => {
