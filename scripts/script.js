@@ -67,8 +67,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to update the image based on the current state
     const updateMapToggleImage = () => {
         const controlButton = document.getElementById('toggle-map-button');
-        const mapCenterImage = 'path-to-mapcenter-image'; // Replace with the path to your map center image
-        const mapBearingImage = 'path-to-mapbearing-image'; // Replace with the path to your map bearing image
+        const mapCenterImage = '../models/centered-image.png'; // Replace with the path to your map center image
+        const mapBearingImage = '../models/bearing-image.png'; // Replace with the path to your map bearing image
         controlButton.src = isMapBearingOn ? mapBearingImage : mapCenterImage;
     };
 
