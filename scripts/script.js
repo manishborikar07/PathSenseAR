@@ -49,9 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (isMapCentered) {
                         updateMapCenter(latitude, longitude);
                     } 
-
-                    console.log('isMapCentered', isMapCentered);
-                    console.log('isMapBearingOn', isMapBearingOn);
+                    
                     // Update or create the current location marker
                     currentLocationMarker
                         ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
@@ -105,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
             updateMapCenter(userLocation.latitude, userLocation.longitude);
         } else {
             // If map is centered, toggle bearing
-            isMapBearingOn = !isMapBearingOn;
+            isMapBearingOn = true;
             if (isMapBearingOn) {
                 handleOrientation();
             }
