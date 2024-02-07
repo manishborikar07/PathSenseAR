@@ -1,35 +1,3 @@
-    // Define toggleMapControl as a global function
-    let isMapCentered = true; // Initial state
-    let isMapBearingOn = false; // Initial state
-    
-    // Add a function to toggle map control
-    const toggleMapControl = () => {
-        // Toggle map centering and bearing states
-        isMapCentered = !isMapCentered;
-        isMapBearingOn = !isMapBearingOn;
-
-        // Toggle the visibility of images based on the states
-        document.getElementById('centeredImage').style.display = isMapCentered ? 'inline' : 'none';
-        document.getElementById('bearingImage').style.display = isMapBearingOn ? 'inline' : 'none';
-
-        if (!isMapCentered) {
-            // If the map is not centered, set it to the center
-            map.flyTo({ center: [userLocation.longitude, userLocation.latitude], essential: true });
-            isMapCentered = true;
-        } else {
-            // If the map is centered, toggle map bearing
-            isMapBearingOn = !isMapBearingOn;
-
-            if (isMapBearingOn) {
-                // If bearing is on, set the bearing to the current compass rotation
-                map.easeTo({ bearing: compassRotation, duration: 1000, essential: true });
-            } else {
-                // If bearing is off, reset the bearing to 0
-                map.easeTo({ bearing: 0, duration: 1000, essential: true });
-            }
-        }
-    };
-
 document.addEventListener('DOMContentLoaded', function () {
     // Get HTML elements
     const destinationSelectInput = document.getElementById('select-destination');
@@ -276,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
             try {
                 
                 // Center the map on the user's location with a higher zoom level
-                map.flyTo({ center: [userLocation.longitude, userLocation.latitude], zoom: 20, essential: true });
+                map.flyTo({ center: [userLocation.longitude, userLocation.latitude], zoom: 17, essential: true });
 
                 const directionsData = await getDirections(userLocation, destination);
     
