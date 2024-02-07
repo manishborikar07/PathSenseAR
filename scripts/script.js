@@ -276,8 +276,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Update 2D map with user's current location
                 updateMapCenter(userLocation.latitude, userLocation.longitude);
 
-                // Update map bearing based on user's orientation
-                const userOrientation = /* Get user orientation from your device or sensor */;
                 map.setBearing(userOrientation);
 
     
