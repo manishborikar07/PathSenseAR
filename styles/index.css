@@ -91,12 +91,22 @@ body, html {
   border-radius: 50%;
 }
 
-#toggle-map-button {
-  position: absolute;
-  bottom: 35px;
-  right: 1px;
-  width: 40px;
-  height: 40px;
-  z-index: 2;
+#recenter-container {
+  position: fixed;
+  bottom: 20px; /* Adjust the position as needed */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2; /* Higher z-index for the recenter button */
+}
+
+#recenter-button {
+  background: none;
+  border: none;
+  padding: 0;
   cursor: pointer;
+}
+
+#recenter-button img {
+  width: 30px; /* Adjust the size of the image */
+  height: 30px; /* Adjust the size of the image */
 }

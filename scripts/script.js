@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
 
     // Function to initialize the map and get the user's current location
-    const initMapAndLocation = async () => {
+    const initMap = async () => {
         try {
             // Initialize the map with Mapbox
             mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
@@ -40,31 +40,43 @@ document.addEventListener('DOMContentLoaded', function () {
             // Watch for changes in the device's orientation
             window.addEventListener('deviceorientation', handleOrientation);
     
-            // Watch for changes in the user's location
-            navigator.geolocation.watchPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    userLocation = { latitude, longitude }; // Update global userLocation
-
-                    if (!isUserInteraction) {
-                        // Update the map center only if there is no ongoing user interaction
-                        userLocation = { latitude, longitude };
-                        updateMapCenter(latitude, longitude);
-                    }
-    
-                    // Update or create the current location marker
-                    currentLocationMarker
-                        ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                        : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
-                },
-                (error) => console.error('Error in retrieving position', error),
-                { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
-            );
-    
         } catch (error) {
-            console.error('Error initializing map and getting initial location:', error);
+            console.error('Error initializing map:', error);
         }
     };
+
+    // Function to watch for changes in the user's location
+    const watchUserLocation = () => {
+        navigator.geolocation.watchPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                userLocation = { latitude, longitude }; // Update global userLocation
+
+                if (!isUserInteraction) {
+                    // Update the map center only if there is no ongoing user interaction
+                    userLocation = { latitude, longitude };
+                    updateMapCenter(latitude, longitude);
+                }
+
+                // Update or create the current location marker
+                currentLocationMarker
+                    ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
+                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
+            },
+            (error) => console.error('Error in retrieving position', error),
+            { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
+        );
+    };
+
+    // Add a click event listener for the recenter button
+    const recenterButton = document.getElementById('recenter-button');
+    recenterButton.addEventListener('click', () => {
+        // Set the isUserInteraction flag to false after recentering
+        isUserInteraction = false;
+
+        // Call the function to start watching the user's location again
+        watchUserLocation();
+    });
 
     // Function to update the 2D map center
     const updateMapCenter = (latitude, longitude) => {
@@ -290,7 +302,9 @@ document.addEventListener('DOMContentLoaded', function () {
     destinationSelectButton.addEventListener('click', selectDestination);
 
     // End of the 'DOMContentLoaded' event listener
-    initMapAndLocation(); // Call the function to initialize map and location
+    initMap(); // Call the function to initialize map and location
+    // Call the function to start watching the user's location
+    watchUserLocation();
 
     // Watch for changes in the map's bearing
     map.on('rotate', (event) => {
@@ -301,11 +315,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add an event listener for map interaction (e.g., drag or zoom)
     map.on('touchstart', () => {
         isUserInteraction = true;
-    });
-
-    // Add an event listener for the end of map interaction
-    map.on('touchend', () => {
-        isUserInteraction = false;
     });
 
 });
