@@ -1,3 +1,35 @@
+    // Define toggleMapControl as a global function
+    let isMapCentered = true; // Initial state
+    let isMapBearingOn = false; // Initial state
+    
+    // Add a function to toggle map control
+    const toggleMapControl = () => {
+        // Toggle map centering and bearing states
+        isMapCentered = !isMapCentered;
+        isMapBearingOn = !isMapBearingOn;
+
+        // Toggle the visibility of images based on the states
+        document.getElementById('centeredImage').style.display = isMapCentered ? 'inline' : 'none';
+        document.getElementById('bearingImage').style.display = isMapBearingOn ? 'inline' : 'none';
+
+        if (!isMapCentered) {
+            // If the map is not centered, set it to the center
+            map.flyTo({ center: [userLocation.longitude, userLocation.latitude], essential: true });
+            isMapCentered = true;
+        } else {
+            // If the map is centered, toggle map bearing
+            isMapBearingOn = !isMapBearingOn;
+
+            if (isMapBearingOn) {
+                // If bearing is on, set the bearing to the current compass rotation
+                map.easeTo({ bearing: compassRotation, duration: 1000, essential: true });
+            } else {
+                // If bearing is off, reset the bearing to 0
+                map.easeTo({ bearing: 0, duration: 1000, essential: true });
+            }
+        }
+    };
+
 document.addEventListener('DOMContentLoaded', function () {
     // Get HTML elements
     const destinationSelectInput = document.getElementById('select-destination');
@@ -9,9 +41,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentLocationMarker; // To keep track of the marker at the current location
     let destinationMarker; // Define a global variable to keep track of the current destination marker
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
-    // Add these global variables to track map state
-    let isMapCentered = false;
-    let isMapBearingOn = false;
 
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
@@ -59,34 +88,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
         } catch (error) {
             console.error('Error initializing map and getting initial location:', error);
-        }
-    };
-
-    // Add a function to toggle map control
-    const toggleMapControl = () => {
-        // Toggle map centering and bearing states
-        isMapCentered = !isMapCentered;
-        isMapBearingOn = !isMapBearingOn;
-
-        // Toggle the visibility of images based on the states
-        document.getElementById('centeredImage').style.display = isMapCentered ? 'inline' : 'none';
-        document.getElementById('bearingImage').style.display = isMapBearingOn ? 'inline' : 'none';
-
-        if (!isMapCentered) {
-            // If the map is not centered, set it to the center
-            map.flyTo({ center: [userLocation.longitude, userLocation.latitude], essential: true });
-            isMapCentered = true;
-        } else {
-            // If the map is centered, toggle map bearing
-            isMapBearingOn = !isMapBearingOn;
-
-            if (isMapBearingOn) {
-                // If bearing is on, set the bearing to the current compass rotation
-                map.easeTo({ bearing: compassRotation, duration: 1000, essential: true });
-            } else {
-                // If bearing is off, reset the bearing to 0
-                map.easeTo({ bearing: 0, duration: 1000, essential: true });
-            }
         }
     };
 
