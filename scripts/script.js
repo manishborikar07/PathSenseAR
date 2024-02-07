@@ -80,6 +80,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Reset the destination
         destination = null;
+
+        // Remove the previous destination marker if it exists
+        if (destinationMarker) {
+            destinationMarker.remove();
+        }
         
         // Set the isUserInteraction flag to false after recentering
         isUserInteraction = false;
