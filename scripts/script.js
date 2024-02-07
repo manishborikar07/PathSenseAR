@@ -5,13 +5,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const mapContainer = document.getElementById('map');
     let map;
     let compass;  
-    let isMapCentered = true; // Variable to track if the map is currently centered
-    let isMapBearingOn = false; // Variable to track if the map's bearing is currently on
     let mapBearing = 0; // Global variable to store the map's bearing
     let currentLocationMarker; // To keep track of the marker at the current location
     let destinationMarker; // Define a global variable to keep track of the current destination marker
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
-    
+
     // Function to initialize the map and get the user's current location
     const initMapAndLocation = async () => {
         try {
@@ -46,10 +44,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     userLocation = { latitude, longitude }; // Update global userLocation
-                    if (isMapCentered) {
-                        updateMapCenter(latitude, longitude);
-                    } 
-                    
+                    updateMapCenter(latitude, longitude);
+    
                     // Update or create the current location marker
                     currentLocationMarker
                         ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
@@ -64,23 +60,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Function to update the image based on the current state
-    const updateMapToggleImage = () => {
-        const controlButton = document.getElementById('toggle-map-button');
-        const mapCenterImage = '../models/centered-image.png'; // Replace with the path to your map center image
-        const mapBearingImage = '../models/bearing-image.png'; // Replace with the path to your map bearing image
-        controlButton.src = isMapBearingOn ? mapBearingImage : mapCenterImage;
-        console.log('isMapCentered', isMapCentered);
-        console.log('isMapBearingOn', isMapBearingOn);
+    // Function to update the 2D map center
+    const updateMapCenter = (latitude, longitude) => {
+        map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
     };
 
     // Function to handle changes in device orientation
     const handleOrientation = (event) => {
         const compassRotation = 360 - event.alpha; // Rotation in degrees
         compass.style.transform = `rotate(${360 - compassRotation}deg)`;
-        // Set the bearing of the Mapbox map to achieve rotation
-        map.setBearing(compassRotation);
-
+    
         // Update or create the current location marker
         if (currentLocationMarker) {
             // Update the marker's rotation based on the device's orientation and map's bearing
@@ -92,31 +81,6 @@ document.addEventListener('DOMContentLoaded', function () {
             currentLocationMarker.setRotation(compassRotation);
             currentLocationMarker.setPitchAlignment('map'); // Set pitchAlignment to 'map'
         }
-    };
-
-    // Function to toggle between map centering and bearing
-    const toggleMapControl = () => {
-        if (!isMapCentered) {
-            // If map is not centered, turn on map centering
-            isMapCentered = true;
-            isMapBearingOn = false; // Ensure bearing is turned off
-            updateMapCenter(userLocation.latitude, userLocation.longitude);
-        } else {
-            // If map is centered, toggle bearing
-            isMapBearingOn = true;
-            if (isMapBearingOn) {
-                handleOrientation();
-            }
-        }
-        console.log('isMapCentered', isMapCentered);
-        console.log('isMapBearingOn', isMapBearingOn);
-
-        updateMapToggleImage(); // Update the image based on the new state
-    };
-
-    // Function to update the 2D map center
-    const updateMapCenter = (latitude, longitude) => {
-        map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
     };
 
     // Function to update the marker on the map
@@ -319,12 +283,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     destinationSelectButton.addEventListener('click', selectDestination);
 
-    // Call the function to initialize map and location
-    initMapAndLocation();
-
-    // Initial update of the image based on the initial state
-    updateMapToggleImage();
-    document.getElementById('toggle-map-button').addEventListener('click', toggleMapControl);
+    // End of the 'DOMContentLoaded' event listener
+    initMapAndLocation(); // Call the function to initialize map and location
 
     // Watch for changes in the map's bearing
     map.on('rotate', (event) => {
@@ -332,18 +292,4 @@ document.addEventListener('DOMContentLoaded', function () {
         mapBearing = event.target.getBearing();
     });
 
-    // Watch for changes in map interaction (drag, zoom)
-    map.on('move', () => {
-        // If the map was centered, turn off map centering
-        if (isMapCentered) {
-            isMapCentered = false;
-        }
-
-        // If map bearing is on, turn it off
-        if (isMapBearingOn) {
-            isMapBearingOn = false;
-        }
-    });
-
-    // End of the 'DOMContentLoaded' event listener
 });
