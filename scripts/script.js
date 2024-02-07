@@ -80,8 +80,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update the 2D map center
     const updateMapCenter = (latitude, longitude, zoomLevel = 15) => {
-        map.setCenter([longitude, latitude]); // Update to Mapbox coordinates
-        map.setZoom(zoomLevel); // Set the desired zoom level
+        map.flyTo({
+            center: [longitude, latitude],
+            zoom: zoomLevel,
+            essential: true, // This ensures that the animation is considered essential and cannot be interrupted
+            speed: 1.5, // Adjust the speed of the animation as needed
+        });
     };
 
     // Function to handle changes in device orientation
