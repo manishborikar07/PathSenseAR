@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
             map = new mapboxgl.Map({
                 container: mapContainer,
                 style: 'mapbox://styles/mapbox/streets-v11',
-                center: [0, 0], // Default center
+                center: [userLocation.longitude, userLocation.latitude], // Center on user's location
                 zoom: 15,
                 bearing: 0, // Initial bearing
                 pitch: 0, // Initial pitch
@@ -64,6 +64,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Add a function to toggle map control
     const toggleMapControl = () => {
+        // Toggle map centering and bearing states
+        isMapCentered = !isMapCentered;
+        isMapBearingOn = !isMapBearingOn;
+
+        // Toggle the visibility of images based on the states
+        document.getElementById('centeredImage').style.display = isMapCentered ? 'inline' : 'none';
+        document.getElementById('bearingImage').style.display = isMapBearingOn ? 'inline' : 'none';
+
         if (!isMapCentered) {
             // If the map is not centered, set it to the center
             map.flyTo({ center: [userLocation.longitude, userLocation.latitude], essential: true });
@@ -265,6 +273,9 @@ document.addEventListener('DOMContentLoaded', function () {
     
         if (destination) {
             try {
+                
+                // Center the map on the user's location with a higher zoom level
+                map.flyTo({ center: [userLocation.longitude, userLocation.latitude], zoom: 20, essential: true });
 
                 const directionsData = await getDirections(userLocation, destination);
     

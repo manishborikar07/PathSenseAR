@@ -56,7 +56,11 @@
         </div>
 
         <!-- Add this button element inside the container div -->
-        <button id="controlButton" onclick="toggleMapControl()">Toggle Map Control</button>
+        <button id="controlButton" onclick="toggleMapControl()">
+            <img id="centeredImage" src="path/to/centered-image.png" alt="Centered Image">
+            <img id="bearingImage" src="path/to/bearing-image.png" alt="Bearing Image" style="display: none;">
+        </button>
+
 
     </div>
     <script src="scripts/places.js"></script>

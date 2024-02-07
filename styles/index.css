@@ -90,3 +90,13 @@ body, html {
   background-size: cover;
   border-radius: 50%;
 }
+
+#controlButton {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000; /* Adjust z-index as needed */
+  cursor: pointer;
+  background: none;
+  border: none;
+}
