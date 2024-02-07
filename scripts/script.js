@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const mapContainer = document.getElementById('map');
     let map;
     let compass;  
+    let deviceRotation = 0;
     let isMapCentered = true; // Variable to track if the map is currently centered
     let isMapBearingOn = false; // Variable to track if the map's bearing is currently on
     let mapBearing = 0; // Global variable to store the map's bearing
@@ -83,7 +84,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // If map is centered, toggle bearing
             isMapBearingOn = !isMapBearingOn;
             if (isMapBearingOn) {
-                map.easeTo({ bearing: compassRotation }); // Set the map's bearing to device orientation
+                // Set the bearing of the Mapbox map to achieve rotation
+                 map.setBearing(compassRotation);
             }
         }
 
@@ -99,11 +101,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const handleOrientation = (event) => {
         const compassRotation = 360 - event.alpha; // Rotation in degrees
         compass.style.transform = `rotate(${360 - compassRotation}deg)`;
+        
 
-        if (isMapBearingOn) {
-            // Set the bearing of the Mapbox map to achieve rotation
-             map.setBearing(compassRotation);
-        } 
+        deviceRotation = compassRotation;
     
         // Update or create the current location marker
         if (currentLocationMarker) {
