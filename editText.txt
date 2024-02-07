@@ -22,3 +22,17 @@ Give script.js code and make a button in index.html with two images (map centeri
 5. If the map is not centered and map bearing is off, clicking the button turns on map centering through `navigator.geolocation.watchPosition`.
 
 6. Map bearing is only enabled when map centering is active through `navigator.geolocation.watchPosition`. Otherwise, the button works to turn on map centering.
+
+
+Read care fully every sentence make changes according to it in our script.js and index.html:
+Give script.js code and make a button in index.html with two images (map centering and map bearing) on map that will do two works (map centering and map bearing) :
+
+1. Initially map centering is enabled through `navigator.geolocation.watchPosition` using the `updateMapCenter` function.
+
+2. Map centering remains on at all times, and it is only turned off when the user interacts with the map (e.g., drags or zooms).
+
+3. Map bearing is only enabled when map centering is on. Otherwise, the button works to turn on map centering.
+
+4. If the map is not centered and map bearing is off, clicking the button turns on map centering through `navigator.geolocation.watchPosition`.
+
+5. If the user interacts with the map while map centering and map bearing or map centering is on, so turn off  map centering and map bearing or map centering that user should able to interact with map, and the button is set to enable map centering again.

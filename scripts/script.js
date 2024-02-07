@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let map;
     let compass;  
     let mapBearing = 0; // Global variable to store the map's bearing
+    let isUserInteraction = false; // Flag to control user interaction with the map
     let currentLocationMarker; // To keep track of the marker at the current location
     let destinationMarker; // Define a global variable to keep track of the current destination marker
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
@@ -44,7 +45,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     userLocation = { latitude, longitude }; // Update global userLocation
-                    updateMapCenter(latitude, longitude);
+
+                    if (!isUserInteraction) {
+                        // Update the map center only if there is no ongoing user interaction
+                        userLocation = { latitude, longitude };
+                        updateMapCenter(latitude, longitude);
+                    }
     
                     // Update or create the current location marker
                     currentLocationMarker
@@ -290,6 +296,16 @@ document.addEventListener('DOMContentLoaded', function () {
     map.on('rotate', (event) => {
         // Update the map's bearing variable when the map is rotated
         mapBearing = event.target.getBearing();
+    });
+
+    // Add an event listener for map interaction (e.g., drag or zoom)
+    map.on('touchstart', () => {
+        isUserInteraction = true;
+    });
+
+    // Add an event listener for the end of map interaction
+    map.on('touchend', () => {
+        isUserInteraction = false;
     });
 
 });

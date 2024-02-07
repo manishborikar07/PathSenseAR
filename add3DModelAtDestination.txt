@@ -35,3 +35,8 @@ In selectdestination function
 
                 // Update AR elements
                 updateARDirections(directionsData);
+
+
+
+
+                
