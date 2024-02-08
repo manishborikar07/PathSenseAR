@@ -349,6 +349,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Update 2D map with route
                 updateMapWithRoute(directionsData);
 
+                // Call the function to start watching the user's location
+                watchUserLocation();
+
                 // Start bearing after getting direction
                 isBearing = true;
             } catch (error) {
