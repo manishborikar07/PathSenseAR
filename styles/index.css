@@ -75,8 +75,8 @@ body, html {
   position: absolute;
   bottom: 180px;
   right: 7px;
-  width: 70px;
-  height: 70px;
+  width: 45px;
+  height: 45px;
   cursor: pointer;
   transform-origin: center center;
 }
