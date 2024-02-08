@@ -107,14 +107,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const centeredImage = document.getElementById('centeredImage');
 
         // Set the image source based on conditions
-        if (isMapCentered && !isBearing) {
+        if (destination && isMapCentered && isBearing) {
+            centeredImage.src = '../models/reset-all.png';
+        } else if (isMapCentered && !isBearing) {
             centeredImage.src = '../models/centered.png';
         } else if (isUserInteraction) {
             centeredImage.src = '../models/recenter.png';
         } else if (isBearing) {
             centeredImage.src = '../models/bearing.png';
-        } else if (destination && isMapCentered && isBearing) {
-            centeredImage.src = '../models/reset-all.png';
         }
 
         // Set alt text for the image (modify as needed)
