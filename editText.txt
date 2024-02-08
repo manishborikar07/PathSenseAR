@@ -77,3 +77,4 @@ Now, display image according to conditions:
         if (destination && isMapCentered && isBearing) {
             reset(); // Reset all
         }
+

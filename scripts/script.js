@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Set the image source based on conditions
         if (isMapCentered && !isBearing) {
             centeredImage.src = '../models/centered.png';
-        } else if (!isMapCentered) {
+        } else if (!isMapCentered && !isBearing) {
             centeredImage.src = '../models/recenter.png';
         } else if (isBearing) {
             centeredImage.src = '../models/bearing.png';
@@ -404,7 +404,6 @@ document.addEventListener('DOMContentLoaded', function () {
     watchUserLocation();
     // Call the function to set the initial multifunction button image
     setMultifunctionImage();
-
 
     // Watch for changes in the map's bearing
     map.on('rotate', (event) => {
