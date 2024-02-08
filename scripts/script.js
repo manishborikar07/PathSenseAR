@@ -130,19 +130,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // If map centered after clicking on multifunction button, set bearing on
-        if (isMapCentered) {
-            // If bearing is already on, turn it off
-            if (isBearing) {
-                isBearing = false;
-                map.setBearing(0); // Stop the map rotation
+        else if (isMapCentered) {
+                // If bearing is already on, turn it off
+                if (isBearing) {
+                    isBearing = false;
+                    map.setBearing(0); // Stop the map rotation
+                } else {
+                    // If bearing is off, turn it on
+                    isBearing = true;
+                }
             } else {
-                // If bearing is off, turn it on
-                isBearing = true;
-            }
-        } else {
-            // If map not centered after clicking on multifunction button, set map center
-            isUserInteraction = false;
-            isMapCentered = true;
+                // If map not centered after clicking on multifunction button, set map center
+                isUserInteraction = false;
+                isMapCentered = true;
         }
 
         // Call the function to set the multifunction button image after any changes
