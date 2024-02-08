@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function () {
         arLabel.setAttribute('scale', '5 5 5'); // Adjust scale as needed
 
         // Append the label to the A-Frame scene
-        document.querySelector('#ar-destination-label').appendChild(arLabel);
+        document.querySelector('#ar-destination-entity').appendChild(arLabel);
     };
 
     // Function to update AR elements based on Mapbox directions
