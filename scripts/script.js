@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // If the map is centered, bearing is applied, and there's no destination, stop the map rotation
-        if (isMapCentered && isBearing && !destination) {
+        else if (isMapCentered && isBearing && !destination) {
             isBearing = false; // Set the bearing flag to false
             map.setBearing(0); // Stop the map rotation
         }
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // If I am not at center, set center
-        if(!isMapCentered){
+        else if(!isMapCentered){
             // Set the isUserInteraction flag to false after recentering
             isUserInteraction = false;
             // Set the map-centered flag to true
