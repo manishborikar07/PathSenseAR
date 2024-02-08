@@ -83,6 +83,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // If the map is centered and bearing is applied or there's a destination set, apply bearing
         if (isMapCentered && (isBearing || destination)) {
+            // Update 2D map with user's current location
+            updateMapCenter(userLocation.latitude, userLocation.longitude);
             map.setBearing(compassRotation); // Set the bearing of the Mapbox map to achieve rotation
         }
 
