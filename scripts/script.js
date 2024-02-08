@@ -99,6 +99,26 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    // Function to dynamically set the image source based on conditions
+    const setMultifunctionImage = () => {
+        const multifunctionButton = document.getElementById('multifunction-button');
+        const centeredImage = document.getElementById('centeredImage');
+
+        // Set the image source based on conditions
+        if (isMapCentered && !isBearing) {
+            centeredImage.src = '../models/centered.png';
+        } else if (!isMapCentered) {
+            centeredImage.src = '../models/recenter.png';
+        } else if (isBearing) {
+            centeredImage.src = '../models/bearing.png';
+        } else if (destination && isMapCentered && isBearing) {
+            centeredImage.src = '../models/reset-all.png';
+        }
+
+        // Set alt text for the image (modify as needed)
+        centeredImage.alt = 'Multifunction Icon';
+    };
+
     // Add a click event listener for the recenter button
     const recenterButton = document.getElementById('multifunction-button');
     recenterButton.addEventListener('click', () => {
