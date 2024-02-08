@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // If I am not at center, set center
-        else if(!isMapCentered){
+        if(!isMapCentered){
             // Set the isUserInteraction flag to false after recentering
             isUserInteraction = false;
             // Set the map-centered flag to true
