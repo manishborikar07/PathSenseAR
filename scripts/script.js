@@ -102,16 +102,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add a click event listener for the recenter button
     const recenterButton = document.getElementById('multifunction-button');
     recenterButton.addEventListener('click', () => {
-
-        // If the map is centered or bearing is not applied, start map bearing
-        if (isMapCentered) {
-            isBearing = true; // Set the bearing flag to true
-        }
         
         // If the map is centered, bearing is applied, and there's no destination, stop the map rotation
         if (isMapCentered && isBearing && !destination) {
             isBearing = false; // Set the bearing flag to false
             map.setBearing(0); // Stop the map rotation
+        }
+
+        // If the map is centered or bearing is not applied, start map bearing
+        else if (isMapCentered) {
+            isBearing = true; // Set the bearing flag to true
         }
 
         // If I am not at center, set center
