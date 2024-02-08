@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const destinationSelectInput = document.getElementById('select-destination');
     const destinationSelectButton = document.getElementById('get-direction-button');
     const mapContainer = document.getElementById('map');
+    const existingLabels = document.querySelectorAll('#ar-destination-label a-text');
     let map;
     let compass;  
     let mapBearing = 0; // Global variable to store the map's bearing
@@ -187,10 +188,8 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to add AR label for the selected destination
-    const addDestinationARLabel = (latitude, longitude, name) => {
+    const addDestinationARLabel = (latitude, longitude, name) => {  
         // Remove existing text entities
-        const existingLabels = document.querySelectorAll('#ar-destination-label a-text');
-        
         if (existingLabels.length > 0) {
             console.log('Removing existing text entities:', existingLabels.length);
             existingLabels.forEach(label => label.remove());
@@ -309,6 +308,14 @@ document.addEventListener('DOMContentLoaded', function () {
         // Remove the previous destination marker if it exists
         if (destinationMarker) {
             destinationMarker.remove();
+        }
+
+        // Remove existing text entities
+        if (existingLabels.length > 0) {
+            console.log('Removing existing text entities:', existingLabels.length);
+            existingLabels.forEach(label => label.remove());
+        } else {
+            console.log('No existing text entities to remove.');
         }
     };
 
