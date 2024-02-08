@@ -135,9 +135,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 isBearing = true;
             }
         } else {
-            // If map not centered after clicking on multifunction button, set map center
-            isUserInteraction = false;
-            isMapCentered = true;
+            if(destination){
+                // If map not centered after clicking on multifunction button, set map center
+                isUserInteraction = false;
+                isMapCentered = true;
+                isBearing = true;
+            } else{
+                // If map not centered after clicking on multifunction button, set map center
+                isUserInteraction = false;
+                isMapCentered = true;
+            }
         }
 
         // If there's a destination, the map is centered, and bearing is on, call reset();
