@@ -84,7 +84,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // If the map is centered and bearing is applied or there's a destination set, apply bearing
         if (isMapCentered && (isBearing || destination)) {
-            isBearing = true; // Set bearing flag to true
             map.setBearing(compassRotation); // Set the bearing of the Mapbox map to achieve rotation
         }
 
@@ -104,17 +103,14 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add a click event listener for the recenter button
     const recenterButton = document.getElementById('multifunction-button');
     recenterButton.addEventListener('click', () => {
-        // Set the isUserInteraction flag to false after recentering
-        isUserInteraction = false;
         
         if(!isMapCentered){
-        // Call the function to start watching the user's location again
-        watchUserLocation();
+        // Set the isUserInteraction flag to false after recentering
+        isUserInteraction = false;
         }
 
         // If the map is centered or bearing is not applied, start map bearing
         if (isMapCentered || !isBearing) {
-            handleOrientation(); // Call the function to start Map Bearing 
             isBearing = true; // Set the bearing flag to true
         }
 
