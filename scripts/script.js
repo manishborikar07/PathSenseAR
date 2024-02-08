@@ -77,14 +77,12 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to handle changes in device orientation
-    await const handleOrientation = (event) => {
+    const handleOrientation = (event) => {
         compassRotation = 360 - event.alpha; // Calculate rotation in degrees
         compass.style.transform = `rotate(${360 - compassRotation}deg)`; // Update compass display
 
         // If the map is centered and bearing is applied or there's a destination set, apply bearing
         if (isMapCentered && (isBearing || destination)) {
-            // Update 2D map with user's current location
-            updateMapCenter(userLocation.latitude, userLocation.longitude);
             map.setBearing(compassRotation); // Set the bearing of the Mapbox map to achieve rotation
         }
 
@@ -131,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Function to update the 2D map center
-    async const updateMapCenter = (latitude, longitude, zoomLevel = 15) => {
+    const updateMapCenter = (latitude, longitude, zoomLevel = 15) => {
         map.flyTo({
             center: [longitude, latitude],
             zoom: zoomLevel,
