@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
         compass.style.transform = `rotate(${360 - compassRotation}deg)`; // Update compass display
 
         // If the map is centered and bearing is applied or there's a destination set, apply bearing
-        if (isMapCentered && (isBearing || destination)) {
+        if (isMapCentered && isBearing) {
             map.setBearing(compassRotation); // Set the bearing of the Mapbox map to achieve rotation
         }
 
@@ -348,6 +348,9 @@ document.addEventListener('DOMContentLoaded', function () {
     
                 // Update 2D map with route
                 updateMapWithRoute(directionsData);
+
+                // Start bearing after getting direction
+                isBearing = true;
             } catch (error) {
                 console.error('Error in retrieving position', error);
             }
