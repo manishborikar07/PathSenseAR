@@ -62,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!isUserInteraction) {
                     userLocation = { latitude, longitude };
                     updateMapCenter(latitude, longitude);
-                    isMapCentered = true; // Set the map-centered flag to true
                 }
 
                 // Update or create the current location marker
@@ -107,6 +106,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if(!isMapCentered){
         // Set the isUserInteraction flag to false after recentering
         isUserInteraction = false;
+        isMapCentered = true; // Set the map-centered flag to true
         }
 
         // If the map is centered or bearing is not applied, start map bearing
