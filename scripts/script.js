@@ -102,13 +102,15 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Add a click event listener for the recenter button
-    const recenterButton = document.getElementById('recenter-button');
+    const recenterButton = document.getElementById('multifunction-button');
     recenterButton.addEventListener('click', () => {
         // Set the isUserInteraction flag to false after recentering
         isUserInteraction = false;
-
+        
+        if(!isMapCentered){
         // Call the function to start watching the user's location again
         watchUserLocation();
+        }
 
         // If the map is centered or bearing is not applied, start map bearing
         if (isMapCentered || !isBearing) {

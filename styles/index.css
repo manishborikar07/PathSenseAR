@@ -91,21 +91,21 @@ body, html {
   border-radius: 50%;
 }
 
-#recenter-container {
+#multifunction-container {
   position: fixed;
   bottom: 1px; /* Adjust the position as needed */
   right: 10px;
-  z-index: 2; /* Higher z-index for the recenter button */
+  z-index: 2; /* Higher z-index for the multifunction button */
 }
 
-#recenter-button {
+#multifunction-button {
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
 }
 
-#recenter-button img {
+#multifunction-button img {
   width: 45px; /* Adjust the size of the image */
   height: 45px; /* Adjust the size of the image */
 }
