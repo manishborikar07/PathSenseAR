@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to handle changes in device orientation
-    const handleOrientation = (event) => {
+    await const handleOrientation = (event) => {
         compassRotation = 360 - event.alpha; // Calculate rotation in degrees
         compass.style.transform = `rotate(${360 - compassRotation}deg)`; // Update compass display
 
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Function to update the 2D map center
-    const updateMapCenter = (latitude, longitude, zoomLevel = 15) => {
+    async const updateMapCenter = (latitude, longitude, zoomLevel = 15) => {
         map.flyTo({
             center: [longitude, latitude],
             zoom: zoomLevel,
