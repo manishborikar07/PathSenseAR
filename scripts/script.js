@@ -97,6 +97,8 @@ document.addEventListener('DOMContentLoaded', function () {
             currentLocationMarker.setRotation(compassRotation);
             currentLocationMarker.setPitchAlignment('map'); // Set pitchAlignment to 'map'
         }
+        // Call Repeatedly
+        setMultifunctionImage();
     };
 
     // Function to dynamically set the image source based on conditions
