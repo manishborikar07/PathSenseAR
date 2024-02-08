@@ -206,9 +206,9 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to add AR label for the selected destination
-    const addDestinationARLabel = (latitude, longitude, name) => {
-        // Remove existing text entities
-        const existingLabels = document.querySelectorAll('#ar-destination-label a-text');
+    const addDestinationAREntity = (latitude, longitude, name) => {
+        // Remove existing entities
+        const existingLabels = document.querySelectorAll('#ar-destination-entity a-text');
         
         if (existingLabels.length > 0) {
             console.log('Removing existing text entities:', existingLabels.length);
@@ -325,6 +325,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
+        // Function to remove existing entities
+        const existingLabels = document.querySelectorAll('#ar-destination-entity a-text');
+        
+        if (existingLabels.length > 0) {
+            console.log('Removing existing text entities:', existingLabels.length);
+            existingLabels.forEach(label => label.remove());
+        } else {
+            console.log('No existing text entities to remove.');
+        }
+
         // Remove the previous destination marker if it exists
         if (destinationMarker) {
             destinationMarker.remove();
@@ -361,8 +371,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
 
-                // Add AR label for the selected destination
-                addDestinationARLabel(destination.latitude, destination.longitude, destination.name);
+                // Add AR entity for the selected destination
+                addDestinationAREntity(destination.latitude, destination.longitude, destination.name);
 
                 // Update AR elements
                 updateARDirections(directionsData);
