@@ -142,6 +142,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (destination && isMapCentered && isBearing) {
             reset(); // Reset all
         }
+
+        // Call the function to set the multifunction button image after any changes
+        setMultifunctionImage();
     });
 
     // Function to update the 2D map center
@@ -399,6 +402,9 @@ document.addEventListener('DOMContentLoaded', function () {
     initMap(); // Call the function to initialize map and location
     // Call the function to start watching the user's location
     watchUserLocation();
+    // Call the function to set the initial multifunction button image
+    setMultifunctionImage();
+
 
     // Watch for changes in the map's bearing
     map.on('rotate', (event) => {
