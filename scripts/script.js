@@ -109,8 +109,8 @@ document.addEventListener('DOMContentLoaded', function () {
             map.setBearing(0); // Stop the map rotation
         }
 
-        // If the map is centered or bearing is not applied, start map bearing
-        if (isMapCentered) {
+        // Else the map is centered or bearing is not applied, start map bearing
+        else (isMapCentered) {
             isBearing = true; // Set the bearing flag to true
         }
 
