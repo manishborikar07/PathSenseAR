@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // If there is no ongoing user interaction, update the map center
                 if (!isUserInteraction) {
                     userLocation = { latitude, longitude };
-                    updateMapCenter(latitude, longitude);
+                    updateMapCenter(latitude, longitude, 15);
                 }
 
                 // Update or create the current location marker
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (destination && isMapCentered && isBearing) {
             reset(); // Reset all
         }
-        
+
         // If the map is centered, bearing is applied, and there's no destination, stop the map rotation
         if (isMapCentered && isBearing && !destination) {
             isBearing = false; // Set the bearing flag to false
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Function to update the 2D map center
-    const updateMapCenter = (latitude, longitude, zoomLevel = 15) => {
+    const updateMapCenter = (latitude, longitude, zoomLevel) => {
         map.flyTo({
             center: [longitude, latitude],
             zoom: zoomLevel,
@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const directionsData = await getDirections(userLocation, destination);
 
                 // Update 2D map with user's current location
-                updateMapCenter(userLocation.latitude, userLocation.longitude);
+                updateMapCenter(userLocation.latitude, userLocation.longitude, 17);
 
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
