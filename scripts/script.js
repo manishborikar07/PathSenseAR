@@ -124,6 +124,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Add a click event listener for the recenter button
     const recenterButton = document.getElementById('multifunction-button');
     recenterButton.addEventListener('click', () => {
+        // If there's a destination, the map is centered, and bearing is on, call reset();
+        if (destination && isMapCentered && isBearing) {
+            reset(); // Reset all
+        }
+
         // If map centered after clicking on multifunction button, set bearing on
         if (isMapCentered) {
             // If bearing is already on, turn it off
@@ -135,21 +140,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 isBearing = true;
             }
         } else {
-            if(destination){
-                // If map not centered after clicking on multifunction button, set map center
-                isUserInteraction = false;
-                isMapCentered = true;
-                isBearing = true;
-            } else{
-                // If map not centered after clicking on multifunction button, set map center
-                isUserInteraction = false;
-                isMapCentered = true;
-            }
-        }
-
-        // If there's a destination, the map is centered, and bearing is on, call reset();
-        if (destination && isMapCentered && isBearing) {
-            reset(); // Reset all
+            // If map not centered after clicking on multifunction button, set map center
+            isUserInteraction = false;
+            isMapCentered = true;
         }
 
         // Call the function to set the multifunction button image after any changes
