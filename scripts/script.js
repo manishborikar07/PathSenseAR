@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Set the image source based on conditions
         if (isMapCentered && !isBearing) {
             centeredImage.src = '../models/centered.png';
-        } else if (!isMapCentered && !isBearing) {
+        } else if (isUserInteraction) {
             centeredImage.src = '../models/recenter.png';
         } else if (isBearing) {
             centeredImage.src = '../models/bearing.png';
