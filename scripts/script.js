@@ -6,11 +6,15 @@ document.addEventListener('DOMContentLoaded', function () {
     let map;
     let compass;  
     let mapBearing = 0; // Global variable to store the map's bearing
-    let isUserInteraction = false; // Flag to control user interaction with the map
     let currentLocationMarker; // To keep track of the marker at the current location
     let destinationMarker; // Define a global variable to keep track of the current destination marker
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
     let destination;
+    // Flags to control various aspects of map interaction
+    let isUserInteraction = false; // Flag to control user interaction with the map
+    let isMapCentered = true; // Flag to track if the map is currently centered on the user's location
+    let isBearing = false; // Flag to track if map bearing is applied
+    let compassRotation; // Variable to store device orientation
 
     // Function to initialize the map and get the user's current location
     const initMap = async () => {
@@ -49,14 +53,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to watch for changes in the user's location
     const watchUserLocation = () => {
         navigator.geolocation.watchPosition(
+            // Success callback when position is retrieved
             (position) => {
                 const { latitude, longitude } = position.coords;
                 userLocation = { latitude, longitude }; // Update global userLocation
 
+                // If there is no ongoing user interaction, update the map center
                 if (!isUserInteraction) {
-                    // Update the map center only if there is no ongoing user interaction
                     userLocation = { latitude, longitude };
                     updateMapCenter(latitude, longitude);
+                    isMapCentered = true; // Set the map-centered flag to true
                 }
 
                 // Update or create the current location marker
@@ -64,55 +70,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
                     : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
             },
+            // Error callback when there's an issue retrieving position
             (error) => console.error('Error in retrieving position', error),
+            // Geolocation options
             { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
         );
     };
 
-    // Add a click event listener for the recenter button
-    const recenterButton = document.getElementById('recenter-button');
-    recenterButton.addEventListener('click', () => {
-        // Stop the map rotation
-        map.setBearing(0);
-
-        // Remove the route
-        removeRoute();
-
-        // Reset the destination
-        destination = null;
-
-        // Remove the previous destination marker if it exists
-        if (destinationMarker) {
-            destinationMarker.remove();
-        }
-        
-        // Set the isUserInteraction flag to false after recentering
-        isUserInteraction = false;
-
-        // Call the function to start watching the user's location again
-        watchUserLocation();
-    });
-
-    // Function to update the 2D map center
-    const updateMapCenter = (latitude, longitude, zoomLevel = 15) => {
-        map.flyTo({
-            center: [longitude, latitude],
-            zoom: zoomLevel,
-            essential: true, // This ensures that the animation is considered essential and cannot be interrupted
-            speed: 1.5, // Adjust the speed of the animation as needed
-        });
-    };
-
     // Function to handle changes in device orientation
     const handleOrientation = (event) => {
-        const compassRotation = 360 - event.alpha; // Rotation in degrees
-        compass.style.transform = `rotate(${360 - compassRotation}deg)`;
+        compassRotation = 360 - event.alpha; // Calculate rotation in degrees
+        compass.style.transform = `rotate(${360 - compassRotation}deg)`; // Update compass display
 
-        if(destination) {
-            // Set the bearing of the Mapbox map to achieve rotation
-            map.setBearing(compassRotation);
+        // If the map is centered and bearing is applied or there's a destination set, apply bearing
+        if (isMapCentered && (isBearing || destination)) {
+            isBearing = true; // Set bearing flag to true
+            map.setBearing(compassRotation); // Set the bearing of the Mapbox map to achieve rotation
         }
-    
+
         // Update or create the current location marker
         if (currentLocationMarker) {
             // Update the marker's rotation based on the device's orientation and map's bearing
@@ -124,6 +99,43 @@ document.addEventListener('DOMContentLoaded', function () {
             currentLocationMarker.setRotation(compassRotation);
             currentLocationMarker.setPitchAlignment('map'); // Set pitchAlignment to 'map'
         }
+    };
+
+    // Add a click event listener for the recenter button
+    const recenterButton = document.getElementById('recenter-button');
+    recenterButton.addEventListener('click', () => {
+        // Set the isUserInteraction flag to false after recentering
+        isUserInteraction = false;
+
+        // Call the function to start watching the user's location again
+        watchUserLocation();
+
+        // If the map is centered or bearing is not applied, start map bearing
+        if (isMapCentered || !isBearing) {
+            handleOrientation(); // Call the function to start Map Bearing 
+            isBearing = true; // Set the bearing flag to true
+        }
+
+        // If the map is centered, bearing is applied, and there's no destination, stop the map rotation
+        if (isMapCentered && isBearing && !destination) {
+            isBearing = false; // Set the bearing flag to false
+            map.setBearing(0); // Stop the map rotation
+        }
+
+        // If there's a destination, the map is centered, and bearing is applied, reset all
+        if (destination && isMapCentered && isBearing) {
+            reset(); // Reset all
+        }
+    });
+
+    // Function to update the 2D map center
+    const updateMapCenter = (latitude, longitude, zoomLevel = 15) => {
+        map.flyTo({
+            center: [longitude, latitude],
+            zoom: zoomLevel,
+            essential: true, // This ensures that the animation is considered essential and cannot be interrupted
+            speed: 1.5, // Adjust the speed of the animation as needed
+        });
     };
 
     // Function to update the marker on the map
@@ -270,7 +282,15 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to remove the route from the map
-    const removeRoute = () => {
+    const reset = () => {
+        // Reset the destination
+        destination = null;
+
+        isBearing = false; // Set the bearing flag to false
+
+        // Stop the map rotation
+        map.setBearing(0);
+
         const sourceId = 'route';
 
         // Check if the 'route' source and layer exist
@@ -282,6 +302,11 @@ document.addEventListener('DOMContentLoaded', function () {
             } catch (error) {
                 console.error('Error removing existing route:', error);
             }
+        }
+
+        // Remove the previous destination marker if it exists
+        if (destinationMarker) {
+            destinationMarker.remove();
         }
     };
 
@@ -355,7 +380,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Add an event listener for map interaction (e.g., drag or zoom)
     map.on('touchstart', () => {
-        isUserInteraction = true;
+        isUserInteraction = true; // Set the user interaction flag to true
+        isMapCentered = false; // Set the map-centered flag to false
+        isBearing = false; // Set the bearing flag to false
     });
 
 });
