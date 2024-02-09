@@ -78,3 +78,4 @@ Now, display image according to conditions:
             reset(); // Reset all
         }
 
+#ar-destination-entity a-text

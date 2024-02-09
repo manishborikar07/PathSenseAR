@@ -50,6 +50,39 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    // Function to check and request location permission
+    const checkAndRequestLocationPermission = async () => {
+        try {
+            const permissionStatus = await navigator.permissions.query({ name: 'geolocation' });
+
+            if (permissionStatus.state !== 'granted') {
+                const userConsent = confirm("This website needs access to your location. Would you like to enable it?");
+
+                if (userConsent) {
+                    // Request location access using Geolocation API
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            // Handle successful location access
+                            console.log('Location access granted:', position);
+                        },
+                        (error) => {
+                            if (error.code === error.PERMISSION_DENIED) {
+                                alert('Location access denied. Please enable location services manually.');
+                            }
+                        },
+                        { enableHighAccuracy: true }
+                    );
+                } else {
+                    alert('Location access denied. Some features may not work properly.');
+                }
+            } else {
+                // Location access already granted, proceed with location-based features
+            }
+        } catch (error) {
+            console.error('Error checking location permission:', error);
+        }
+    };
+
     // Function to watch for changes in the user's location
     const watchUserLocation = () => {
         navigator.geolocation.watchPosition(
@@ -411,7 +444,10 @@ document.addEventListener('DOMContentLoaded', function () {
     destinationSelectButton.addEventListener('click', selectDestination);
 
     // End of the 'DOMContentLoaded' event listener
-    initMap(); // Call the function to initialize map and location
+    // Call the function to initialize map and location
+    initMap();
+    // Call the function to check and request location permission
+    checkAndRequestLocationPermission();
     // Call the function to start watching the user's location
     watchUserLocation();
     // Call the function to set the initial multifunction button image
