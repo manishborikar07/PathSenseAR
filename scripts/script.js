@@ -4,12 +4,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const destinationSelectButton = document.getElementById('get-direction-button');
     const mapContainer = document.getElementById('map');
     let map;
-    let compass;  
+    let compass;
     let mapBearing = 0; // Global variable to store the map's bearing
-    let currentLocationMarker; // To keep track of the marker at the current location
-    let destinationMarker; // Define a global variable to keep track of the current destination marker
+    let currentLocationMarker;
+    let destinationMarker;
     let userLocation = { latitude: 0, longitude: 0 }; // Initialize with default values
     let destination;
+
     // Flags to control various aspects of map interaction
     let isUserInteraction = false; // Flag to control user interaction with the map
     let isMapCentered = true; // Flag to track if the map is currently centered on the user's location
@@ -29,10 +30,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 bearing: 0, // Initial bearing
                 pitch: 0, // Initial pitch
             });
-    
+
             // Enable map controls (zoom, pan, rotate)
             map.addControl(new mapboxgl.NavigationControl());
-    
+
             // Create and append compass element
             compass = document.createElement('div');
             compass.className = 'compass';
@@ -44,7 +45,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Watch for changes in the device's orientation
             window.addEventListener('deviceorientation', handleOrientation);
-    
         } catch (error) {
             console.error('Error initializing map:', error);
         }
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // If there is no ongoing user interaction, update the map center
                 if (!isUserInteraction) {
                     userLocation = { latitude, longitude };
-                    updateMapCenter(latitude, longitude, 15);
+                    updateMapCenter(latitude, longitude);
                 }
 
                 // Update or create the current location marker
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to handle changes in device orientation
     const handleOrientation = (event) => {
         compassRotation = 360 - event.alpha; // Calculate rotation in degrees
-        compass.style.transform = `rotate(${360 - compassRotation}deg)`; // Update compass display
+        compass.style.transform = rotate(${360 - compassRotation}deg); // Update compass display
 
         // If the map is centered and bearing is applied or there's a destination set, apply bearing
         if (isMapCentered && isBearing) {
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // If bearing is already on, turn it off
                 if (isBearing) {
                     isBearing = false;
-                    map.setBearing(0); // Stop the map rotation
+                    map.setBearing(0); // Stop the map rotation                
                 } else {
                     // If bearing is off, turn it on
                     isBearing = true;
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Function to update the 2D map center
-    const updateMapCenter = (latitude, longitude, zoomLevel) => {
+    const updateMapCenter = (latitude, longitude, zoomLevel = 17) => {
         map.flyTo({
             center: [longitude, latitude],
             zoom: zoomLevel,
@@ -187,9 +187,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const createCustomMarker = (markerImage) => {
         const element = document.createElement('div');
         element.className = 'custom-marker';
-        element.style.backgroundImage = `url(${markerImage})`;
-        element.style.width = '30px';  // Set the width of your custom marker
-        element.style.height = '30px'; // Set the height of your custom marker
+        element.style.backgroundImage = url(${markerImage});
+        element.style.width = '25px';  // Set the width of your custom marker
+        element.style.height = '25px'; // Set the height of your custom marker
         return element;
     };
 
@@ -225,9 +225,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // Set attributes for the label
         arLabel.setAttribute('value', name);
         arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
-        arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
-        arLabel.setAttribute('color', '#0100ff'); // Set the text color
-        arLabel.setAttribute('scale', '5 5 5'); // Adjust scale as needed
+        arLabel.setAttribute('gps-new-entity-place', latitude: ${latitude}; longitude: ${longitude});
+        arLabel.setAttribute('color', '#3882f6'); // Set the text color
+        arLabel.setAttribute('scale', '4 4 4'); // Adjust scale as needed
 
         // Append the label to the A-Frame scene
         document.querySelector('#ar-destination-entity').appendChild(arLabel);
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 },
                 paint: {
                     'line-color': '#3882f6',
-                    'line-width': 3,
+                    'line-width': 7,
                 },
             });
         } else {
@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
         const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
-        const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}&geometries=geojson`;
+        const apiUrl = https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}&geometries=geojson;
 
         try {
             const response = await fetch(apiUrl);
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const directionsData = await getDirections(userLocation, destination);
 
                 // Update 2D map with user's current location
-                updateMapCenter(userLocation.latitude, userLocation.longitude, 17);
+                updateMapCenter(userLocation.latitude, userLocation.longitude);
 
                 // If the destination marker exists, update its position; otherwise, create a new marker
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
