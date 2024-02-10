@@ -24,11 +24,12 @@ document.addEventListener('DOMContentLoaded', function () {
             mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
             map = new mapboxgl.Map({
                 container: mapContainer,
-                style: 'mapbox://styles/mapbox/streets-v11',
-                center: [0, 0], // Default center
-                zoom: 15,
+                style: 'mapbox://styles/mapbox/satellite-streets-v11',
+                center: [78, 20], // Default center
+                zoom: 0.3,
                 bearing: 0, // Initial bearing
                 pitch: 0, // Initial pitch
+                projection: 'globe'
             });
 
             // Enable map controls (zoom, pan, rotate)
@@ -423,6 +424,11 @@ document.addEventListener('DOMContentLoaded', function () {
         // Update the map's bearing variable when the map is rotated
         mapBearing = event.target.getBearing();
     });
+
+    map.on('load', () => {
+        // Set the default atmosphere style
+        map.setFog({});
+    });
 
     // Add an event listener for map interaction (e.g., drag or zoom)
     map.on('touchstart', () => {
