@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to handle changes in device orientation
     const handleOrientation = (event) => {
         compassRotation = 360 - event.alpha; // Calculate rotation in degrees
-        compass.style.transform = rotate(${360 - compassRotation}deg); // Update compass display
+        compass.style.transform = `rotate(${360 - compassRotation}deg)`; // Update compass display
 
         // If the map is centered and bearing is applied or there's a destination set, apply bearing
         if (isMapCentered && isBearing) {
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const createCustomMarker = (markerImage) => {
         const element = document.createElement('div');
         element.className = 'custom-marker';
-        element.style.backgroundImage = url(${markerImage});
+        element.style.backgroundImage = `url(${markerImage})`;
         element.style.width = '25px';  // Set the width of your custom marker
         element.style.height = '25px'; // Set the height of your custom marker
         return element;
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Set attributes for the label
         arLabel.setAttribute('value', name);
         arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
-        arLabel.setAttribute('gps-new-entity-place', latitude: ${latitude}; longitude: ${longitude});
+        arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
         arLabel.setAttribute('color', '#3882f6'); // Set the text color
         arLabel.setAttribute('scale', '4 4 4'); // Adjust scale as needed
 
@@ -344,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to get directions from the Mapbox API
     const getDirections = async (origin, destination) => {
         const apiKey = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
-        const apiUrl = https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}&geometries=geojson;
+        const apiUrl = `https://api.mapbox.com/directions/v5/mapbox/walking/${origin.longitude},${origin.latitude};${destination.longitude},${destination.latitude}?access_token=${apiKey}&geometries=geojson`;
 
         try {
             const response = await fetch(apiUrl);
