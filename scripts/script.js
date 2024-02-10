@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 container: mapContainer,
                 style: 'mapbox://styles/mapbox/satellite-streets-v11',
                 center: [78, 20], // Default center
-                zoom: 0.3,
+                zoom: 0,
                 bearing: 0, // Initial bearing
                 pitch: 0, // Initial pitch
                 projection: 'globe'
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
             currentLocationMarker.setPitchAlignment('map'); // Set pitchAlignment to 'map'
         } else {
             // If the marker doesn't exist, create a new one with the updated rotation
-            currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current1.png');
+            currentLocationMarker = addMarker(userLocation.latitude, userLocation.longitude, 'You are here!', '../models/current.png');
             currentLocationMarker.setRotation(compassRotation);
             currentLocationMarker.setPitchAlignment('map'); // Set pitchAlignment to 'map'
         }
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
             center: [longitude, latitude],
             zoom: zoomLevel,
             essential: true, // This ensures that the animation is considered essential and cannot be interrupted
-            speed: 1.5, // Adjust the speed of the animation as needed
+            speed: 1, // Adjust the speed of the animation as needed
         });
     };
 
