@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 zoom: 0,
                 bearing: 0, // Initial bearing
                 pitch: 0, // Initial pitch
-                projection: 'globe'
+                projection: 'globe',
             });
 
             // Enable map controls (zoom, pan, rotate)
