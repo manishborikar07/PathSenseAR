@@ -53,47 +53,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to watch for changes in the user's location
     const watchUserLocation = () => {
-        // Check if the browser supports the Permissions API
-        if ('permissions' in navigator) {
-            // Use the Permissions API to check the geolocation permission status
-            navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-                // Check if the permission status is 'denied'
-                if (result.state === 'denied') {
-                    alert('Device location is off. Please enable location and refresh the page.');
-                } else {
-                    // Attempt to watch the user's location
-                    navigator.geolocation.watchPosition(
-                        // Success callback when position is retrieved
-                        (position) => {
-                            const { latitude, longitude } = position.coords;
-                            userLocation = { latitude, longitude }; // Update global userLocation
+        navigator.geolocation.watchPosition(
+            // Success callback when position is retrieved
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                userLocation = { latitude, longitude }; // Update global userLocation
 
-                            // If there is no ongoing user interaction, update the map center
-                            if (!isUserInteraction) {
-                                userLocation = { latitude, longitude };
-                                updateMapCenter(latitude, longitude);
-                            }
-
-                            // Update or create the current location marker
-                            currentLocationMarker
-                                ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                                : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
-                        },
-                        // Error callback when there's an issue retrieving position
-                        (error) => {
-                            console.error('Error in retrieving position:', error);
-                            alert('Error in retrieving position. Please check your device settings.');
-                        },
-                        // Geolocation options
-                        { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
-                    );
+                // If there is no ongoing user interaction, update the map center
+                if (!isUserInteraction) {
+                    userLocation = { latitude, longitude };
+                    updateMapCenter(latitude, longitude);
                 }
-            });
-        } else {
-            // Handle the case where the Permissions API is not supported
-            alert('Geolocation permissions check not supported by your browser.');
-        }
+
+                // Update or create the current location marker
+                currentLocationMarker
+                    ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
+                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
+            },
+            // Error callback when there's an issue retrieving position
+            (error) => console.error('Error in retrieving position', error),
+            // Geolocation options
+            { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
+        );
     };
+
     // Function to handle changes in device orientation
     const handleOrientation = (event) => {
         compassRotation = 360 - event.alpha; // Calculate rotation in degrees
