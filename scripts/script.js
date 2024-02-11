@@ -60,17 +60,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Permission granted, continue with your existing logic
                     // Call the function to start watching the user's location
                     watchUserLocation();
+                    // Call the function to set the initial multifunction button image
                     setMultifunctionImage();
+
                 },
                 // Error callback when there's an issue retrieving position
                 (error) => {
                     console.error('Error in retrieving position', error);
-                    // Handle specific errors if needed
-                    if (error.code === error.PERMISSION_DENIED) {
-                        // User denied location permission
-                        alert('Please enable location services and refresh the page.');
-                    } else {
-                        // Other errors
+                    // Check if the error is due to user denying access
+                    if (error.code !== error.PERMISSION_DENIED) {
+                        // Handle other errors
                         alert('Error retrieving location. Please check your settings and refresh the page.');
                     }
                 },
