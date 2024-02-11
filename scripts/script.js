@@ -53,40 +53,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to watch for changes in the user's location
     const watchUserLocation = () => {
-        navigator.geolocation.watchPosition(
-            // Success callback when position is retrieved
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                userLocation = { latitude, longitude }; // Update global userLocation
+        // Check if geolocation is supported by the browser
+        if (navigator.geolocation) {
+            // Attempt to watch the user's location
+            navigator.geolocation.watchPosition(
+                // Success callback when position is retrieved
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    userLocation = { latitude, longitude }; // Update global userLocation
 
-                // If there is no ongoing user interaction, update the map center
-                if (!isUserInteraction) {
-                    userLocation = { latitude, longitude };
-                    updateMapCenter(latitude, longitude);
-                }
+                    // If there is no ongoing user interaction, update the map center
+                    if (!isUserInteraction) {
+                        userLocation = { latitude, longitude };
+                        updateMapCenter(latitude, longitude);
+                    }
 
-                // Update or create the current location marker
-                currentLocationMarker
-                    ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
-            },
-            // Error callback when there's an issue retrieving position
-            (error) => {
-                console.error('Error in retrieving position', error);
+                    // Update or create the current location marker
+                    currentLocationMarker
+                        ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
+                        : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
+                },
+                // Error callback when there's an issue retrieving position
+                (error) => {
+                    console.error('Error in retrieving position:', error);
 
-                // Check if the error is due to the user denying access
-                if (error.code === error.PERMISSION_DENIED) {
-                    // Display a message asking the user to enable location services and refresh the page
-                    alert('Please enable location services and refresh the page.');
-                } else {
-                    // Handle other errors as needed
-                    // You can log the error or provide a different user-friendly message
-                    console.error('Error details:', error);
-                }
-            },
-            // Geolocation options
-            { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
-        );
+                    // Check if the error is due to the user denying access to GPS
+                    if (error.code === error.PERMISSION_DENIED) {
+                        alert('Device location is off. Please enable location and refresh the page.');
+                    } else {
+                        // Handle other geolocation errors as needed
+                        alert('Error in retrieving position. Please check your device settings.');
+                    }
+                },
+                // Geolocation options
+                { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
+            );
+        } else {
+            // Handle the case where geolocation is not supported
+            alert('Geolocation is not supported by your browser.');
+        }
     };
 
     // Function to handle changes in device orientation

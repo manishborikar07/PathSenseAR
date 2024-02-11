@@ -79,3 +79,6 @@ Now, display image according to conditions:
         }
 
 #ar-destination-entity a-text
+
+
+alert('Device location is off. Please enable location and refresh the page.');
