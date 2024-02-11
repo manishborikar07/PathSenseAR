@@ -13,36 +13,41 @@ body, html {
 }
 
 #destination-select-container {
-  width: 90%;
-  max-width: 400px; /* Adjust for smaller screens */
-  margin: 0 auto; /* Removed negative margin */
-  margin-top: 10px;
+  position: absolute;
+  top: 2%;
+  left: 1%;
+  right:1%;
+  padding: 10px 10px 10px 10px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 10px;
+  align-items: center; 
   background-color: rgba(0, 0, 0, 0.7); /* Use rgba for transparency */
   border-radius: 8px;
   color: #fff;
-}
-
-#select-destination {
-  flex: 1;
-  padding: 9px;
-  border-radius: 8px;
-  margin-left: 25px;
-  margin-right: 10px;
+  z-index: 4;
 }
 
 #get-direction-button {
-  width: 25%;
-  padding: 10px 5px; /* Rounded padding */
-  margin-right: 25px;
-  background-color: #0100ff;
-  color: #fff;
+  width: 120px; /* Set the width of the first container to 30% */
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border-radius: 8px;
+  text-align: center;
+  background-color: #0100ff; /* Green */
   border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  color: white;
+  text-size-adjust: auto;
+  text-decoration: none;
+  z-index: 4;
+}
+
+#select-destination {
+  width: calc(100% - 130px); /* Allow the container to adjust its width based on content */
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 8px;
+  text-align: center;
+  z-index: 4;
 }
 
 #a-scene {
