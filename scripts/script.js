@@ -329,9 +329,13 @@ const watchUserLocation = () => {
                 radius: 0.1,
             });
 
+            arRouteEntity.setAttribute('material', {
+                color: 'blue',
+            });
+
             arRouteEntity.setAttribute('position', {
                 x: midpoint.longitude,
-                y: 0, // Adjust as needed
+                y: 1, // Adjust as needed
                 z: midpoint.latitude,
             });
 
