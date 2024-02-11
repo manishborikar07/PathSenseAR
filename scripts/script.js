@@ -250,75 +250,36 @@ const watchUserLocation = () => {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Assuming 'directionsData' contains information about the route
-        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+        // Assuming you have an A-Frame scene with an AR camera and AR markers set up
     
-        // Clear existing AR route entities
-        const existingARRouteEntities = document.querySelectorAll('.ar-route-entity');
-        existingARRouteEntities.forEach(entity => entity.parentNode.removeChild(entity));
+        // Check if there are route instructions
+        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+            const routeInstructions = directionsData.routes[0].legs[0].steps;
     
-        // Add AR route entities for each segment of the route
-        for (let i = 0; i < routeCoordinates.length - 1; i++) {
-            const startCoord = routeCoordinates[i];
-            const endCoord = routeCoordinates[i + 1];
+            // Clear previous AR route elements
+            const arRouteEntity = document.querySelector('#ar-route-entity');
+            if (arRouteEntity) {
+                arRouteEntity.parentNode.removeChild(arRouteEntity);
+            }
     
-            // Calculate the distance between two coordinates (you may need a more accurate formula)
-            const distance = calculateDistance(startCoord, endCoord);
+            // Create a new A-Frame entity for the AR route
+            const arRoute = document.createElement('a-entity');
+            arRoute.setAttribute('id', 'ar-route-entity');
     
-            // Create an entity for each segment
-            const arRouteEntity = document.createElement('a-entity');
-            arRouteEntity.classList.add('ar-route-entity');
-    
-            // Set attributes for the entity
-            arRouteEntity.setAttribute('geometry', {
-                primitive: 'plane',
-                width: 5, // Adjust width based on your preference
-                height: distance, // Adjust height based on your preference
+            // Loop through route instructions and create AR markers
+            routeInstructions.forEach((step, index) => {
+                const arMarker = document.createElement('a-entity');
+                arMarker.setAttribute('geometry', 'primitive: cylinder; height: 0.1; radius: 0.05');
+                arMarker.setAttribute('material', 'color: blue');
+                arMarker.setAttribute('position', `${step.maneuver.location[1]} 0 ${step.maneuver.location[0]}`);
+                arRoute.appendChild(arMarker);
             });
-
-            
-            arRouteEntity.setAttribute('gps-new-entity-place', `latitude: ${endCoord}; longitude: ${startCoord}`);
-            arRouteEntity.setAttribute('color', '#3882f6'); // Set the text color
-            arRouteEntity.setAttribute('scale', '4 4 4'); // Adjust scale as needed
     
-            // Calculate position and rotation based on the coordinates
-            const position = calculateMidpoint(startCoord, endCoord);
-            const rotation = calculateRotation(startCoord, endCoord);
-    
-            arRouteEntity.setAttribute('position', position);
-            arRouteEntity.setAttribute('rotation', rotation);
-    
-            // Append the entity to the scene
-            document.querySelector('a-scene').appendChild(arRouteEntity);
+            // Add the AR route entity to the A-Frame scene
+            const arScene = document.querySelector('a-scene');
+            arScene.appendChild(arRoute);
         }
     };
-    
-    // Function to calculate the midpoint between two coordinates
-    const calculateMidpoint = (coord1, coord2) => {
-        return {
-            x: (coord1[0] + coord2[0]) / 2,
-            y: (coord1[1] + coord2[1]) / 2,
-            z: 0, // Assuming a flat surface
-        };
-    };
-    
-    // Function to calculate the rotation based on two coordinates
-    const calculateRotation = (startCoord, endCoord) => {
-        const angle = Math.atan2(endCoord[1] - startCoord[1], endCoord[0] - startCoord[0]);
-        return {
-            x: 0,
-            y: angle * (180 / Math.PI),
-            z: 0,
-        };
-    };
-    
-    // Function to calculate the distance between two coordinates (Haversine formula)
-    const calculateDistance = (coord1, coord2) => {
-        // Implement a suitable distance calculation formula
-        // For simplicity, you can use a flat surface distance formula
-        return Math.sqrt(Math.pow(coord2[0] - coord1[0], 2) + Math.pow(coord2[1] - coord1[1], 2));
-    };
-    
       
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
