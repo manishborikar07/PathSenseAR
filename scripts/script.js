@@ -72,12 +72,15 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             // Error callback when there's an issue retrieving position
             (error) => {
-                // Check if the error is due to user denying access to GPS
-                if (error.code === error.PERMISSION_DENIED) {
-                    console.error('Device location is off. Please enable location and refresh the page.');
-                } else {
-                    console.error('Error in retrieving position:', error);
-                }
+                const errorMessage = error.code === 1
+                    ? 'Device location is off. Please enable location and refresh the page.'
+                    : 'Error in retrieving position';
+                
+                console.error(errorMessage, error);
+
+                // Display the user-friendly error message on the page
+                // You can replace this with your own logic to show the message to the user
+                alert(errorMessage);
             },
             // Geolocation options
             { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
