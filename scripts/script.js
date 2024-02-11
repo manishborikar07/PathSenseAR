@@ -85,9 +85,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     // For other errors, log the error to the console
                     console.error('Error in retrieving position:', error.message);
                 }
-
-                // Prevent the default error message
-                event.preventDefault();
             },
             // Geolocation options
             { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
