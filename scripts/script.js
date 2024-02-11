@@ -250,45 +250,25 @@ const watchUserLocation = () => {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Clear existing AR route entities
-        const existingARRoute = document.querySelectorAll('.ar-route');
-        existingARRoute.forEach(entity => entity.parentNode.removeChild(entity));
+        // Check if directionsData is defined and contains route information
+        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+            // Extract route coordinates from Mapbox directions data
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
     
-        // Extract route coordinates from Mapbox directions data
-        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+            // Create an AR route using A-Frame entities
+            const arRoute = document.createElement('a-entity');
+            arRoute.setAttribute('line', {
+                path: routeCoordinates,
+                color: '#3882f6', // Blue color
+                opacity: 0.8,
+            });
     
-        // Create a new A-Frame entity for the AR route
-        const arRouteEntity = document.createElement('a-entity');
-        arRouteEntity.classList.add('ar-route');
-    
-        // Create a curve along the route using a-curve component
-        const curveEntity = document.createElement('a-curve');
-        curveEntity.setAttribute('type', 'catmullrom');
-        curveEntity.setAttribute('tightness', 0.5); // Adjust tightness as needed
-    
-        // Create points along the curve based on route coordinates
-        routeCoordinates.forEach(coord => {
-            const pointEntity = document.createElement('a-curve-point');
-            pointEntity.setAttribute('position', `${coord[0]} 0 ${coord[1]}`);
-            curveEntity.appendChild(pointEntity);
-        });
-    
-        // Create a conveyor belt entity along the curve
-        const conveyorBeltEntity = document.createElement('a-entity');
-        conveyorBeltEntity.setAttribute('animation', 'property: beltPosition; dur: 2000; from: 0; to: 1; loop: true');
-        conveyorBeltEntity.setAttribute('position', '0 0 0'); // Adjust position as needed
-        conveyorBeltEntity.setAttribute('geometry', 'primitive: cylinder; height: 0.1; radius: 1');
-        conveyorBeltEntity.setAttribute('material', 'color: blue; side: double; transparent: true; opacity: 0.7');
-    
-        // Append the conveyor belt to the curve entity
-        curveEntity.appendChild(conveyorBeltEntity);
-    
-        // Append the curve entity to the AR route entity
-        arRouteEntity.appendChild(curveEntity);
-    
-        // Append the AR route entity to the A-Frame scene
-        document.querySelector('a-scene').appendChild(arRouteEntity);
-    };    
+            // Add the AR route to the A-Frame scene
+            document.querySelector('a-scene').appendChild(arRoute);
+        } else {
+            console.error('Invalid directionsData or missing route coordinates.');
+        }
+    };       
       
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
