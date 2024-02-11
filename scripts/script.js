@@ -250,8 +250,62 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Add an AR route that shows a blue conveyor belt on the route.
+        // Assuming 'ar-scene' is the ID of your A-Frame scene
+        const arScene = document.getElementById('ar-scene');
+    
+        // Check if directionsData is defined and contains route information
+        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+            // Extract route coordinates from Mapbox directions data
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+    
+            // Remove existing AR route entities
+            removeExistingARRouteEntities();
+    
+            // Create AR entities along the route
+            routeCoordinates.forEach((coordinate, index) => {
+                // Create an A-Frame entity for each coordinate
+                const arEntity = document.createElement('a-entity');
+                
+                // Set attributes for the AR entity
+                arEntity.setAttribute('geometry', {
+                    primitive: 'box',
+                    width: 0.2, // Adjust width as needed
+                    height: 0.02, // Adjust height as needed
+                    depth: 0.2, // Adjust depth as needed
+                });
+    
+                arEntity.setAttribute('position', {
+                    x: coordinate[0], // Longitude
+                    y: 0, // Assuming a flat plane for simplicity, adjust as needed
+                    z: coordinate[1], // Latitude
+                });
+    
+                arEntity.setAttribute('material', 'color: blue'); // Set material color to blue
+    
+                // Add animation component for conveyor belt effect
+                arEntity.setAttribute('animation', {
+                    property: 'position',
+                    dir: 'alternate',
+                    dur: 2000, // Animation duration in milliseconds
+                    easing: 'linear',
+                    loop: true,
+                    to: `${coordinate[0]} 1 ${coordinate[1]}`, // Adjust the height (y) as needed
+                });
+    
+                // Append the AR entity to the A-Frame scene
+                arScene.appendChild(arEntity);
+            });
+        } else {
+            console.error('Invalid directionsData or missing route coordinates.');
+        }
     };
+    
+    // Function to remove existing AR route entities
+    const removeExistingARRouteEntities = () => {
+        const existingEntities = document.querySelectorAll('.ar-route-entity');
+    
+        existingEntities.forEach(entity => entity.remove());
+    };    
       
 
     // Function to update the 2D map with the route
