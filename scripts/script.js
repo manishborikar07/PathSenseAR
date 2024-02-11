@@ -250,12 +250,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Assuming 'ar-scene' is the ID of your A-Frame scene
         const arScene = document.getElementById('ar-scene');
     
         // Check if directionsData is defined and contains route information
         if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            // Extract route coordinates from Mapbox directions data
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
     
             // Remove existing AR route entities
@@ -274,9 +272,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     depth: 0.2, // Adjust depth as needed
                 });
     
+                // Set position based on the route coordinates
                 arEntity.setAttribute('position', {
                     x: coordinate[0], // Longitude
-                    y: 0, // Assuming a flat plane for simplicity, adjust as needed
+                    y: 0.1, // Slightly above the ground for visibility, adjust as needed
                     z: coordinate[1], // Latitude
                 });
     
@@ -285,12 +284,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Add animation component for conveyor belt effect
                 arEntity.setAttribute('animation', {
                     property: 'position',
-                    dir: 'alternate',
                     dur: 2000, // Animation duration in milliseconds
                     easing: 'linear',
                     loop: true,
-                    to: `${coordinate[0]} 1 ${coordinate[1]}`, // Adjust the height (y) as needed
+                    to: `${coordinate[0]} 0.1 ${coordinate[1]}`, // Adjust the height (y) as needed
                 });
+    
+                // Add class to identify the AR route entities
+                arEntity.classList.add('ar-route-entity');
     
                 // Append the AR entity to the A-Frame scene
                 arScene.appendChild(arEntity);
@@ -306,7 +307,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
         existingEntities.forEach(entity => entity.remove());
     };    
-      
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
