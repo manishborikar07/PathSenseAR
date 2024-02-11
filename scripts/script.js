@@ -52,44 +52,44 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to watch for changes in the user's location
-    const watchUserLocation = () => {
-        navigator.geolocation.watchPosition(
-            // Success callback when position is retrieved
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                userLocation = { latitude, longitude }; // Update global userLocation
+const watchUserLocation = () => {
+    navigator.geolocation.watchPosition(
+        // Success callback when position is retrieved
+        (position) => {
+            const { latitude, longitude } = position.coords;
+            userLocation = { latitude, longitude }; // Update global userLocation
 
-                // If there is no ongoing user interaction, update the map center
-                if (!isUserInteraction) {
-                    userLocation = { latitude, longitude };
-                    updateMapCenter(latitude, longitude);
-                }
+            // If there is no ongoing user interaction, update the map center
+            if (!isUserInteraction) {
+                userLocation = { latitude, longitude };
+                updateMapCenter(latitude, longitude);
+            }
 
-                // Update or create the current location marker
-                currentLocationMarker
-                    ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
-            },
-            // Error callback when there's an issue retrieving position
-            (error) => {
-                if (error.code === 1) {
-                    // Device location is off. Please enable location and refresh the page.
-                    alert('Device location is off. Please enable location and refresh the page.');
-                } else if (error.code === 2) {
-                    // Position information is unavailable
-                    alert('Position information is unavailable. Please try again.');
-                } else if (error.code === 3) {
-                    // The request to get user location timed out
-                    alert('Request to get user location timed out. Please try again.');
-                } else {
-                    // For other errors, log the error to the console
-                    console.error('Error in retrieving position:', error.message);
-                }
-            },
-            // Geolocation options
-            { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
-        );
-    };
+            // Update or create the current location marker
+            currentLocationMarker
+                ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
+                : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
+        },
+        // Error callback when there's an issue retrieving position
+        (error) => {
+            if (error.code === 1) {
+                // Device location is off. Please enable location and refresh the page.
+                alert('Device location is off. Please enable location and refresh the page.');
+            } else if (error.code === 2) {
+                // Position information is unavailable
+                alert('Position information is unavailable. Please try again.');
+            } else if (error.code === 3) {
+                // The request to get user location timed out
+                alert('Request to get user location timed out. Please try again.');
+            } else {
+                // For other errors, log the error to the console
+                console.error('Error in retrieving position:', error.message);
+            }
+        },
+        // Geolocation options
+        { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
+    );
+};
 
     // Function to handle changes in device orientation
     const handleOrientation = (event) => {
@@ -248,12 +248,18 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('#ar-destination-entity').appendChild(arLabel);
     };
 
-    // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
         // Check if directionsData is defined and contains route information
         if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
             // Extract route coordinates from Mapbox directions data
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+    
+            // Check if the A-Frame scene exists
+            const aScene = document.querySelector('a-scene');
+            if (!aScene) {
+                console.error('A-Frame scene not found.');
+                return;
+            }
     
             // Create an A-Frame entity to represent the AR route
             const arRouteEntity = document.createElement('a-entity');
@@ -261,7 +267,9 @@ document.addEventListener('DOMContentLoaded', function () {
     
             // Create a curve using A-Frame's a-curve component
             const curveElement = document.createElement('a-curve');
-            
+            curveElement.setAttribute('id', 'ar-route-curve'); // Set an ID for the curve
+            arRouteEntity.appendChild(curveElement);
+    
             // Add points to the curve based on route coordinates
             routeCoordinates.forEach((coordinate, index) => {
                 const pointElement = document.createElement('a-curve-point');
@@ -269,12 +277,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 curveElement.appendChild(pointElement);
             });
     
-            // Append the curve to the AR route entity
-            arRouteEntity.appendChild(curveElement);
-    
             // Create a tube using A-Frame's a-tube component
             const tubeElement = document.createElement('a-tube');
-            tubeElement.setAttribute('id', 'ar-route-tube');
             tubeElement.setAttribute('path', '#ar-route-curve');
             tubeElement.setAttribute('radius', '0.2'); // Adjust the radius as needed
             tubeElement.setAttribute('material', 'color: blue; side: double'); // Set the color to blue
@@ -282,20 +286,11 @@ document.addEventListener('DOMContentLoaded', function () {
             // Append the tube to the AR route entity
             arRouteEntity.appendChild(tubeElement);
     
-            // Create a conveyor belt texture
-            const conveyorBeltElement = document.createElement('a-animation');
-            conveyorBeltElement.setAttribute('attribute', 'material.offset');
-            conveyorBeltElement.setAttribute('dur', '10000'); // Duration of the conveyor belt loop in milliseconds
-            conveyorBeltElement.setAttribute('easing', 'linear');
-            conveyorBeltElement.setAttribute('from', '0 0');
-            conveyorBeltElement.setAttribute('to', '1 1');
-            conveyorBeltElement.setAttribute('repeat', 'indefinite'); // Repeat the conveyor belt animation indefinitely
-    
-            // Append the conveyor belt animation to the tube
-            tubeElement.appendChild(conveyorBeltElement);
-    
             // Append the AR route entity to the A-Frame scene
-            document.querySelector('a-scene').appendChild(arRouteEntity);
+            aScene.appendChild(arRouteEntity);
+    
+            // Log success message
+            console.log('AR route added successfully.');
         } else {
             console.error('Invalid directionsData or missing route coordinates.');
         }
