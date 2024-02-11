@@ -56,27 +56,24 @@ body, html {
 
 #map-container {
   position: fixed;
-  bottom: 2px;
+  bottom: 0;
   left: 50%;
-  transform: translateX(-50.50%); /* Corrected for centering */
-  width: 98%;
-  max-width: 450px;
+  transform: translateX(-50%); /* Corrected for centering */
+  width: 100%;
   height: 23vh;
+  border-top: 3px solid white;
   z-index: 1; /* Higher z-index for map container */
 }
 
 #map {
   width: 100%;
   height: 100%;
-  border: 3px solid white;
 }
 
 .compass {
   position: absolute;
-  bottom: 27%;
-  
-  left: 86%;
-  transform: translateX(-50%); /* Corrected for centering */
+  bottom: 24vh;
+  right: 1%;
   width: 45px;
   height: 45px;
   cursor: pointer;
@@ -95,13 +92,13 @@ body, html {
 }
 
 #multifunction-container {
-  position: fixed;
-  bottom: 4px;
-  left: 92%;
-  transform: translateX(-50.50%); /* Corrected for centering */
-  width: 45px; /* Adjust the size of the image */
-  height: 45px; /* Adjust the size of the image */
-  height: 6vh;
+  position: absolute;
+  bottom: 1%;
+  right: 1%;
+  width: 45px;
+  height: 45px;
+  cursor: pointer;
+  transform-origin: center center;
   z-index: 2; /* Higher z-index for the multifunction button */
 }
 
