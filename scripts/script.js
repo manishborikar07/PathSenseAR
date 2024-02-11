@@ -256,7 +256,7 @@ const watchUserLocation = () => {
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
     
             // Create an AR route using A-Frame entities
-            const arRoute = document.createElement('a-entity');
+            const arRoute = document.createElement('a-route');
             arRoute.setAttribute('line', {
                 path: routeCoordinates,
                 color: '#3882f6', // Blue color
@@ -264,7 +264,7 @@ const watchUserLocation = () => {
             });
     
             // Add the AR route to the A-Frame scene
-            document.querySelector('a-scene').appendChild(arRoute);
+            document.querySelector('#ar-route').appendChild(arRoute);
         } else {
             console.error('Invalid directionsData or missing route coordinates.');
         }
