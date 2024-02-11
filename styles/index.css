@@ -27,10 +27,19 @@ body, html {
   z-index: 4;
 }
 
+#select-destination {
+  width: calc(100% - 120px); /* Allow the container to adjust its width based on content */
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-radius: 8px;
+  text-align: center;
+  z-index: 4;
+}
+
 #get-direction-button {
-  width: 120px; /* Set the width of the first container to 30% */
-  padding-top: 6px;
-  padding-bottom: 6px;
+  width: 110px; /* Set the width of the first container to 30% */
+  padding-top: 10px;
+  padding-bottom: 10px;
   border-radius: 8px;
   text-align: center;
   background-color: #0100ff; /* Green */
@@ -38,15 +47,6 @@ body, html {
   color: white;
   text-size-adjust: auto;
   text-decoration: none;
-  z-index: 4;
-}
-
-#select-destination {
-  width: calc(100% - 130px); /* Allow the container to adjust its width based on content */
-  padding-top: 5px;
-  padding-bottom: 5px;
-  border-radius: 8px;
-  text-align: center;
   z-index: 4;
 }
 
