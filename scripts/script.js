@@ -340,6 +340,8 @@ const watchUserLocation = () => {
             // Set AR route appearance based on distance
             setARRouteAttributes(arRouteEntity, distance);
 
+            console.log('Adding AR route entity:', arRouteEntity);
+
             // Append AR route entity to the scene
             document.querySelector('a-scene').appendChild(arRouteEntity);
         }
