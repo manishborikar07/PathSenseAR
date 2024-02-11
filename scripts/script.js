@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Update or create the current location marker
                 currentLocationMarker
                     ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
+                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
             },
             // Error callback when there's an issue retrieving position
             (error) => {
@@ -85,6 +85,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     // For other errors, log the error to the console
                     console.error('Error in retrieving position:', error.message);
                 }
+
+                // Prevent the default error message
+                event.preventDefault();
             },
             // Geolocation options
             { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
