@@ -263,7 +263,7 @@ const watchUserLocation = () => {
     
             // Create an A-Frame entity to represent the AR route
             const arRouteEntity = document.createElement('a-entity');
-            arRouteEntity.setAttribute('position', '0 0 0'); // Adjust the position as needed
+            arRouteEntity.setAttribute('position', '0 0.1 0'); // Adjust the height as needed
     
             // Create a curve using A-Frame's a-curve component
             const curveElement = document.createElement('a-curve');
@@ -280,7 +280,7 @@ const watchUserLocation = () => {
             // Create a tube using A-Frame's a-tube component
             const tubeElement = document.createElement('a-tube');
             tubeElement.setAttribute('path', '#ar-route-curve');
-            tubeElement.setAttribute('radius', '0.2'); // Adjust the radius as needed
+            tubeElement.setAttribute('radius', '0.02'); // Adjust the radius as needed
             tubeElement.setAttribute('material', 'color: blue; side: double'); // Set the color to blue
     
             // Append the tube to the AR route entity
