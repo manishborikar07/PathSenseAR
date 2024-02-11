@@ -71,7 +71,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
             },
             // Error callback when there's an issue retrieving position
-            (error) => console.error('Error in retrieving position', error),
+            (error) => {
+                console.error('Error in retrieving position', error);
+
+                // Check if the error is due to the user denying access
+                if (error.code === error.PERMISSION_DENIED) {
+                    // Display a message asking the user to enable location services and refresh the page
+                    alert('Please enable location services and refresh the page.');
+                } else {
+                    // Handle other errors as needed
+                    // You can log the error or provide a different user-friendly message
+                    console.error('Error details:', error);
+                }
+            },
             // Geolocation options
             { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
         );
