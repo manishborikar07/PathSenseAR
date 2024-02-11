@@ -76,8 +76,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Device location is off. Please enable location and refresh the page.
                     alert('Device location is off. Please enable location and refresh the page.');
                 } else {
-                    // Handle other errors as needed
-                    console.error('Error in retrieving position', error);
+                    // For other errors, log the error to the console
+                    console.error('Error in retrieving position:', error.message);
                 }
             },
             // Geolocation options
