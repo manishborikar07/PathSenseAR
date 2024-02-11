@@ -251,6 +251,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
         const arScene = document.getElementById('ar-scene');
+
+        if (!arScene) {
+            console.error("AR scene element not found.");
+            return;
+        }
     
         // Check if directionsData is defined and contains route information
         if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
