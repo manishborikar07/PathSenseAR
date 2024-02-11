@@ -326,7 +326,7 @@ const watchUserLocation = () => {
             arRouteEntity.setAttribute('geometry', {
                 primitive: 'cylinder',
                 height: distance,
-                radius: 0.1,
+                radius: 5,
             });
 
             arRouteEntity.setAttribute('material', {
