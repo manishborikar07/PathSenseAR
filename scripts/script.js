@@ -333,6 +333,9 @@ const watchUserLocation = () => {
                 color: 'blue',
             });
 
+            arRouteEntity.setAttribute('scale', '2 2 2'); // Adjust as needed
+
+
             arRouteEntity.setAttribute('position', {
                 x: midpoint.longitude,
                 y: 1, // Adjust as needed
