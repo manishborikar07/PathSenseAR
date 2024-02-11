@@ -80,6 +80,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Check if the error is due to the user denying access to GPS
                     if (error.code === error.PERMISSION_DENIED) {
                         alert('Device location is off. Please enable location and refresh the page.');
+                    } else if (error.code === error.POSITION_UNAVAILABLE) {
+                        // Check if the error is due to the device location being unavailable
+                        alert('Device location is not available. Please check your device settings.');
                     } else {
                         // Handle other geolocation errors as needed
                         alert('Error in retrieving position. Please check your device settings.');
