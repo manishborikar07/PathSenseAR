@@ -53,37 +53,47 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to watch for changes in the user's location
     const watchUserLocation = () => {
-        navigator.geolocation.watchPosition(
-            // Success callback when position is retrieved
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                userLocation = { latitude, longitude }; // Update global userLocation
+        // Check if geolocation permission is granted
+        navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+            if (result.state === 'granted') {
+                // Permission is granted, proceed with watching position
+                navigator.geolocation.watchPosition(
+                    // Success callback when position is retrieved
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        userLocation = { latitude, longitude }; // Update global userLocation
 
-                // If there is no ongoing user interaction, update the map center
-                if (!isUserInteraction) {
-                    userLocation = { latitude, longitude };
-                    updateMapCenter(latitude, longitude);
-                }
+                        // If there is no ongoing user interaction, update the map center
+                        if (!isUserInteraction) {
+                            userLocation = { latitude, longitude };
+                            updateMapCenter(latitude, longitude);
+                        }
 
-                // Update or create the current location marker
-                currentLocationMarker
-                    ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
-            },
-            // Error callback when there's an issue retrieving position
-            (error) => {
-                if (error.code === 1) {
-                    // Device location is off. Please enable location and refresh the page.
-                    alert('Device location is off. Please enable location and refresh the page.');
-                } else {
-                    // For other errors, log the error to the console
-                    console.error('Error in retrieving position:', error.message);
-                }
-            },
-            // Geolocation options
-            { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
-        );
+                        // Update or create the current location marker
+                        currentLocationMarker
+                            ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
+                            : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
+                    },
+                    // Error callback when there's an issue retrieving position
+                    (error) => {
+                        if (error.code === 1) {
+                            // Device location is off. Please enable location and refresh the page.
+                            alert('Device location is off. Please enable location and refresh the page.');
+                        } else {
+                            // For other errors, log the error to the console
+                            console.error('Error in retrieving position:', error.message);
+                        }
+                    },
+                    // Geolocation options
+                    { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
+                );
+            } else if (result.state === 'denied') {
+                // Permission is denied. Show custom message.
+                alert('Device location permission is denied. Please enable location and refresh the page.');
+            }
+        });
     };
+
     // Function to handle changes in device orientation
     const handleOrientation = (event) => {
         compassRotation = 360 - event.alpha; // Calculate rotation in degrees
