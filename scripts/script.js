@@ -248,27 +248,100 @@ const watchUserLocation = () => {
         document.querySelector('#ar-destination-entity').appendChild(arLabel);
     };
 
+    // Helper function to calculate the Haversine distance between two coordinates in meters
+    const calculateHaversineDistance = (coord1, coord2) => {
+        const R = 6371000; // Radius of the Earth in meters
+        const lat1 = (coord1.latitude * Math.PI) / 180;
+        const lat2 = (coord2.latitude * Math.PI) / 180;
+        const deltaLat = ((coord2.latitude - coord1.latitude) * Math.PI) / 180;
+        const deltaLon = ((coord2.longitude - coord1.longitude) * Math.PI) / 180;
+
+        const a =
+            Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+            Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+        const distance = R * c;
+        return distance;
+    };
+
+    // Helper function to calculate the midpoint between two coordinates
+    const calculateMidpoint = (coord1, coord2) => {
+        const midLat = (coord1.latitude + coord2.latitude) / 2;
+        const midLon = (coord1.longitude + coord2.longitude) / 2;
+        return { latitude: midLat, longitude: midLon };
+    };
+
+    // Helper function to calculate the rotation between two coordinates
+    const calculateRotation = (coord1, coord2) => {
+        const deltaX = coord2.longitude - coord1.longitude;
+        const deltaY = coord2.latitude - coord1.latitude;
+
+        const rotationY = Math.atan2(deltaX, deltaY) * (180 / Math.PI);
+        return { x: 0, y: -rotationY, z: 0 };
+    };
+
+    // Helper function to set AR route attributes based on distance
+    const setARRouteAttributes = (arRouteEntity, distance) => {
+        // Customize appearance based on distance if needed
+        // For example, change color or texture
+        if (distance > 100) {
+            arRouteEntity.setAttribute('material', 'color', 'blue');
+        } else {
+            arRouteEntity.setAttribute('material', 'color', 'green');
+        }
+    };
+
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Check if directionsData is defined and contains route information
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            // Extract route coordinates from Mapbox directions data
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-    
-            // Create an AR route using A-Frame entities
-            const arRoute = document.createElement('a-route');
-            arRoute.setAttribute('line', {
-                path: routeCoordinates,
-                color: '#3882f6', // Blue color
-                opacity: 0.8,
+        // Remove existing AR routes
+        const existingARRoutes = document.querySelectorAll('.ar-route-entity');
+        existingARRoutes.forEach(routeEntity => routeEntity.remove());
+
+        // Extract route coordinates from Mapbox directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+
+        // Iterate through route coordinates to add AR route
+        for (let i = 0; i < routeCoordinates.length - 1; i++) {
+            const startCoord = { latitude: routeCoordinates[i][1], longitude: routeCoordinates[i][0] };
+            const endCoord = { latitude: routeCoordinates[i + 1][1], longitude: routeCoordinates[i + 1][0] };
+
+            // Calculate distance between two coordinates
+            const distance = calculateHaversineDistance(startCoord, endCoord);
+
+            // Calculate midpoint between two coordinates
+            const midpoint = calculateMidpoint(startCoord, endCoord);
+
+            // Calculate rotation between two coordinates
+            const rotation = calculateRotation(startCoord, endCoord);
+
+            // Create an A-Frame entity for the AR route segment
+            const arRouteEntity = document.createElement('a-entity');
+            arRouteEntity.classList.add('ar-route-entity'); // Add a class for identification
+
+            // Set AR route attributes (customize as needed)
+            arRouteEntity.setAttribute('geometry', {
+                primitive: 'cylinder',
+                height: distance,
+                radius: 0.1,
             });
-    
-            // Add the AR route to the A-Frame scene
-            document.querySelector('#ar-route').appendChild(arRoute);
-        } else {
-            console.error('Invalid directionsData or missing route coordinates.');
+
+            arRouteEntity.setAttribute('position', {
+                x: midpoint.longitude,
+                y: 0, // Adjust as needed
+                z: midpoint.latitude,
+            });
+
+            arRouteEntity.setAttribute('rotation', rotation);
+
+            // Set AR route appearance based on distance
+            setARRouteAttributes(arRouteEntity, distance);
+
+            // Append AR route entity to the scene
+            document.querySelector('a-scene').appendChild(arRouteEntity);
         }
-    };       
+    };
       
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
