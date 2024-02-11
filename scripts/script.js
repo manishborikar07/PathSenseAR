@@ -51,6 +51,38 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    // Function to check if geolocation is available and handle location permission
+    const checkLocationPermission = () => {
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                // Success callback when position is retrieved
+                (position) => {
+                    // Permission granted, continue with your existing logic
+                    // Call the function to start watching the user's location
+                    watchUserLocation();
+                    setMultifunctionImage();
+                },
+                // Error callback when there's an issue retrieving position
+                (error) => {
+                    console.error('Error in retrieving position', error);
+                    // Handle specific errors if needed
+                    if (error.code === error.PERMISSION_DENIED) {
+                        // User denied location permission
+                        alert('Please enable location services and refresh the page.');
+                    } else {
+                        // Other errors
+                        alert('Error retrieving location. Please check your settings and refresh the page.');
+                    }
+                },
+                // Geolocation options
+                { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
+            );
+        } else {
+            // Geolocation not supported by the browser
+            alert('Geolocation is not supported by your browser.');
+        }
+    };
+
     // Function to watch for changes in the user's location
     const watchUserLocation = () => {
         navigator.geolocation.watchPosition(
@@ -414,10 +446,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // End of the 'DOMContentLoaded' event listener
     // Call the function to initialize map and location
     initMap();
-    // Call the function to start watching the user's location
-    watchUserLocation();
-    // Call the function to set the initial multifunction button image
-    setMultifunctionImage();
+    // Call the function to check location permission
+    checkLocationPermission();
+    
 
     // Watch for changes in the map's bearing
     map.on('rotate', (event) => {
@@ -428,7 +459,7 @@ document.addEventListener('DOMContentLoaded', function () {
     map.on('load', () => {
         // Set the default atmosphere style
         map.setFog({});
-    });
+    });
 
     // Add an event listener for map interaction (e.g., drag or zoom)
     map.on('touchstart', () => {
