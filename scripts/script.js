@@ -307,6 +307,8 @@ const watchUserLocation = () => {
             const startCoord = { latitude: routeCoordinates[i][1], longitude: routeCoordinates[i][0] };
             const endCoord = { latitude: routeCoordinates[i + 1][1], longitude: routeCoordinates[i + 1][0] };
 
+            console.log('Adding AR route segment:', startCoord, 'to', endCoord);
+            
             // Calculate distance between two coordinates
             const distance = calculateHaversineDistance(startCoord, endCoord);
 
