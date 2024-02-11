@@ -52,44 +52,44 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to watch for changes in the user's location
-const watchUserLocation = () => {
-    navigator.geolocation.watchPosition(
-        // Success callback when position is retrieved
-        (position) => {
-            const { latitude, longitude } = position.coords;
-            userLocation = { latitude, longitude }; // Update global userLocation
+    const watchUserLocation = () => {
+        navigator.geolocation.watchPosition(
+            // Success callback when position is retrieved
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                userLocation = { latitude, longitude }; // Update global userLocation
 
-            // If there is no ongoing user interaction, update the map center
-            if (!isUserInteraction) {
-                userLocation = { latitude, longitude };
-                updateMapCenter(latitude, longitude);
-            }
+                // If there is no ongoing user interaction, update the map center
+                if (!isUserInteraction) {
+                    userLocation = { latitude, longitude };
+                    updateMapCenter(latitude, longitude);
+                }
 
-            // Update or create the current location marker
-            currentLocationMarker
-                ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
-        },
-        // Error callback when there's an issue retrieving position
-        (error) => {
-            if (error.code === 1) {
-                // Device location is off. Please enable location and refresh the page.
-                alert('Device location is off. Please enable location and refresh the page.');
-            } else if (error.code === 2) {
-                // Position information is unavailable
-                alert('Position information is unavailable. Please try again.');
-            } else if (error.code === 3) {
-                // The request to get user location timed out
-                alert('Request to get user location timed out. Please try again.');
-            } else {
-                // For other errors, log the error to the console
-                console.error('Error in retrieving position:', error.message);
-            }
-        },
-        // Geolocation options
-        { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
-    );
-};
+                // Update or create the current location marker
+                currentLocationMarker
+                    ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
+                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
+            },
+            // Error callback when there's an issue retrieving position
+            (error) => {
+                if (error.code === 1) {
+                    // Device location is off. Please enable location and refresh the page.
+                    alert('Device location is off. Please enable location and refresh the page.');
+                } else if (error.code === 2) {
+                    // Position information is unavailable
+                    alert('Position information is unavailable. Please try again.');
+                } else if (error.code === 3) {
+                    // The request to get user location timed out
+                    alert('Request to get user location timed out. Please try again.');
+                } else {
+                    // For other errors, log the error to the console
+                    console.error('Error in retrieving position:', error.message);
+                }
+            },
+            // Geolocation options
+            { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
+        );
+    };
 
     // Function to handle changes in device orientation
     const handleOrientation = (event) => {
@@ -250,37 +250,10 @@ const watchUserLocation = () => {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Assuming you have an A-Frame scene with an AR camera and AR markers set up
-    
-        // Check if there are route instructions
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            const routeInstructions = directionsData.routes[0].legs[0].steps;
-    
-            // Clear previous AR route elements
-            const arRouteEntity = document.querySelector('#ar-route-entity');
-            if (arRouteEntity) {
-                arRouteEntity.parentNode.removeChild(arRouteEntity);
-            }
-    
-            // Create a new A-Frame entity for the AR route
-            const arRoute = document.createElement('a-entity');
-            arRoute.setAttribute('id', 'ar-route-entity');
-    
-            // Loop through route instructions and create AR markers
-            routeInstructions.forEach((step, index) => {
-                const arMarker = document.createElement('a-entity');
-                arMarker.setAttribute('geometry', 'primitive: cylinder; height: 0.1; radius: 0.05');
-                arMarker.setAttribute('material', 'color: blue');
-                arMarker.setAttribute('position', `${step.maneuver.location[1]} 0 ${step.maneuver.location[0]}`);
-                arRoute.appendChild(arMarker);
-            });
-    
-            // Add the AR route entity to the A-Frame scene
-            const arScene = document.querySelector('a-scene');
-            arScene.appendChild(arRoute);
-        }
+        // Add an AR route that shows a blue conveyor belt on the route.
     };
       
+
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
         // Ensure the map is initialized
