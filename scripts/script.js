@@ -273,8 +273,7 @@ const watchUserLocation = () => {
             arRouteEntity.setAttribute('geometry', {
                 primitive: 'plane',
                 width: 5, // Adjust width based on your preference
-                height: 1, // Adjust height based on your preference
-                depth: distance, // Use distance between coordinates as depth
+                height: distance, // Adjust height based on your preference
             });
 
             
