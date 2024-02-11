@@ -276,10 +276,11 @@ const watchUserLocation = () => {
                 height: 1, // Adjust height based on your preference
                 depth: distance, // Use distance between coordinates as depth
             });
-    
-            arRouteEntity.setAttribute('material', {
-                color: 'blue',
-            });
+
+            
+            arRouteEntity.setAttribute('gps-new-entity-place', `latitude: ${endCoord}; longitude: ${startCoord}`);
+            arRouteEntity.setAttribute('color', '#3882f6'); // Set the text color
+            arRouteEntity.setAttribute('scale', '4 4 4'); // Adjust scale as needed
     
             // Calculate position and rotation based on the coordinates
             const position = calculateMidpoint(startCoord, endCoord);
