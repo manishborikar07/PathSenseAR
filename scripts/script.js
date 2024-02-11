@@ -68,10 +68,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Update or create the current location marker
                 currentLocationMarker
                     ? updateMarker(currentLocationMarker, latitude, longitude, 'You are here!')
-                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current.png'));
+                    : (currentLocationMarker = addMarker(latitude, longitude, 'You are here!', '../models/current1.png'));
             },
             // Error callback when there's an issue retrieving position
-            (error) => console.error('Error in retrieving position', error),
+            (error) => {
+                if (error.code === error.PERMISSION_DENIED) {
+                    console.error('User denied access to GPS.');
+                    // You can display a different message if location is denied
+                    alert('User denied access to GPS. Please enable location and refresh the page.');
+                } else if (error.code === error.POSITION_UNAVAILABLE) {
+                    console.error('Position unavailable. Device location might be turned off.');
+                    // Display a message indicating that device location is off
+                    alert('Device location is off. Please enable location and refresh the page.');
+                } else {
+                    console.error('Error in retrieving position:', error);
+                    alert('Error in retrieving position. Please try again later.');
+                }
+            },
             // Geolocation options
             { enableHighAccuracy: true, maximumAge: 0, timeout: 27000 }
         );
