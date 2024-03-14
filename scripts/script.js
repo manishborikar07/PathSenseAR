@@ -250,9 +250,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
-        // Add an AR route that shows a blue conveyor belt on the route.
-    };
-      
+        // Assuming you have an A-Frame scene with an AR camera and AR markers set up
+
+        // Check if there are route instructions
+        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+            const routeInstructions = directionsData.routes[0].legs[0].steps;
+
+            // Clear previous AR route elements
+            const arRouteEntity = document.querySelector('#ar-route-entity');
+            if (arRouteEntity) {
+                arRouteEntity.innerHTML = ''; // Clear existing content
+            }
+
+            // Loop through route instructions and create AR markers
+            routeInstructions.forEach((step, index) => {
+                const arMarker = document.createElement('a-marker');
+                arMarker.setAttribute('gps-entity-place', latitude: ${step.maneuver.location[1]}; longitude: ${step.maneuver.location[0]});
+                arMarker.setAttribute('scale', '0.5 0.5 0.5'); // Adjust scale as needed
+                arMarker.setAttribute('src', 'path/to/marker-image.png'); // Provide an image for the marker
+                arRouteEntity.appendChild(arMarker);
+            });
+        }
+    };    
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
