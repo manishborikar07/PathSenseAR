@@ -249,29 +249,72 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update AR elements based on Mapbox directions
-    const updateARDirections = (directionsData) => {
-        // Assuming you have an A-Frame scene with an AR camera and AR markers set up
+const updateARDirections = (directionsData) => {
+    // Extract route coordinates from Mapbox directions data
+    const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-        // Check if there are route instructions
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            const routeInstructions = directionsData.routes[0].legs[0].steps;
+    // Convert route coordinates to AR space coordinates
+    const arRouteCoordinates = convertToARCoordinates(routeCoordinates);
 
-            // Clear previous AR route elements
-            const arRouteEntity = document.querySelector('#ar-route-entity');
-            if (arRouteEntity) {
-                arRouteEntity.innerHTML = ''; // Clear existing content
-            }
+    // Create AR route elements
+    const arRouteElements = createARRouteElements(arRouteCoordinates);
 
-            // Loop through route instructions and create AR markers
-            routeInstructions.forEach((step, index) => {
-                const arMarker = document.createElement('a-marker');
-                arMarker.setAttribute('gps-entity-place', latitude: ${step.maneuver.location[1]}; longitude: ${step.maneuver.location[0]});
-                arMarker.setAttribute('scale', '0.5 0.5 0.5'); // Adjust scale as needed
-                arMarker.setAttribute('src', 'path/to/marker-image.png'); // Provide an image for the marker
-                arRouteEntity.appendChild(arMarker);
-            });
-        }
-    };    
+    // Add AR route elements to the A-Frame scene
+    addARRouteElementsToScene(arRouteElements);
+};
+
+// Function to convert route coordinates to AR space coordinates
+const convertToARCoordinates = (routeCoordinates) => {
+    // Perform conversion based on user's location and AR scene setup
+    // This involves calculating positions relative to the user's location in AR space
+    // You may need to adjust the conversion logic based on your AR setup
+    const arRouteCoordinates = [];
+
+    // Sample conversion logic (for demonstration purposes)
+    routeCoordinates.forEach(coord => {
+        // Example: Convert each coordinate by adding/subtracting offsets
+        const arCoord = {
+            latitude: coord[1] + 0.001, // Adjust latitude offset
+            longitude: coord[0] + 0.001, // Adjust longitude offset
+        };
+        arRouteCoordinates.push(arCoord);
+    });
+
+    return arRouteCoordinates;
+};
+
+// Function to create AR route elements
+const createARRouteElements = (arRouteCoordinates) => {
+    // Create A-Frame entities (e.g., lines or markers) based on the AR route coordinates
+    const arRouteElements = [];
+
+    // Create AR route elements (for demonstration purposes, create markers)
+    arRouteCoordinates.forEach(coord => {
+        // Create a marker entity for each coordinate
+        const marker = document.createElement('a-entity');
+        marker.setAttribute('gps-entity-place', `latitude: ${coord.latitude}; longitude: ${coord.longitude}`);
+        marker.setAttribute('geometry', 'primitive: box');
+        marker.setAttribute('material', 'color: #ff0000'); // Red color
+        marker.setAttribute('scale', '0.5 0.5 0.5'); // Adjust scale as needed
+
+        arRouteElements.push(marker);
+    });
+
+    return arRouteElements;
+};
+
+// Function to add AR route elements to the A-Frame scene
+const addARRouteElementsToScene = (arRouteElements) => {
+    // Append AR route elements to the A-Frame scene
+    // These elements will be displayed in the AR view
+    const arScene = document.querySelector('a-scene');
+
+    arRouteElements.forEach(element => {
+        arScene.appendChild(element);
+    });
+};
+
+      
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
