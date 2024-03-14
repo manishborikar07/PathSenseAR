@@ -250,40 +250,72 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
 const updateARDirections = (directionsData) => {
-    // Ensure the AR route container exists
-    const arRouteContainer = document.getElementById('ar-route-container');
-    if (!arRouteContainer) {
-        console.error('AR route container not found.');
-        return;
-    }
-
     // Check if directionsData is defined and contains route information
     if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
         // Extract route coordinates from Mapbox directions data
         const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-        // Log route coordinates to identify any issues
-        console.log('Route Coordinates:', routeCoordinates);
+        // Calculate the total distance of the route
+        const totalDistance = directionsData.routes[0].distance;
 
-        // Create and append A-Frame entities for each segment of the route
-        for (let i = 0; i < routeCoordinates.length - 1; i++) {
-            const startPoint = routeCoordinates[i];
-            const endPoint = routeCoordinates[i + 1];
+        // Define AR path properties
+        const pathColor = '#00FF00'; // Green color for the path
+        const pathOpacity = 0.8; // Opacity of the path
+        const pathWidth = 0.2; // Width of the path
 
-            // Create a line entity for each segment of the route
-            const line = document.createElement('a-entity');
-            line.setAttribute('line', {
-                start: `${startPoint[0]} ${startPoint[1]} 0`,
-                end: `${endPoint[0]} ${endPoint[1]} 0`,
-                color: '#3882f6', // Set the color of the line
-            });
+        // Create a curved line entity to represent the AR route
+        const routeEntity = document.createElement('a-entity');
+        routeEntity.setAttribute('line', {
+            path: routeCoordinates.map(coord => `${coord[0]} ${coord[1]}`).join(','),
+            color: pathColor,
+            opacity: pathOpacity,
+            lineWidth: pathWidth
+        });
 
-            // Append the line entity to the AR route container
-            arRouteContainer.appendChild(line);
-        }
+        // Add the route entity to the AR scene
+        document.querySelector('a-scene').appendChild(routeEntity);
+
+        // Animate the user along the route
+        animateUserAlongRoute(routeCoordinates, totalDistance);
     } else {
         console.error('Invalid directionsData or missing route coordinates.');
     }
+};
+
+// Function to animate the user along the route
+const animateUserAlongRoute = (routeCoordinates, totalDistance) => {
+    // Define animation properties
+    const animationDuration = 10000; // Duration of the animation in milliseconds
+    const animationStep = 10; // Step size for animation in milliseconds
+    let distanceTraveled = 0;
+
+    // Start the animation loop
+    const animationInterval = setInterval(() => {
+        // Calculate the user's position along the route based on the distance traveled
+        const fractionTraveled = distanceTraveled / totalDistance;
+        const targetIndex = Math.floor(fractionTraveled * routeCoordinates.length);
+        const targetPosition = routeCoordinates[targetIndex];
+
+        // Update the user's position in the AR scene
+        // For simplicity, assume the user is represented by a 3D model entity
+        // Replace 'userEntity' with the actual entity representing the user
+        userEntity.setAttribute('position', `${targetPosition[0]} 0 ${targetPosition[1]}`);
+
+        // Increment the distance traveled for the next step
+        distanceTraveled += animationStep;
+
+        // Check if the animation is complete
+        if (distanceTraveled >= totalDistance) {
+            clearInterval(animationInterval); // Stop the animation loop
+            console.log('Animation complete.'); // Optional: Log completion message
+        }
+    }, animationStep);
+
+    // Ensure the animation stops after the specified duration
+    setTimeout(() => {
+        clearInterval(animationInterval);
+        console.log('Animation stopped due to timeout.'); // Optional: Log timeout message
+    }, animationDuration);
 };
 
       
