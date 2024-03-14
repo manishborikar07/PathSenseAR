@@ -250,68 +250,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to update AR elements based on Mapbox directions
 const updateARDirections = (directionsData) => {
-    // Extract route coordinates from Mapbox directions data
-    const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+    // Ensure the AR route container exists
+    const arRouteContainer = document.getElementById('ar-route-container');
+    if (!arRouteContainer) {
+        console.error('AR route container not found.');
+        return;
+    }
 
-    // Convert route coordinates to AR space coordinates
-    const arRouteCoordinates = convertToARCoordinates(routeCoordinates);
+    // Check if directionsData is defined and contains route information
+    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+        // Extract route coordinates from Mapbox directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-    // Create AR route elements
-    const arRouteElements = createARRouteElements(arRouteCoordinates);
+        // Log route coordinates to identify any issues
+        console.log('Route Coordinates:', routeCoordinates);
 
-    // Add AR route elements to the A-Frame scene
-    addARRouteElementsToScene(arRouteElements);
-};
+        // Create and append A-Frame entities for each segment of the route
+        for (let i = 0; i < routeCoordinates.length - 1; i++) {
+            const startPoint = routeCoordinates[i];
+            const endPoint = routeCoordinates[i + 1];
 
-// Function to convert route coordinates to AR space coordinates
-const convertToARCoordinates = (routeCoordinates) => {
-    // Perform conversion based on user's location and AR scene setup
-    // This involves calculating positions relative to the user's location in AR space
-    // You may need to adjust the conversion logic based on your AR setup
-    const arRouteCoordinates = [];
+            // Create a line entity for each segment of the route
+            const line = document.createElement('a-entity');
+            line.setAttribute('line', {
+                start: `${startPoint[0]} ${startPoint[1]} 0`,
+                end: `${endPoint[0]} ${endPoint[1]} 0`,
+                color: '#3882f6', // Set the color of the line
+            });
 
-    // Sample conversion logic (for demonstration purposes)
-    routeCoordinates.forEach(coord => {
-        // Example: Convert each coordinate by adding/subtracting offsets
-        const arCoord = {
-            latitude: coord[1] + 0.001, // Adjust latitude offset
-            longitude: coord[0] + 0.001, // Adjust longitude offset
-        };
-        arRouteCoordinates.push(arCoord);
-    });
-
-    return arRouteCoordinates;
-};
-
-// Function to create AR route elements
-const createARRouteElements = (arRouteCoordinates) => {
-    // Create A-Frame entities (e.g., lines or markers) based on the AR route coordinates
-    const arRouteElements = [];
-
-    // Create AR route elements (for demonstration purposes, create markers)
-    arRouteCoordinates.forEach(coord => {
-        // Create a marker entity for each coordinate
-        const marker = document.createElement('a-entity');
-        marker.setAttribute('gps-entity-place', `latitude: ${coord.latitude}; longitude: ${coord.longitude}`);
-        marker.setAttribute('geometry', 'primitive: box');
-        marker.setAttribute('material', 'color: #ff0000'); // Red color
-        marker.setAttribute('scale', '0.5 0.5 0.5'); // Adjust scale as needed
-
-        arRouteElements.push(marker);
-    });
-
-    return arRouteElements;
-};
-
-// Function to add AR route elements to the A-Frame scene
-const addARRouteElementsToScene = (arRouteElements) => {
-    // Append AR route elements to the A-Frame scene
-    // These elements will be displayed in the AR view
-    const arScene = document.querySelector('a-scene');
-
-    arRouteElements.forEach(element => {
-        arScene.appendChild(element);
-    });
+            // Append the line entity to the AR route container
+            arRouteContainer.appendChild(line);
+        }
+    } else {
+        console.error('Invalid directionsData or missing route coordinates.');
+    }
 };
 
       
