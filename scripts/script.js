@@ -287,7 +287,7 @@ const createRouteSegment = (startPoint, endPoint) => {
     routeSegment.setAttribute('depth', `${distance}m`); // Set segment depth based on distance between points
     routeSegment.setAttribute('color', 'blue'); // Set the segment color
     routeSegment.setAttribute('opacity', '0.8'); // Set segment opacity
-    routeSegment.setAttribute('position', '0 -10 0'); // Adjust position relative to camera
+    routeSegment.setAttribute('position', '0 -20 0'); // Adjust position relative to camera
     routeSegment.setAttribute('scale', '4 4 4'); // Adjust scale as needed
     routeSegment.setAttribute('rotation', calculateRotation(startPoint, endPoint)); // Set rotation to align with the route
     
