@@ -249,102 +249,58 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update AR elements based on Mapbox directions
-    const updateARDirections = (directionsData) => {
-        // Check if directions data is valid and contains route information
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            // Extract route coordinates from directions data
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+const updateARDirections = (directionsData) => {
+    // Check if directions data is valid and contains route information
+    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+        // Extract route coordinates from directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-            // Loop through the route coordinates to create AR elements
-            for (let i = 0; i < routeCoordinates.length - 1; i++) {
-                // Calculate the distance between consecutive coordinates
-                const distance = calculateDistance(routeCoordinates[i], routeCoordinates[i + 1]);
-
-                // Create a box marker at the start coordinate
-                const marker = createMarkerAtCoordinate(routeCoordinates[i]);
-
-                // Calculate the duration of the animation based on distance (adjust speed as needed)
-                const animationDuration = distance * 1000; // Convert distance to meters and multiply by animation speed
-
-                // Animate the marker to move to the next coordinate
-                animateMarker(marker, routeCoordinates[i + 1], animationDuration);
-            }
-        } else {
-            console.error('Invalid directions data or missing route coordinates.');
-        }
-    };
-
-    // Function to create a box marker at a specified coordinate
-    const createMarkerAtCoordinate = (coordinate) => {
-        // Create a box element as the marker
-        const marker = document.createElement('a-box');
-        marker.setAttribute('gps-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '1'); // Adjust marker width as needed
-        marker.setAttribute('height', '1'); // Adjust marker height as needed
-        marker.setAttribute('depth', '1'); // Adjust marker depth as needed
-        marker.setAttribute('color', '#3882f6'); // Set the marker color
-        marker.setAttribute('opacity', '0.8'); // Set marker opacity
-        marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
-        marker.setAttribute('position', '0 0 0'); // Adjust position relative to camera
-        
-        // Append the marker to the AR scene
-        document.querySelector('a-scene').appendChild(marker);
-
-        return marker;
-    };
-
-    // Function to calculate distance between two coordinates (in kilometers)
-    const calculateDistance = (coord1, coord2) => {
-        const lat1 = coord1[1];
-        const lon1 = coord1[0];
-        const lat2 = coord2[1];
-        const lon2 = coord2[0];
-
-        const R = 6371; // Radius of the earth in km
-        const dLat = deg2rad(lat2 - lat1);  // deg2rad below
-        const dLon = deg2rad(lon2 - lon1);
-        const a = 
-            Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-            Math.sin(dLon/2) * Math.sin(dLon/2)
-            ; 
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
-        const distance = R * c; // Distance in km
-        return distance;
-    };
-
-    // Function to convert degrees to radians
-    const deg2rad = (deg) => {
-        return deg * (Math.PI/180);
-    };
-
-    // Function to animate marker to move to a new coordinate
-    const animateMarker = (marker, newCoordinate, duration) => {
-        // Define the animation attributes
-        const animationAttributes = {
-            property: 'position',
-            to: `${newCoordinate[0]} 0 ${newCoordinate[1]}`, // New position
-            dur: duration, // Animation duration
-            easing: 'linear', // Linear easing
-            loop: false // Do not loop the animation
+        // Create a line string representing the route path
+        const lineString = {
+            type: 'Feature',
+            geometry: {
+                type: 'LineString',
+                coordinates: routeCoordinates
+            },
+            properties: {}
         };
 
-        // Create the animation element
-        const animation = document.createElement('a-animation');
+        // Create a GeoJSON source for the line string
+        const source = {
+            type: 'geojson',
+            data: lineString
+        };
 
-        // Set animation attributes
-        Object.keys(animationAttributes).forEach(attribute => {
-            animation.setAttribute(attribute, animationAttributes[attribute]);
-        });
+        // Add the line to the AR scene
+        addLineToARScene(source);
+    } else {
+        console.error('Invalid directions data or missing route coordinates.');
+    }
+};
 
-        // Append the animation to the marker
-        marker.appendChild(animation);
+// Function to add a line representing the route path to the AR scene
+const addLineToARScene = (source) => {
+    // Remove existing route line if it exists
+    const existingLine = document.getElementById('route-line');
+    if (existingLine) {
+        existingLine.parentNode.removeChild(existingLine);
+    }
 
-        // Remove the marker after animation completes
-        setTimeout(() => {
-            marker.remove();
-        }, duration);
-    };
+    // Create a line element to represent the route
+    const line = document.createElement('a-entity');
+    line.setAttribute('id', 'route-line');
+    line.setAttribute('line', {
+        color: '#3882f6', // Set line color
+        opacity: 0.8,     // Set line opacity
+        path: source.data.geometry.coordinates.map(coord => `${coord[0]} ${coord[1]} 0`).join(',')
+    });
+
+    // Append the line to the AR scene
+    document.querySelector('a-scene').appendChild(line);
+};
+
+
+      
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
