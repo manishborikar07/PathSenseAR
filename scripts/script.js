@@ -282,12 +282,13 @@ const createRouteSegment = (startPoint, endPoint) => {
     // Create a box element as a segment of the route
     const routeSegment = document.createElement('a-box');
     routeSegment.setAttribute('gps-new-entity-place', `latitude: ${midpoint[1]}; longitude: ${midpoint[0]}`);
-    routeSegment.setAttribute('width', '0.5'); // Adjust segment width as needed
-    routeSegment.setAttribute('height', '0.5'); // Adjust segment height as needed
+    routeSegment.setAttribute('width', '1.5'); // Adjust segment width as needed
+    routeSegment.setAttribute('height', '0.2'); // Adjust segment height as needed
     routeSegment.setAttribute('depth', `${distance}m`); // Set segment depth based on distance between points
-    routeSegment.setAttribute('color', '#3882f6'); // Set the segment color
+    routeSegment.setAttribute('color', 'blue'); // Set the segment color
     routeSegment.setAttribute('opacity', '0.8'); // Set segment opacity
-    routeSegment.setAttribute('scale', '4 4 4'); // Adjust scale as needed
+    routeSegment.setAttribute('position', '0 -10 0'); // Adjust position relative to camera
+    //routeSegment.setAttribute('scale', '1 1 1'); // Adjust scale as needed
     routeSegment.setAttribute('rotation', calculateRotation(startPoint, endPoint)); // Set rotation to align with the route
     
     // Append the segment to the AR scene
@@ -315,7 +316,7 @@ const calculateRotation = (startPoint, endPoint) => {
     const angleDeg = (angleRad * 180) / Math.PI;
 
     // Return the rotation in format "x y z" (for example, "0 45 0" for a 45-degree rotation around the y-axis)
-    return `0 ${angleDeg} 0`;
+    return `0 ${angleDeg + 10} 0`;
 };
 
     // Function to update the 2D map with the route
