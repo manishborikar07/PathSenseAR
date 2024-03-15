@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
             // Remove all markers representing the route
-            const routeMarkers = document.querySelectorAll('.route-marker');
+            const routeMarkers = document.querySelectorAll('a-box');
             routeMarkers.forEach(marker => marker.remove());
 
             // Loop through the route coordinates to create AR elements
@@ -426,7 +426,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Stop the map rotation
         map.setBearing(0);
-        
+
         // Remove the previous destination marker if it exists
         if (destinationMarker) {
             destinationMarker.remove();
