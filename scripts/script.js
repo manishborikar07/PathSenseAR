@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
         marker.setAttribute('width', '1.5'); // Adjust marker width as needed
         marker.setAttribute('height', '0.1'); // Adjust marker height as needed
-        marker.setAttribute('depth', '30'); // Adjust marker depth as needed
+        marker.setAttribute('depth', '1.5'); // Adjust marker depth as needed
         marker.setAttribute('color', 'blue'); // Set the text color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
         marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
