@@ -272,7 +272,7 @@ const createARElementAtCoordinate = (coordinate) => {
     // For example, if using A-Frame, you might create an <a-entity> element at the specified GPS coordinates
     const arElement = document.createElement('a-entity');
     arElement.setAttribute('gps-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-    arElement.setAttribute('gltf-model', '../models/uploads_files_1969587_Cactus1.glb'); // Example 3D model
+    arElement.setAttribute('gltf-model', '../models/uploads_files_1969587_Cactus1.gltf'); // Example 3D model
     arElement.setAttribute('scale', '0.1 0.1 0.1'); // Adjust scale as needed
     arElement.setAttribute('position', '0 0 -10'); // Adjust position relative to camera
 
