@@ -249,7 +249,6 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update AR elements based on Mapbox directions
-// Function to update AR elements based on Mapbox directions
 const updateARDirections = (directionsData) => {
     // Check if directions data is valid and contains route information
     if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
@@ -281,10 +280,12 @@ const convertCoordinateToPosition = (coordinate) => {
     const longitude = coordinate[0];
     const altitude = 0; // Assuming altitude is not considered for now
 
-    // Convert latitude and longitude to XYZ position (adjust scale as needed)
-    const x = longitude * SCALE_FACTOR;
-    const y = altitude * SCALE_FACTOR;
-    const z = -latitude * SCALE_FACTOR; // Invert latitude for proper positioning
+    // Convert latitude and longitude directly to XYZ position
+    // Adjust the scale factor as needed to fit your scene
+    const scaleFactor = 0.1; // Example scale factor
+    const x = longitude * scaleFactor;
+    const y = altitude * scaleFactor;
+    const z = -latitude * scaleFactor; // Invert latitude for proper positioning
 
     return { x, y, z };
 };
@@ -304,7 +305,6 @@ const createLineEntity = (vertices) => {
     document.querySelector('a-scene').appendChild(lineEntity);
 };
 
-      
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
