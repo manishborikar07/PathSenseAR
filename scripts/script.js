@@ -255,11 +255,20 @@ const updateARDirections = (directionsData) => {
         // Extract route coordinates from directions data
         const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-        // Loop through the route coordinates to create AR elements
+        // Create an array to hold the coordinates of the route line
+        const lineCoordinates = [];
+
+        // Loop through the route coordinates to create AR elements and populate the line coordinates
         routeCoordinates.forEach((coordinate) => {
             // Create AR elements representing each point along the route
             createMarkerAtCoordinate(coordinate);
+
+            // Add the coordinate to the lineCoordinates array
+            lineCoordinates.push(coordinate[0], coordinate[1]);
         });
+
+        // Create a line element representing the route
+        createLineForRoute(lineCoordinates);
     } else {
         console.error('Invalid directions data or missing route coordinates.');
     }
@@ -278,6 +287,18 @@ const createMarkerAtCoordinate = (coordinate) => {
     // Append the marker to the AR scene
     document.querySelector('a-scene').appendChild(marker);
 };
+
+// Function to create a line representing the route
+const createLineForRoute = (lineCoordinates) => {
+    // Create a line element
+    const line = document.createElement('a-entity');
+    line.setAttribute('gps-entity-line', `line-coordinates: ${lineCoordinates.join(',')}`);
+    line.setAttribute('line', 'color: blue; opacity: 0.8');
+    
+    // Append the line to the AR scene
+    document.querySelector('a-scene').appendChild(line);
+};
+
 
       
 
