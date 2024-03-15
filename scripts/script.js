@@ -270,9 +270,9 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create a box element as the marker
         const marker = document.createElement('a-box');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '2'); // Adjust marker width as needed
-        marker.setAttribute('height', '0.2'); // Adjust marker height as needed
-        marker.setAttribute('depth', '1'); // Adjust marker depth as needed
+        marker.setAttribute('width', '1.5'); // Adjust marker width as needed
+        marker.setAttribute('height', '0.1'); // Adjust marker height as needed
+        marker.setAttribute('depth', '10'); // Adjust marker depth as needed
         marker.setAttribute('color', 'blue'); // Set the text color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
         marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
