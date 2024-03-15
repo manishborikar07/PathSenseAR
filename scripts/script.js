@@ -281,7 +281,7 @@ const createRouteSegment = (startPoint, endPoint) => {
     
     // Create a box element as a segment of the route
     const routeSegment = document.createElement('a-box');
-    routeSegment.setAttribute('gps-new-entity-place', `latitude: ${midpoint[1]}; longitude: ${midpoint[0]}`);
+    routeSegment.setAttribute('gps-new-entity-place', `latitude: ${startPoint[1]}; longitude: ${startPoint[0]}`);
     routeSegment.setAttribute('width', '1.5'); // Adjust segment width as needed
     routeSegment.setAttribute('height', '0.2'); // Adjust segment height as needed
     routeSegment.setAttribute('depth', `${distance}m`); // Set segment depth based on distance between points
