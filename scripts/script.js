@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
         arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
         arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
         arLabel.setAttribute('color', 'red'); // Set the text color
-        arLabel.setAttribute('scale', '4 4 4'); // Adjust scale as needed
+        arLabel.setAttribute('scale', '3 3 3'); // Adjust scale as needed
 
         // Append the label to the A-Frame scene
         document.querySelector('#ar-destination-entity').appendChild(arLabel);
@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const rotation = calculateRotation(currentCoordinate, nextCoordinate);
 
                 // Create intermediary points along the route
-                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 10); // Adjust the distance between intermediary points if needed
+                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 7.5); // Adjust the distance between intermediary points if needed
 
                 // Create markers at intermediary points
                 intermediaryPoints.forEach(intermediaryPoint => {
