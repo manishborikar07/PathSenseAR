@@ -248,6 +248,9 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('#ar-destination-entity').appendChild(arLabel);
     };
 
+    // Array to store markers created along the route
+    const markers = [];
+
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
         // Check if directions data is valid and contains route information
@@ -258,10 +261,13 @@ document.addEventListener('DOMContentLoaded', function () {
             // Loop through the route coordinates to create AR elements
             routeCoordinates.forEach((coordinate) => {
                 // Create AR elements representing each point along the route
-                const Marker = createMarkerAtCoordinate(coordinate);
+                const marker = createMarkerAtCoordinate(coordinate);
+                markers.push(marker); // Store the marker in the array
 
-                // Create a line between the current and next markers
-                connectMarkersWithLine(Marker[i], Marker[i+1]);
+                // If there are at least two markers, connect them with a line
+                if (markers.length >= 2) {
+                    connectMarkersWithLine(markers[markers.length - 2], markers[markers.length - 1]);
+                }
             });
         } else {
             console.error('Invalid directions data or missing route coordinates.');
