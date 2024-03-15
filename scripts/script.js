@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
         marker.setAttribute('color', 'blue'); // Set the text color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
         marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
-        marker.setAttribute('position', '0 -40 0'); // Adjust position relative to camera
+        marker.setAttribute('position', '0 -50 0'); // Adjust position relative to camera
         
         // Append the marker to the AR scene
         document.querySelector('a-scene').appendChild(marker);
