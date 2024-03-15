@@ -264,6 +264,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 const currentCoordinate = routeCoordinates[i];
                 const nextCoordinate = routeCoordinates[i + 1];
 
+                // Calculate the distance between current and next coordinates
+                const distance = calculateDistance(currentCoordinate, nextCoordinate);
+
                 // Calculate the rotation angle between current and next coordinates
                 const rotation = calculateRotation(currentCoordinate, nextCoordinate);
 
@@ -272,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Create markers at intermediary points
                 intermediaryPoints.forEach(intermediaryPoint => {
-                    createMarkerAtCoordinate(intermediaryPoint, rotation);
+                    createMarkerAtCoordinate(intermediaryPoint, distance, rotation);
                 });
             }
         } else {
@@ -295,6 +298,28 @@ document.addEventListener('DOMContentLoaded', function () {
         return intermediaryPoints;
     };
 
+    // Function to calculate the distance between two coordinates (in meters) using the Haversine formula
+    const calculateDistance = (startPoint, endPoint) => {
+        const earthRadius = 6371000; // Radius of the Earth in meters
+        const [startLng, startLat] = startPoint;
+        const [endLng, endLat] = endPoint;
+
+        // Convert coordinates from degrees to radians
+        const startLatRad = startLat * Math.PI / 180;
+        const endLatRad = endLat * Math.PI / 180;
+        const latDiffRad = (endLat - startLat) * Math.PI / 180;
+        const lngDiffRad = (endLng - startLng) * Math.PI / 180;
+
+        // Haversine formula to calculate distance
+        const a = Math.sin(latDiffRad / 2) * Math.sin(latDiffRad / 2) +
+                Math.cos(startLatRad) * Math.cos(endLatRad) *
+                Math.sin(lngDiffRad / 2) * Math.sin(lngDiffRad / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = earthRadius * c;
+
+        return distance; // Distance in meters
+    };
+
     // Function to calculate the rotation angle between two points (in degrees)
     const calculateRotation = (startPoint, endPoint) => {
         // Calculate the difference in longitude and latitude
@@ -312,19 +337,25 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to create a marker at a specified coordinate
-    const createMarkerAtCoordinate = (coordinate, rotation) => {
+    const createMarkerAtCoordinate = (coordinate, distance, rotation) => {
+        // Adjust the depth scale factor as needed
+        const depthScaleFactor = 1.5; // Experiment with different values to match the route length
+
+        // Calculate the scaled depth based on the distance and scale factor
+        const scaledDepth = (distance * depthScaleFactor).toFixed(2);
+
         // Create a box element as the marker
         const marker = document.createElement('a-box');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '1'); // Adjust marker width as needed
+        marker.setAttribute('width', '1.5'); // Adjust marker width as needed
         marker.setAttribute('height', '0.2'); // Adjust marker height as needed
-        marker.setAttribute('depth', '1'); // Adjust marker depth based on distance
+        marker.setAttribute('depth', scaledDepth); // Adjust marker depth based on scaled distance
         marker.setAttribute('rotation', `0 ${rotation} 0`); // Rotate the marker
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
         marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
-        marker.setAttribute('position', '0 -15 0'); // Adjust position relative to camera
-        
+        marker.setAttribute('position', '0 -20 0'); // Adjust position relative to camera
+
         document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
     };
 
