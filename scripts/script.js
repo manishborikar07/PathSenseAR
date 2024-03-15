@@ -288,7 +288,7 @@ const createRouteSegment = (startPoint, endPoint) => {
     routeSegment.setAttribute('color', 'blue'); // Set the segment color
     routeSegment.setAttribute('opacity', '0.8'); // Set segment opacity
     routeSegment.setAttribute('position', '0 -10 0'); // Adjust position relative to camera
-    //routeSegment.setAttribute('scale', '1 1 1'); // Adjust scale as needed
+    routeSegment.setAttribute('scale', '4 4 4'); // Adjust scale as needed
     routeSegment.setAttribute('rotation', calculateRotation(startPoint, endPoint)); // Set rotation to align with the route
     
     // Append the segment to the AR scene
@@ -316,7 +316,7 @@ const calculateRotation = (startPoint, endPoint) => {
     const angleDeg = (angleRad * 180) / Math.PI;
 
     // Return the rotation in format "x y z" (for example, "0 45 0" for a 45-degree rotation around the y-axis)
-    return `0 ${angleDeg + 10} 0`;
+    return `0 ${angleDeg + 35} 0`;
 };
 
     // Function to update the 2D map with the route
