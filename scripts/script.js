@@ -295,12 +295,26 @@ const createRouteSegment = (startPoint, endPoint) => {
     document.querySelector('a-scene').appendChild(routeSegment);
 };
 
-// Function to calculate the distance between two coordinates (in meters)
+// Function to calculate the distance between two coordinates (in meters) using the Haversine formula
 const calculateDistance = (startPoint, endPoint) => {
-    // Implement your distance calculation algorithm here
-    // This can be done using the Haversine formula or other methods
-    // For simplicity, this function returns a constant value
-    return 10; // Adjust as needed
+    const earthRadius = 6371000; // Radius of the Earth in meters
+    const [startLng, startLat] = startPoint;
+    const [endLng, endLat] = endPoint;
+
+    // Convert coordinates from degrees to radians
+    const startLatRad = startLat * Math.PI / 180;
+    const endLatRad = endLat * Math.PI / 180;
+    const latDiffRad = (endLat - startLat) * Math.PI / 180;
+    const lngDiffRad = (endLng - startLng) * Math.PI / 180;
+
+    // Haversine formula to calculate distance
+    const a = Math.sin(latDiffRad / 2) * Math.sin(latDiffRad / 2) +
+              Math.cos(startLatRad) * Math.cos(endLatRad) *
+              Math.sin(lngDiffRad / 2) * Math.sin(lngDiffRad / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = earthRadius * c;
+
+    return distance; // Distance in meters
 };
 
 // Function to calculate the rotation angle between two points (in degrees)
