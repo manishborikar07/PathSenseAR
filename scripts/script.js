@@ -338,18 +338,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to create a marker at a specified coordinate
     const createMarkerAtCoordinate = (coordinate, distance, rotation) => {
-        // Adjust the depth scale factor as needed
-        const depthScaleFactor = 1.5; // Experiment with different values to match the route length
-
-        // Calculate the scaled depth based on the distance and scale factor
-        const scaledDepth = (distance * depthScaleFactor).toFixed(2);
-
         // Create a box element as the marker
         const marker = document.createElement('a-box');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '1.5'); // Adjust marker width as needed
+        marker.setAttribute('width', '3'); // Adjust marker width as needed
         marker.setAttribute('height', '0.2'); // Adjust marker height as needed
-        marker.setAttribute('depth', scaledDepth); // Adjust marker depth based on scaled distance
+        marker.setAttribute('depth', 3); // Adjust marker depth based on scaled distance
         marker.setAttribute('rotation', `0 ${rotation} 0`); // Rotate the marker
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
