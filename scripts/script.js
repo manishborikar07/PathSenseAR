@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const rotation = calculateRotation(currentCoordinate, nextCoordinate);
 
                 // Create intermediary points along the route
-                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, distance, 5); // Adjust the distance between intermediary points if needed
+                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 10); // Adjust the distance between intermediary points if needed
 
                 // Create markers at intermediary points
                 intermediaryPoints.forEach(intermediaryPoint => {
@@ -284,9 +284,9 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to calculate intermediary points between two coordinates
-    const generateIntermediaryPoints = (startPoint, endPoint, distance, distanceBetweenPoints) => {
+    const generateIntermediaryPoints = (startPoint, endPoint, distanceBetweenPoints) => {
         const intermediaryPoints = [];
-        const segments = Math.ceil(distance / distanceBetweenPoints);
+        const segments = Math.ceil(calculateDistance(startPoint, endPoint) / distanceBetweenPoints);
 
         for (let i = 1; i < segments; i++) {
             const fraction = i / segments;
@@ -341,15 +341,15 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create a box element as the marker
         const marker = document.createElement('a-box');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '3'); // Adjust marker width as needed
+        marker.setAttribute('width', '1.5'); // Adjust marker width as needed
         marker.setAttribute('height', '0.2'); // Adjust marker height as needed
-        marker.setAttribute('depth', '1.5'); // Adjust marker depth based on scaled distance
+        marker.setAttribute('depth', '1'); // Adjust marker depth based on distance
         marker.setAttribute('rotation', `0 ${rotation} 0`); // Rotate the marker
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
         marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
-        marker.setAttribute('position', '0 -20 0'); // Adjust position relative to camera
-
+        marker.setAttribute('position', '0 -15 0'); // Adjust position relative to camera
+        
         document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
     };
 
