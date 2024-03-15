@@ -258,26 +258,25 @@ const updateARDirections = (directionsData) => {
         // Loop through the route coordinates to create AR elements
         routeCoordinates.forEach((coordinate) => {
             // Create AR elements representing each point along the route
-            createARElementAtCoordinate(coordinate);
+            createMarkerAtCoordinate(coordinate);
         });
     } else {
         console.error('Invalid directions data or missing route coordinates.');
     }
 };
 
-// Function to create AR elements at specified coordinates
-const createARElementAtCoordinate = (coordinate) => {
-    // Example: Create a 3D object or marker at the specified coordinate
-    // This could involve using an AR framework's API to add objects to the scene
-    // For example, if using A-Frame, you might create an <a-entity> element at the specified GPS coordinates
-    const arElement = document.createElement('a-entity');
-    arElement.setAttribute('gps-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-    arElement.setAttribute('obj-model', 'obj: url(../models/uploads_files_1969587_Cactus1.obj); mtl: url(../models/uploads_files_1969587_Cactus1.mtl)'); // Example 3D model
-    arElement.setAttribute('scale', '0.1 0.1 0.1'); // Adjust scale as needed
-    arElement.setAttribute('position', '0 0 -10'); // Adjust position relative to camera
-    
-    // Append the AR element to the AR scene
-    document.querySelector('a-scene').appendChild(arElement);
+// Function to create a marker at a specified coordinate
+const createMarkerAtCoordinate = (coordinate) => {
+    // Create a marker element (you can use any visual indicator you prefer)
+    const marker = document.createElement('a-sphere');
+    marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
+    marker.setAttribute('radius', '0.5'); // Adjust marker size as needed
+    marker.setAttribute('color', 'blue'); // Set marker color
+    marker.setAttribute('opacity', '0.5'); // Set marker opacity
+    marker.setAttribute('position', '0 0 0'); // Adjust position relative to camera
+
+    // Append the marker to the AR scene
+    document.querySelector('a-scene').appendChild(marker);
 };
 
       
