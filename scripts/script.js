@@ -248,72 +248,38 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('#ar-destination-entity').appendChild(arLabel);
     };
 
-    const updateARDirections = (directionsData) => {
-        // Parse directionsData to extract route geometry (array of waypoints)
-        const routeWaypoints = parseDirectionsData(directionsData);
-      
-        // Function to create a conveyor belt segment entity
-        const createConveyorBeltSegment = (waypoint, distanceFromUser) => {
-          const conveyorBeltSegment = document.createElement('a-box');
-      
-          // Set position using gps-new-entity-place
-          conveyorBeltSegment.setAttribute('gps-new-entity-place', `latitude: ${waypoint.latitude}; longitude: ${waypoint.longitude}`);
-      
-          // Calculate rotation based on route direction (placeholder, replace as needed)
-          conveyorBeltSegment.setAttribute('rotation', '0 0 0');
-      
-          // Adjust size and visibility based on distance from user (LOD)
-          const segmentSize = Math.max(2, 10 - distanceFromUser / 10); // Adjust falloff as needed
-          conveyorBeltSegment.setAttribute('scale', `${segmentSize} ${segmentSize} 1`);
-          conveyorBeltSegment.setAttribute('opacity', Math.max(0.5, 1 - distanceFromUser / 20)); // Adjust falloff as needed
-      
-          // Set material properties for blue conveyor belt with video texture
-          conveyorBeltSegment.setAttribute('material', `video: #conveyorBeltVideo; color: #0000AA; metalness: 0.3`);
-      
-          return conveyorBeltSegment;
-        };
-      
-        // Load the conveyor belt video texture (replace with your video source)
-        const conveyorBeltVideo = document.createElement('a-video');
-        conveyorBeltVideo.setAttribute('id', 'conveyorBeltVideo');
-        conveyorBeltVideo.setAttribute('src', 'path/to/conveyorbelt.mp4');
-        conveyorBeltVideo.setAttribute('autoplay', 'true');
-        conveyorBeltVideo.setAttribute('loop', 'true');
-        conveyorBeltVideo.setAttribute('muted', 'true');
-        document.querySelector('a-scene').appendChild(conveyorBeltVideo);
-      
-        // Keep track of created entities for cleanup (optional)
-        const conveyorBeltSegments = [];
-      
-        // Iterate through waypoints, creating and positioning entities
-        routeWaypoints.forEach((waypoint, index) => {
-          // Calculate distance of this waypoint from the user's position (replace with actual calculation)
-          const distanceFromUser = calculateDistance(userLocation, waypoint);
-      
-          // Create a conveyor belt segment entity based on LOD
-          if (distanceFromUser < 30) { // Adjust threshold as needed
-            const segment = createConveyorBeltSegment(waypoint, distanceFromUser);
-            conveyorBeltSegments.push(segment);
-            document.querySelector('#arScene').appendChild(segment);
-          }
+    // Function to update AR elements based on Mapbox directions
+const updateARDirections = (directionsData) => {
+    // Check if directions data is valid and contains route information
+    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+        // Extract route coordinates from directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+
+        // Loop through the route coordinates to create AR elements
+        routeCoordinates.forEach((coordinate) => {
+            // Create AR elements representing each point along the route
+            createARElementAtCoordinate(coordinate);
         });
-      
-        // Function to remove conveyor belt segments no longer in view (optional)
-        const removeDistantSegments = () => {
-          const userPosition = getUserPosition(); // Replace with actual function to get user position in AR space
-          conveyorBeltSegments.forEach((segment, index) => {
-            const distanceFromUser = calculateDistance(userPosition, segment.objectData.position);
-            if (distanceFromUser > 40) { // Adjust threshold as needed
-              segment.parentNode.removeChild(segment);
-              conveyorBeltSegments.splice(index, 1);
-            }
-          });
-        };
-      
-        // Call removeDistantSegments periodically (optional)
-        setInterval(removeDistantSegments, 1000); // Adjust interval as needed
-      };
-      
+    } else {
+        console.error('Invalid directions data or missing route coordinates.');
+    }
+};
+
+// Function to create AR elements at specified coordinates
+const createARElementAtCoordinate = (coordinate) => {
+    // Example: Create a 3D object or marker at the specified coordinate
+    // This could involve using an AR framework's API to add objects to the scene
+    // For example, if using A-Frame, you might create an <a-entity> element at the specified GPS coordinates
+    const arElement = document.createElement('a-entity');
+    arElement.setAttribute('gps-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
+    arElement.setAttribute('gltf-model', '../models/uploads_files_1969587_Cactus1.glb'); // Example 3D model
+    arElement.setAttribute('scale', '0.1 0.1 0.1'); // Adjust scale as needed
+    arElement.setAttribute('position', '0 0 -10'); // Adjust position relative to camera
+
+    // Append the AR element to the AR scene
+    document.querySelector('a-scene').appendChild(arElement);
+};
+
       
 
     // Function to update the 2D map with the route
