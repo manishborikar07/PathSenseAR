@@ -255,97 +255,50 @@ const updateARDirections = (directionsData) => {
         // Extract route coordinates from Mapbox directions data
         const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-        // Loop through the route coordinates to add AR segments between consecutive points
-        for (let i = 0; i < routeCoordinates.length - 1; i++) {
-            const startCoordinate = routeCoordinates[i];
-            const endCoordinate = routeCoordinates[i + 1];
+        // Convert route coordinates into AR-compatible entities
+        const arEntities = convertToAREntities(routeCoordinates);
 
-            // Calculate the distance between consecutive points to determine animation duration
-            const distance = calculateDistance(startCoordinate[0], startCoordinate[1], endCoordinate[0], endCoordinate[1]);
-
-            // Calculate bearing between consecutive points
-            const bearing = calculateBearing(startCoordinate[0], startCoordinate[1], endCoordinate[0], endCoordinate[1]);
-
-            // Add an AR segment (e.g., conveyor belt) between consecutive points
-            addARSegment(startCoordinate, endCoordinate, distance * 500, bearing);
-        }
+        // Add AR entities to the A-Frame scene
+        arEntities.forEach(entity => {
+            document.querySelector('a-scene').appendChild(entity);
+        });
     } else {
         console.error('Invalid directionsData or missing route coordinates.');
     }
 };
 
-// Function to calculate the distance between two coordinates (in meters)
-const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371e3; // Earth radius in meters
-    const φ1 = (lat1 * Math.PI) / 180;
-    const φ2 = (lat2 * Math.PI) / 180;
-    const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-    const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+// Function to convert route coordinates into AR-compatible entities
+const convertToAREntities = (routeCoordinates) => {
+    const arEntities = [];
 
-    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-            Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    // Loop through the route coordinates to create AR entities
+    for (let i = 0; i < routeCoordinates.length - 1; i++) {
+        const startCoordinate = routeCoordinates[i];
+        const endCoordinate = routeCoordinates[i + 1];
 
-    const distance = R * c;
-    return distance;
+        // Create an AR entity (e.g., line) representing the route segment between two coordinates
+        const arEntity = createARSegment(startCoordinate, endCoordinate);
+
+        // Add the AR entity to the list
+        arEntities.push(arEntity);
+    }
+
+    return arEntities;
 };
 
-// Function to calculate the bearing between two coordinates (in degrees)
-const calculateBearing = (lat1, lon1, lat2, lon2) => {
-    const φ1 = (lat1 * Math.PI) / 180;
-    const φ2 = (lat2 * Math.PI) / 180;
-    const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+// Function to create an AR entity (e.g., line) representing a route segment between two coordinates
+const createARSegment = (startCoordinate, endCoordinate) => {
+    // Create a line element for the AR segment
+    const line = document.createElement('a-entity');
 
-    const y = Math.sin(Δλ) * Math.cos(φ2);
-    const x = Math.cos(φ1) * Math.sin(φ2) -
-            Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
-    let θ = Math.atan2(y, x);
-    θ = (θ * 180) / Math.PI;
-
-    // Convert bearing to a 0-360 degree range
-    const bearing = (θ + 360) % 360;
-    return bearing;
-};
-
-// Function to add an AR segment (e.g., conveyor belt) between two coordinates
-const addARSegment = (startCoordinate, endCoordinate, duration, bearing) => {
-    // Create a new AR segment element
-    const arSegment = document.createElement('a-entity');
-
-    // Set attributes for the AR segment
-    arSegment.setAttribute('geometry', {
-        primitive: 'plane',
-        width: '10', // Adjust width as needed
-        height: '0.1', // Adjust height as needed
-    });
-    arSegment.setAttribute('material', {
-        color: '#00f', // Set color to blue (adjust as needed)
-    });
-    arSegment.setAttribute('position', {
-        x: startCoordinate[0], // Start coordinate X
-        y: '0', // Set Y position to ground level
-        z: startCoordinate[1], // Start coordinate Z
-    });
-    arSegment.setAttribute('rotation', {
-        x: '0', // Set rotation to zero for now
-        y: bearing, // Set rotation to bearing angle
-        z: '0', // Set rotation to zero for now
+    // Set attributes for the line entity
+    line.setAttribute('line', {
+        start: `${startCoordinate[0]} 0 ${startCoordinate[1]}`, // Start point coordinates
+        end: `${endCoordinate[0]} 0 ${endCoordinate[1]}`, // End point coordinates
+        color: '#3388ff', // Blue color for the line
     });
 
-    // Append the AR segment to the A-Frame scene
-    document.querySelector('a-scene').appendChild(arSegment);
-
-    // Animate the AR segment along the route
-    arSegment.setAttribute('animation', {
-        property: 'position',
-        to: `${endCoordinate[0]} 0 ${endCoordinate[1]}`, // End coordinate
-        dur: duration, // Animation duration
-        easing: 'linear', // Linear easing (adjust as needed)
-        loop: false, // Do not loop the animation
-    });
-
-    // Log a message to indicate that the AR segment has been added
-    console.log('Added AR segment between', startCoordinate, 'and', endCoordinate);
+    return line;
 };
 
       
