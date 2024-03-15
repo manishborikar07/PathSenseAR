@@ -443,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Remove all markers representing the route
-        const routeMarkers = document.querySelectorAll('.route-marker');
+        const routeMarkers = document.querySelectorAll('a-box');
         routeMarkers.forEach(marker => marker.remove());
 
         // Check if the 'route' source and layer exist
