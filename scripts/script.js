@@ -255,6 +255,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Extract route coordinates from directions data
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
+            // Remove all markers representing the route
+            const routeMarkers = document.querySelectorAll('.route-marker');
+            routeMarkers.forEach(marker => marker.remove());
+
             // Loop through the route coordinates to create AR elements
             for (let i = 0; i < routeCoordinates.length - 1; i++) {
                 const currentCoordinate = routeCoordinates[i];
@@ -417,22 +421,15 @@ document.addEventListener('DOMContentLoaded', function () {
         // Reset the destination
         destination = null;
 
-        isBearing = false; // Set the bearing flag to false
+        // Set the bearing flag to false
+        isBearing = false; 
 
         // Stop the map rotation
         map.setBearing(0);
-
-        const sourceId = 'route';
-
-        // Check if the 'route' source and layer exist
-        if (map.getSource(sourceId) && map.getLayer(sourceId)) {
-            try {
-                // Remove the existing source and layer
-                map.removeLayer(sourceId);
-                map.removeSource(sourceId);
-            } catch (error) {
-                console.error('Error removing existing route:', error);
-            }
+        
+        // Remove the previous destination marker if it exists
+        if (destinationMarker) {
+            destinationMarker.remove();
         }
 
         // Function to remove existing entities
@@ -445,9 +442,21 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('No existing text entities to remove.');
         }
 
-        // Remove the previous destination marker if it exists
-        if (destinationMarker) {
-            destinationMarker.remove();
+        // Remove all markers representing the route
+        const routeMarkers = document.querySelectorAll('.route-marker');
+        routeMarkers.forEach(marker => marker.remove());
+
+        // Check if the 'route' source and layer exist
+        const sourceId = 'route';
+
+        if (map.getSource(sourceId) && map.getLayer(sourceId)) {
+            try {
+                // Remove the existing source and layer
+                map.removeLayer(sourceId);
+                map.removeSource(sourceId);
+            } catch (error) {
+                console.error('Error removing existing route:', error);
+            }
         }
     };
 
