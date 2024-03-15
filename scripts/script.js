@@ -248,59 +248,72 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('#ar-destination-entity').appendChild(arLabel);
     };
 
-    // Function to update AR elements based on Mapbox directions
-const updateARDirections = (directionsData) => {
-    // Check if directionsData contains valid route information
-    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-        // Extract route coordinates from Mapbox directions data
-        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-
-        // Convert route coordinates into AR-compatible entities
-        const arEntities = convertToAREntities(routeCoordinates);
-
-        // Add AR entities to the A-Frame scene
-        arEntities.forEach(entity => {
-            document.querySelector('a-scene').appendChild(entity);
+    const updateARDirections = (directionsData) => {
+        // Parse directionsData to extract route geometry (array of waypoints)
+        const routeWaypoints = parseDirectionsData(directionsData);
+      
+        // Function to create a conveyor belt segment entity
+        const createConveyorBeltSegment = (waypoint, distanceFromUser) => {
+          const conveyorBeltSegment = document.createElement('a-box');
+      
+          // Set position using gps-new-entity-place
+          conveyorBeltSegment.setAttribute('gps-new-entity-place', `latitude: ${waypoint.latitude}; longitude: ${waypoint.longitude}`);
+      
+          // Calculate rotation based on route direction (placeholder, replace as needed)
+          conveyorBeltSegment.setAttribute('rotation', '0 0 0');
+      
+          // Adjust size and visibility based on distance from user (LOD)
+          const segmentSize = Math.max(2, 10 - distanceFromUser / 10); // Adjust falloff as needed
+          conveyorBeltSegment.setAttribute('scale', `${segmentSize} ${segmentSize} 1`);
+          conveyorBeltSegment.setAttribute('opacity', Math.max(0.5, 1 - distanceFromUser / 20)); // Adjust falloff as needed
+      
+          // Set material properties for blue conveyor belt with video texture
+          conveyorBeltSegment.setAttribute('material', `video: #conveyorBeltVideo; color: #0000AA; metalness: 0.3`);
+      
+          return conveyorBeltSegment;
+        };
+      
+        // Load the conveyor belt video texture (replace with your video source)
+        const conveyorBeltVideo = document.createElement('a-video');
+        conveyorBeltVideo.setAttribute('id', 'conveyorBeltVideo');
+        conveyorBeltVideo.setAttribute('src', 'path/to/conveyorbelt.mp4');
+        conveyorBeltVideo.setAttribute('autoplay', 'true');
+        conveyorBeltVideo.setAttribute('loop', 'true');
+        conveyorBeltVideo.setAttribute('muted', 'true');
+        document.querySelector('a-scene').appendChild(conveyorBeltVideo);
+      
+        // Keep track of created entities for cleanup (optional)
+        const conveyorBeltSegments = [];
+      
+        // Iterate through waypoints, creating and positioning entities
+        routeWaypoints.forEach((waypoint, index) => {
+          // Calculate distance of this waypoint from the user's position (replace with actual calculation)
+          const distanceFromUser = calculateDistance(userLocation, waypoint);
+      
+          // Create a conveyor belt segment entity based on LOD
+          if (distanceFromUser < 30) { // Adjust threshold as needed
+            const segment = createConveyorBeltSegment(waypoint, distanceFromUser);
+            conveyorBeltSegments.push(segment);
+            document.querySelector('#arScene').appendChild(segment);
+          }
         });
-    } else {
-        console.error('Invalid directionsData or missing route coordinates.');
-    }
-};
-
-// Function to convert route coordinates into AR-compatible entities
-const convertToAREntities = (routeCoordinates) => {
-    const arEntities = [];
-
-    // Loop through the route coordinates to create AR entities
-    for (let i = 0; i < routeCoordinates.length - 1; i++) {
-        const startCoordinate = routeCoordinates[i];
-        const endCoordinate = routeCoordinates[i + 1];
-
-        // Create an AR entity (e.g., line) representing the route segment between two coordinates
-        const arEntity = createARSegment(startCoordinate, endCoordinate);
-
-        // Add the AR entity to the list
-        arEntities.push(arEntity);
-    }
-
-    return arEntities;
-};
-
-// Function to create an AR entity (e.g., line) representing a route segment between two coordinates
-const createARSegment = (startCoordinate, endCoordinate) => {
-    // Create a line element for the AR segment
-    const line = document.createElement('a-entity');
-
-    // Set attributes for the line entity
-    line.setAttribute('line', {
-        start: `${startCoordinate[0]} 0 ${startCoordinate[1]}`, // Start point coordinates
-        end: `${endCoordinate[0]} 0 ${endCoordinate[1]}`, // End point coordinates
-        color: '#3388ff', // Blue color for the line
-    });
-
-    return line;
-};
-
+      
+        // Function to remove conveyor belt segments no longer in view (optional)
+        const removeDistantSegments = () => {
+          const userPosition = getUserPosition(); // Replace with actual function to get user position in AR space
+          conveyorBeltSegments.forEach((segment, index) => {
+            const distanceFromUser = calculateDistance(userPosition, segment.objectData.position);
+            if (distanceFromUser > 40) { // Adjust threshold as needed
+              segment.parentNode.removeChild(segment);
+              conveyorBeltSegments.splice(index, 1);
+            }
+          });
+        };
+      
+        // Call removeDistantSegments periodically (optional)
+        setInterval(removeDistantSegments, 1000); // Adjust interval as needed
+      };
+      
       
 
     // Function to update the 2D map with the route
