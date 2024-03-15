@@ -249,56 +249,60 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update AR elements based on Mapbox directions
+// Function to update AR elements based on Mapbox directions
 const updateARDirections = (directionsData) => {
     // Check if directions data is valid and contains route information
     if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
         // Extract route coordinates from directions data
         const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-        // Create a line string representing the route path
-        const lineString = {
-            type: 'Feature',
-            geometry: {
-                type: 'LineString',
-                coordinates: routeCoordinates
-            },
-            properties: {}
-        };
+        // Create an array to hold the vertices of the line
+        const lineVertices = [];
 
-        // Create a GeoJSON source for the line string
-        const source = {
-            type: 'geojson',
-            data: lineString
-        };
+        // Loop through the route coordinates to create line vertices
+        routeCoordinates.forEach(coordinate => {
+            // Convert coordinate to XYZ position relative to the camera
+            const position = convertCoordinateToPosition(coordinate);
+            lineVertices.push(position.x, position.y, position.z);
+        });
 
-        // Add the line to the AR scene
-        addLineToARScene(source);
+        // Create a line entity to represent the route
+        createLineEntity(lineVertices);
     } else {
         console.error('Invalid directions data or missing route coordinates.');
     }
 };
 
-// Function to add a line representing the route path to the AR scene
-const addLineToARScene = (source) => {
-    // Remove existing route line if it exists
-    const existingLine = document.getElementById('route-line');
-    if (existingLine) {
-        existingLine.parentNode.removeChild(existingLine);
-    }
+// Function to convert a coordinate to XYZ position relative to the camera
+const convertCoordinateToPosition = (coordinate) => {
+    // Perform conversion logic here based on your AR scene setup
+    // For simplicity, assuming a linear conversion for demonstration
+    const latitude = coordinate[1];
+    const longitude = coordinate[0];
+    const altitude = 0; // Assuming altitude is not considered for now
 
-    // Create a line element to represent the route
-    const line = document.createElement('a-entity');
-    line.setAttribute('id', 'route-line');
-    line.setAttribute('line', {
-        color: '#3882f6', // Set line color
-        opacity: 0.8,     // Set line opacity
-        path: source.data.geometry.coordinates.map(coord => `${coord[0]} ${coord[1]} 0`).join(',')
-    });
+    // Convert latitude and longitude to XYZ position (adjust scale as needed)
+    const x = longitude * SCALE_FACTOR;
+    const y = altitude * SCALE_FACTOR;
+    const z = -latitude * SCALE_FACTOR; // Invert latitude for proper positioning
 
-    // Append the line to the AR scene
-    document.querySelector('a-scene').appendChild(line);
+    return { x, y, z };
 };
 
+// Function to create a line entity representing the route
+const createLineEntity = (vertices) => {
+    // Create a line entity with the specified vertices
+    const lineEntity = document.createElement('a-entity');
+    lineEntity.setAttribute('line', {
+        start: { x: vertices[0], y: vertices[1], z: vertices[2] },
+        end: { x: vertices[vertices.length - 3], y: vertices[vertices.length - 2], z: vertices[vertices.length - 1] },
+        color: '#3882f6', // Set line color
+        opacity: 0.8, // Set line opacity
+    });
+
+    // Append the line entity to the AR scene
+    document.querySelector('a-scene').appendChild(lineEntity);
+};
 
       
 
