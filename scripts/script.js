@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function () {
         arLabel.setAttribute('value', name);
         arLabel.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
         arLabel.setAttribute('gps-new-entity-place', `latitude: ${latitude}; longitude: ${longitude}`);
-        arLabel.setAttribute('color', '#3882f6'); // Set the text color
+        arLabel.setAttribute('color', 'red'); // Set the text color
         arLabel.setAttribute('scale', '4 4 4'); // Adjust scale as needed
 
         // Append the label to the A-Frame scene
@@ -270,10 +270,10 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create a box element as the marker
         const marker = document.createElement('a-box');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '1'); // Adjust marker width as needed
+        marker.setAttribute('width', '5'); // Adjust marker width as needed
         marker.setAttribute('height', '1'); // Adjust marker height as needed
         marker.setAttribute('depth', '1'); // Adjust marker depth as needed
-        marker.setAttribute('color', '#3882f6'); // Set the text color
+        marker.setAttribute('color', 'blue'); // Set the text color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
         marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
         marker.setAttribute('position', '0 0 0'); // Adjust position relative to camera
