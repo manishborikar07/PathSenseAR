@@ -249,38 +249,67 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update AR elements based on Mapbox directions
-    const updateARDirections = (directionsData) => {
-        // Check if directions data is valid and contains route information
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            // Extract route coordinates from directions data
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+const updateARDirections = (directionsData) => {
+    // Check if directions data is valid and contains route information
+    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+        // Extract route coordinates from directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-            // Loop through the route coordinates to create AR elements
-            routeCoordinates.forEach((coordinate) => {
-                // Create AR elements representing each point along the route
-                createMarkerAtCoordinate(coordinate);
-            });
-        } else {
-            console.error('Invalid directions data or missing route coordinates.');
+        // Loop through the route coordinates to create AR elements for the route
+        for (let i = 0; i < routeCoordinates.length - 1; i++) {
+            const startPoint = routeCoordinates[i];
+            const endPoint = routeCoordinates[i + 1];
+            
+            // Create a box element as a segment of the route
+            createRouteSegment(startPoint, endPoint);
         }
-    };
+    } else {
+        console.error('Invalid directions data or missing route coordinates.');
+    }
+};
 
-    // Function to create a marker at a specified coordinate
-    const createMarkerAtCoordinate = (coordinate) => {
-        // Create a box element as the marker
-        const marker = document.createElement('a-box');
-        marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '1.5'); // Adjust marker width as needed
-        marker.setAttribute('height', '0.1'); // Adjust marker height as needed
-        marker.setAttribute('depth', '1.5'); // Adjust marker depth as needed
-        marker.setAttribute('color', 'blue'); // Set the text color
-        marker.setAttribute('opacity', '0.8'); // Set marker opacity
-        marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
-        marker.setAttribute('position', '0 -10 0'); // Adjust position relative to camera
-        
-        // Append the marker to the AR scene
-        document.querySelector('a-scene').appendChild(marker);
-    };
+// Function to create a route segment between two coordinates
+const createRouteSegment = (startPoint, endPoint) => {
+    // Calculate the distance between the two points (for adjusting the size of the box)
+    const distance = calculateDistance(startPoint, endPoint);
+    
+    // Calculate the midpoint between the two points (for positioning the box)
+    const midpoint = [
+        (startPoint[0] + endPoint[0]) / 2,
+        (startPoint[1] + endPoint[1]) / 2
+    ];
+    
+    // Create a box element as a segment of the route
+    const routeSegment = document.createElement('a-box');
+    routeSegment.setAttribute('gps-new-entity-place', `latitude: ${midpoint[1]}; longitude: ${midpoint[0]}`);
+    routeSegment.setAttribute('width', '0.5'); // Adjust segment width as needed
+    routeSegment.setAttribute('height', '0.5'); // Adjust segment height as needed
+    routeSegment.setAttribute('depth', `${distance}m`); // Set segment depth based on distance between points
+    routeSegment.setAttribute('color', '#3882f6'); // Set the segment color
+    routeSegment.setAttribute('opacity', '0.8'); // Set segment opacity
+    routeSegment.setAttribute('scale', '4 4 4'); // Adjust scale as needed
+    routeSegment.setAttribute('rotation', calculateRotation(startPoint, endPoint)); // Set rotation to align with the route
+    
+    // Append the segment to the AR scene
+    document.querySelector('a-scene').appendChild(routeSegment);
+};
+
+// Function to calculate the distance between two coordinates (in meters)
+const calculateDistance = (startPoint, endPoint) => {
+    // Implement your distance calculation algorithm here
+    // This can be done using the Haversine formula or other methods
+    // For simplicity, this function returns a constant value
+    return 10; // Adjust as needed
+};
+
+// Function to calculate the rotation angle between two points (in degrees)
+const calculateRotation = (startPoint, endPoint) => {
+    // Implement your rotation calculation algorithm here
+    // This can be done using trigonometry or other methods
+    // For simplicity, this function returns 0 (no rotation)
+    return '0 0 0'; // Adjust as needed
+};
+
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
