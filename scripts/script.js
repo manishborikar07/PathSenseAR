@@ -269,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const createMarkerAtCoordinate = (coordinate) => {
         // Create a box element as the marker
         const marker = document.createElement('a-box');
-        marker.setAttribute('gps-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
+        marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
         marker.setAttribute('width', '1'); // Adjust marker width as needed
         marker.setAttribute('height', '1'); // Adjust marker height as needed
         marker.setAttribute('depth', '1'); // Adjust marker depth as needed
