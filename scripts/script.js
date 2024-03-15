@@ -256,33 +256,95 @@ document.addEventListener('DOMContentLoaded', function () {
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
             // Loop through the route coordinates to create AR elements
-            routeCoordinates.forEach((coordinate) => {
-                // Create AR elements representing each point along the route
-                createMarkerAtCoordinate(coordinate);
-            });
+            for (let i = 0; i < routeCoordinates.length - 1; i++) {
+                // Calculate the distance between consecutive coordinates
+                const distance = calculateDistance(routeCoordinates[i], routeCoordinates[i + 1]);
+
+                // Create a box marker at the start coordinate
+                const marker = createMarkerAtCoordinate(routeCoordinates[i]);
+
+                // Calculate the duration of the animation based on distance (adjust speed as needed)
+                const animationDuration = distance * 1000; // Convert distance to meters and multiply by animation speed
+
+                // Animate the marker to move to the next coordinate
+                animateMarker(marker, routeCoordinates[i + 1], animationDuration);
+            }
         } else {
             console.error('Invalid directions data or missing route coordinates.');
         }
     };
 
-    // Function to create a marker at a specified coordinate
+    // Function to create a box marker at a specified coordinate
     const createMarkerAtCoordinate = (coordinate) => {
         // Create a box element as the marker
         const marker = document.createElement('a-box');
-        marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '1.5'); // Adjust marker width as needed
-        marker.setAttribute('height', '0.1'); // Adjust marker height as needed
-        marker.setAttribute('depth', '30'); // Adjust marker depth as needed
-        marker.setAttribute('color', 'blue'); // Set the text color
+        marker.setAttribute('gps-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
+        marker.setAttribute('width', '1'); // Adjust marker width as needed
+        marker.setAttribute('height', '1'); // Adjust marker height as needed
+        marker.setAttribute('depth', '1'); // Adjust marker depth as needed
+        marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
         marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
-        marker.setAttribute('position', '0 -40 0'); // Adjust position relative to camera
+        marker.setAttribute('position', '0 0 0'); // Adjust position relative to camera
         
         // Append the marker to the AR scene
         document.querySelector('a-scene').appendChild(marker);
+
+        return marker;
     };
 
-      
+    // Function to calculate distance between two coordinates (in kilometers)
+    const calculateDistance = (coord1, coord2) => {
+        const lat1 = coord1[1];
+        const lon1 = coord1[0];
+        const lat2 = coord2[1];
+        const lon2 = coord2[0];
+
+        const R = 6371; // Radius of the earth in km
+        const dLat = deg2rad(lat2 - lat1);  // deg2rad below
+        const dLon = deg2rad(lon2 - lon1);
+        const a = 
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+            Math.sin(dLon/2) * Math.sin(dLon/2)
+            ; 
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
+        const distance = R * c; // Distance in km
+        return distance;
+    };
+
+    // Function to convert degrees to radians
+    const deg2rad = (deg) => {
+        return deg * (Math.PI/180);
+    };
+
+    // Function to animate marker to move to a new coordinate
+    const animateMarker = (marker, newCoordinate, duration) => {
+        // Define the animation attributes
+        const animationAttributes = {
+            property: 'position',
+            to: `${newCoordinate[0]} 0 ${newCoordinate[1]}`, // New position
+            dur: duration, // Animation duration
+            easing: 'linear', // Linear easing
+            loop: false // Do not loop the animation
+        };
+
+        // Create the animation element
+        const animation = document.createElement('a-animation');
+
+        // Set animation attributes
+        Object.keys(animationAttributes).forEach(attribute => {
+            animation.setAttribute(attribute, animationAttributes[attribute]);
+        });
+
+        // Append the animation to the marker
+        marker.appendChild(animation);
+
+        // Remove the marker after animation completes
+        setTimeout(() => {
+            marker.remove();
+        }, duration);
+    };
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
