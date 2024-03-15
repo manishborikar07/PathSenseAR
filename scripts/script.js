@@ -249,54 +249,62 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update AR elements based on Mapbox directions
-    const updateARDirections = (directionsData) => {
-        // Check if directions data is valid and contains route information
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            // Extract route coordinates from directions data
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+const updateARDirections = (directionsData) => {
+    // Check if directions data is valid and contains route information
+    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+        // Extract route coordinates from directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-            // Remove all markers representing the route
-            const routeMarkers = document.querySelectorAll('a-box');
-            routeMarkers.forEach(marker => marker.remove());
+        // Generate intermediary points along the route
+        const intermediaryPoints = generateIntermediaryPoints(routeCoordinates);
 
-            // Loop through the route coordinates to create AR elements
-            for (let i = 0; i < routeCoordinates.length - 1; i++) {
-                const currentCoordinate = routeCoordinates[i];
-                const nextCoordinate = routeCoordinates[i + 1];
+        // Loop through the intermediary points to create AR elements
+        for (let i = 0; i < intermediaryPoints.length - 1; i++) {
+            const currentCoordinate = intermediaryPoints[i];
+            const nextCoordinate = intermediaryPoints[i + 1];
 
-                // Calculate the distance between current and next coordinates
-                const distance = calculateDistance(currentCoordinate, nextCoordinate);
+            // Calculate the distance between current and next coordinates
+            const distance = calculateDistance(currentCoordinate, nextCoordinate);
 
-                // Calculate the rotation angle between current and next coordinates
-                const rotation = calculateRotation(currentCoordinate, nextCoordinate);
+            // Calculate the rotation angle between current and next coordinates
+            const rotation = calculateRotation(currentCoordinate, nextCoordinate);
 
-                // Create intermediary points along the route
-                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 7.5); // Adjust the distance between intermediary points if needed
-
-                // Create markers at intermediary points
-                intermediaryPoints.forEach(intermediaryPoint => {
-                    createMarkerAtCoordinate(intermediaryPoint, rotation);
-                });
-            }
-        } else {
-            console.error('Invalid directions data or missing route coordinates.');
+            // Create a marker at the current coordinate
+            createMarkerAtCoordinate(currentCoordinate, distance, rotation);
         }
-    };
+    } else {
+        console.error('Invalid directions data or missing route coordinates.');
+    }
+};
 
-    // Function to calculate intermediary points between two coordinates
-    const generateIntermediaryPoints = (startPoint, endPoint, distanceBetweenPoints) => {
-        const intermediaryPoints = [];
-        const segments = Math.ceil(calculateDistance(startPoint, endPoint) / distanceBetweenPoints);
+// Function to generate intermediary points along the route
+const generateIntermediaryPoints = (routeCoordinates) => {
+    const intermediaryPoints = [];
+    const distanceThreshold = 10; // Adjust as needed
 
-        for (let i = 1; i < segments; i++) {
-            const fraction = i / segments;
-            const intermediateLng = startPoint[0] + (endPoint[0] - startPoint[0]) * fraction;
-            const intermediateLat = startPoint[1] + (endPoint[1] - startPoint[1]) * fraction;
-            intermediaryPoints.push([intermediateLng, intermediateLat]);
+    // Add the first point of the route
+    intermediaryPoints.push(routeCoordinates[0]);
+
+    // Loop through the route coordinates to find points at regular intervals
+    for (let i = 1; i < routeCoordinates.length - 1; i++) {
+        const currentCoordinate = routeCoordinates[i];
+        const previousCoordinate = intermediaryPoints[intermediaryPoints.length - 1];
+
+        // Calculate the distance between the current and previous points
+        const distance = calculateDistance(previousCoordinate, currentCoordinate);
+
+        // If the distance exceeds the threshold, add the current point as an intermediary point
+        if (distance >= distanceThreshold) {
+            intermediaryPoints.push(currentCoordinate);
         }
+    }
 
-        return intermediaryPoints;
-    };
+    // Add the last point of the route
+    intermediaryPoints.push(routeCoordinates[routeCoordinates.length - 1]);
+
+    return intermediaryPoints;
+};
+
 
     // Function to calculate the distance between two coordinates (in meters) using the Haversine formula
     const calculateDistance = (startPoint, endPoint) => {
