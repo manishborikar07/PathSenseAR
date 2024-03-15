@@ -264,11 +264,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 const currentCoordinate = routeCoordinates[i];
                 const nextCoordinate = routeCoordinates[i + 1];
 
+                // Calculate the distance between current and next coordinates
+                const distance = calculateDistance(currentCoordinate, nextCoordinate);
+
                 // Calculate the rotation angle between current and next coordinates
                 const rotation = calculateRotation(currentCoordinate, nextCoordinate);
 
                 // Create intermediary points along the route
-                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 5); // Adjust the distance between intermediary points if needed
+                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, distance, 5); // Adjust the distance between intermediary points if needed
 
                 // Create markers at intermediary points
                 intermediaryPoints.forEach(intermediaryPoint => {
@@ -281,9 +284,9 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to calculate intermediary points between two coordinates
-    const generateIntermediaryPoints = (startPoint, endPoint, distanceBetweenPoints) => {
+    const generateIntermediaryPoints = (startPoint, endPoint, distance, distanceBetweenPoints) => {
         const intermediaryPoints = [];
-        const segments = Math.ceil(calculateDistance(startPoint, endPoint) / distanceBetweenPoints);
+        const segments = Math.ceil(distance / distanceBetweenPoints);
 
         for (let i = 1; i < segments; i++) {
             const fraction = i / segments;
@@ -293,6 +296,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         return intermediaryPoints;
+    };
+
+    // Function to calculate the distance between two coordinates (in meters) using the Haversine formula
+    const calculateDistance = (startPoint, endPoint) => {
+        const earthRadius = 6371000; // Radius of the Earth in meters
+        const [startLng, startLat] = startPoint;
+        const [endLng, endLat] = endPoint;
+
+        // Convert coordinates from degrees to radians
+        const startLatRad = startLat * Math.PI / 180;
+        const endLatRad = endLat * Math.PI / 180;
+        const latDiffRad = (endLat - startLat) * Math.PI / 180;
+        const lngDiffRad = (endLng - startLng) * Math.PI / 180;
+
+        // Haversine formula to calculate distance
+        const a = Math.sin(latDiffRad / 2) * Math.sin(latDiffRad / 2) +
+                Math.cos(startLatRad) * Math.cos(endLatRad) *
+                Math.sin(lngDiffRad / 2) * Math.sin(lngDiffRad / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = earthRadius * c;
+
+        return distance; // Distance in meters
     };
 
     // Function to calculate the rotation angle between two points (in degrees)
