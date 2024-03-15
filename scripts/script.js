@@ -271,10 +271,10 @@ const createMarkerAtCoordinate = (coordinate) => {
     const marker = document.createElement('a-sphere');
     marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
     marker.setAttribute('radius', '0.5'); // Adjust marker size as needed
-    marker.setAttribute('color', 'blue'); // Set marker color
-    marker.setAttribute('opacity', '0.5'); // Set marker opacity
-    marker.setAttribute('position', '0 0 0'); // Adjust position relative to camera
-
+    marker.setAttribute('color', '#3882f6'); // Set the text color
+    marker.setAttribute('opacity', '0.8'); // Set marker opacity
+    marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
+    
     // Append the marker to the AR scene
     document.querySelector('a-scene').appendChild(marker);
 };
