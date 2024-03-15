@@ -304,12 +304,19 @@ const calculateDistance = (startPoint, endPoint) => {
 
 // Function to calculate the rotation angle between two points (in degrees)
 const calculateRotation = (startPoint, endPoint) => {
-    // Implement your rotation calculation algorithm here
-    // This can be done using trigonometry or other methods
-    // For simplicity, this function returns 0 (no rotation)
-    return '0 0 0'; // Adjust as needed
-};
+    // Calculate the difference in longitude and latitude
+    const deltaLongitude = endPoint[0] - startPoint[0];
+    const deltaLatitude = endPoint[1] - startPoint[1];
 
+    // Calculate the angle (in radians) using the arctangent function
+    const angleRad = Math.atan2(deltaLongitude, deltaLatitude);
+
+    // Convert the angle from radians to degrees
+    const angleDeg = (angleRad * 180) / Math.PI;
+
+    // Return the rotation in format "x y z" (for example, "0 45 0" for a 45-degree rotation around the y-axis)
+    return `0 ${angleDeg} 0`;
+};
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
