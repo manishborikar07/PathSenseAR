@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const rotation = calculateRotation(currentCoordinate, nextCoordinate);
 
                 // Create intermediary points along the route
-                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 10); // Adjust the distance between intermediary points if needed
+                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 5); // Adjust the distance between intermediary points if needed
 
                 // Create markers at intermediary points
                 intermediaryPoints.forEach(intermediaryPoint => {
@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create a box element as the marker
         const marker = document.createElement('a-box');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '1.5'); // Adjust marker width as needed
+        marker.setAttribute('width', '1'); // Adjust marker width as needed
         marker.setAttribute('height', '0.2'); // Adjust marker height as needed
         marker.setAttribute('depth', '1'); // Adjust marker depth based on distance
         marker.setAttribute('rotation', `0 ${rotation} 0`); // Rotate the marker
