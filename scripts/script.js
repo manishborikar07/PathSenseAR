@@ -248,70 +248,55 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('#ar-destination-entity').appendChild(arLabel);
     };
 
-    // Function to generate intermediary points along the route for better accuracy
-const generateIntermediaryPoints = (routeCoordinates) => {
-    const intermediaryPoints = [];
+    // Function to update AR elements based on Mapbox directions
+    const updateARDirections = (directionsData) => {
+        // Check if directions data is valid and contains route information
+        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+            // Extract route coordinates from directions data
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-    // Add the first coordinate as the starting point
-    intermediaryPoints.push(routeCoordinates[0]);
+            // Remove all markers representing the route
+            const routeMarkers = document.querySelectorAll('a-box');
+            routeMarkers.forEach(marker => marker.remove());
 
-    // Iterate through the route coordinates to add intermediary points
-    for (let i = 1; i < routeCoordinates.length - 1; i++) {
-        const currentCoordinate = routeCoordinates[i];
-        const nextCoordinate = routeCoordinates[i + 1];
+            // Loop through the route coordinates to create AR elements
+            for (let i = 0; i < routeCoordinates.length - 1; i++) {
+                const currentCoordinate = routeCoordinates[i];
+                const nextCoordinate = routeCoordinates[i + 1];
 
-        // Calculate the distance between current and next coordinates
-        const distance = calculateDistance(currentCoordinate, nextCoordinate);
+                // Calculate the distance between current and next coordinates
+                const distance = calculateDistance(currentCoordinate, nextCoordinate);
 
-        // Calculate the number of intermediary points to add based on the distance
-        const numIntermediaryPoints = Math.ceil(distance / 10); // Adjust as needed
+                // Calculate the rotation angle between current and next coordinates
+                const rotation = calculateRotation(currentCoordinate, nextCoordinate);
 
-        // Calculate the intermediary points along the line segment
-        for (let j = 0; j < numIntermediaryPoints; j++) {
-            const ratio = (j + 1) / (numIntermediaryPoints + 1);
-            const intermediaryPoint = [
-                currentCoordinate[0] + ratio * (nextCoordinate[0] - currentCoordinate[0]),
-                currentCoordinate[1] + ratio * (nextCoordinate[1] - currentCoordinate[1])
-            ];
-            intermediaryPoints.push(intermediaryPoint);
+                // Create intermediary points along the route
+                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 7.5); // Adjust the distance between intermediary points if needed
+
+                // Create markers at intermediary points
+                intermediaryPoints.forEach(intermediaryPoint => {
+                    createMarkerAtCoordinate(intermediaryPoint, rotation);
+                });
+            }
+        } else {
+            console.error('Invalid directions data or missing route coordinates.');
         }
-    }
+    };
 
-    // Add the last coordinate as the ending point
-    intermediaryPoints.push(routeCoordinates[routeCoordinates.length - 1]);
+    // Function to calculate intermediary points between two coordinates
+    const generateIntermediaryPoints = (startPoint, endPoint, distanceBetweenPoints) => {
+        const intermediaryPoints = [];
+        const segments = Math.ceil(calculateDistance(startPoint, endPoint) / distanceBetweenPoints);
 
-    return intermediaryPoints;
-};
-
-// Function to update AR elements based on Mapbox directions
-const updateARDirections = (directionsData) => {
-    // Check if directions data is valid and contains route information
-    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-        // Extract route coordinates from directions data
-        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
-
-        // Generate intermediary points along the route for better accuracy
-        const intermediaryPoints = generateIntermediaryPoints(routeCoordinates);
-
-        // Loop through the intermediary points to create AR elements
-        for (let i = 0; i < intermediaryPoints.length - 1; i++) {
-            const currentCoordinate = intermediaryPoints[i];
-            const nextCoordinate = intermediaryPoints[i + 1];
-
-            // Calculate the distance between current and next coordinates
-            const distance = calculateDistance(currentCoordinate, nextCoordinate);
-
-            // Calculate the rotation angle between current and next coordinates
-            const rotation = calculateRotation(currentCoordinate, nextCoordinate);
-
-            // Create a marker at the current coordinate
-            createMarkerAtCoordinate(currentCoordinate, distance, rotation);
+        for (let i = 1; i < segments; i++) {
+            const fraction = i / segments;
+            const intermediateLng = startPoint[0] + (endPoint[0] - startPoint[0]) * fraction;
+            const intermediateLat = startPoint[1] + (endPoint[1] - startPoint[1]) * fraction;
+            intermediaryPoints.push([intermediateLng, intermediateLat]);
         }
-    } else {
-        console.error('Invalid directions data or missing route coordinates.');
-    }
-};
 
+        return intermediaryPoints;
+    };
 
     // Function to calculate the distance between two coordinates (in meters) using the Haversine formula
     const calculateDistance = (startPoint, endPoint) => {
