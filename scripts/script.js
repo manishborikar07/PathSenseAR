@@ -249,62 +249,38 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update AR elements based on Mapbox directions
-const updateARDirections = (directionsData) => {
-    // Check if directions data is valid and contains route information
-    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-        // Extract route coordinates from directions data
-        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+    const updateARDirections = (directionsData) => {
+        // Check if directions data is valid and contains route information
+        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+            // Extract route coordinates from directions data
+            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-        // Create an array to hold the vertices of the line
-        const lineVertices = [];
+            // Loop through the route coordinates to create AR elements
+            routeCoordinates.forEach((coordinate) => {
+                // Create AR elements representing each point along the route
+                createMarkerAtCoordinate(coordinate);
+            });
+        } else {
+            console.error('Invalid directions data or missing route coordinates.');
+        }
+    };
 
-        // Loop through the route coordinates to create line vertices
-        routeCoordinates.forEach(coordinate => {
-            // Convert coordinate to XYZ position relative to the camera
-            const position = convertCoordinateToPosition(coordinate);
-            lineVertices.push(position.x, position.y, position.z);
-        });
-
-        // Create a line entity to represent the route
-        createLineEntity(lineVertices);
-    } else {
-        console.error('Invalid directions data or missing route coordinates.');
-    }
-};
-
-// Function to convert a coordinate to XYZ position relative to the camera
-const convertCoordinateToPosition = (coordinate) => {
-    // Perform conversion logic here based on your AR scene setup
-    // For simplicity, assuming a linear conversion for demonstration
-    const latitude = coordinate[1];
-    const longitude = coordinate[0];
-    const altitude = 0; // Assuming altitude is not considered for now
-
-    // Convert latitude and longitude directly to XYZ position
-    // Adjust the scale factor as needed to fit your scene
-    const scaleFactor = 0.1; // Example scale factor
-    const x = longitude * scaleFactor;
-    const y = altitude * scaleFactor;
-    const z = -latitude * scaleFactor; // Invert latitude for proper positioning
-
-    return { x, y, z };
-};
-
-// Function to create a line entity representing the route
-const createLineEntity = (vertices) => {
-    // Create a line entity with the specified vertices
-    const lineEntity = document.createElement('a-entity');
-    lineEntity.setAttribute('line', {
-        start: { x: vertices[0], y: vertices[1], z: vertices[2] },
-        end: { x: vertices[vertices.length - 3], y: vertices[vertices.length - 2], z: vertices[vertices.length - 1] },
-        color: '#3882f6', // Set line color
-        opacity: 0.8, // Set line opacity
-    });
-
-    // Append the line entity to the AR scene
-    document.querySelector('a-scene').appendChild(lineEntity);
-};
-
+    // Function to create a marker at a specified coordinate
+    const createMarkerAtCoordinate = (coordinate) => {
+        // Create a box element as the marker
+        const marker = document.createElement('a-box');
+        marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
+        marker.setAttribute('width', '1.5'); // Adjust marker width as needed
+        marker.setAttribute('height', '0.1'); // Adjust marker height as needed
+        marker.setAttribute('depth', '30'); // Adjust marker depth as needed
+        marker.setAttribute('color', 'blue'); // Set the text color
+        marker.setAttribute('opacity', '0.8'); // Set marker opacity
+        marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
+        marker.setAttribute('position', '0 -40 0'); // Adjust position relative to camera
+        
+        // Append the marker to the AR scene
+        document.querySelector('a-scene').appendChild(marker);
+    };
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
