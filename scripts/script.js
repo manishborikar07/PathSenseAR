@@ -330,7 +330,7 @@ const calculateRotation = (startPoint, endPoint) => {
     const angleDeg = (angleRad * 180) / Math.PI;
 
     // Return the rotation in format "x y z" (for example, "0 45 0" for a 45-degree rotation around the y-axis)
-    return `0 ${angleDeg + 35} 0`;
+    return `0 ${angleDeg + 30} 0`;
 };
 
     // Function to update the 2D map with the route
