@@ -248,39 +248,72 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelector('#ar-destination-entity').appendChild(arLabel);
     };
 
-    // Function to update AR elements based on Mapbox directions
-    const updateARDirections = (directionsData) => {
-        // Check if directions data is valid and contains route information
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            // Extract route coordinates from directions data
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+   // Function to update AR elements based on Mapbox directions
+const updateARDirections = (directionsData) => {
+    // Check if directions data is valid and contains route information
+    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+        // Extract route coordinates from directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-            // Loop through the route coordinates to create AR elements
-            routeCoordinates.forEach((coordinate) => {
-                // Create AR elements representing each point along the route
-                createMarkerAtCoordinate(coordinate);
-            });
-        } else {
-            console.error('Invalid directions data or missing route coordinates.');
-        }
-    };
+        // Create an array to store marker elements
+        const markers = [];
 
-    // Function to create a marker at a specified coordinate
-    const createMarkerAtCoordinate = (coordinate) => {
-        // Create a box element as the marker
-        const marker = document.createElement('a-box');
-        marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '1.5'); // Adjust marker width as needed
-        marker.setAttribute('height', '0.1'); // Adjust marker height as needed
-        marker.setAttribute('depth', '1.5'); // Adjust marker depth as needed
-        marker.setAttribute('color', 'blue'); // Set the text color
-        marker.setAttribute('opacity', '0.8'); // Set marker opacity
-        marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
-        marker.setAttribute('position', '0 -10 0'); // Adjust position relative to camera
-        
-        // Append the marker to the AR scene
-        document.querySelector('a-scene').appendChild(marker);
-    };
+        // Loop through the route coordinates to create AR elements
+        routeCoordinates.forEach((coordinate) => {
+            // Create AR elements representing each point along the route
+            const marker = createMarkerAtCoordinate(coordinate);
+            markers.push(marker);
+        });
+
+        // Create lines connecting the markers
+        createLinesBetweenMarkers(markers);
+    } else {
+        console.error('Invalid directions data or missing route coordinates.');
+    }
+};
+
+// Function to create a marker at a specified coordinate
+const createMarkerAtCoordinate = (coordinate) => {
+    // Create a box element as the marker
+    const marker = document.createElement('a-box');
+    // Set position using GPS coordinates
+    marker.setAttribute('gps-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]};`);
+    marker.setAttribute('width', '1'); // Adjust marker width as needed
+    marker.setAttribute('height', '1'); // Adjust marker height as needed
+    marker.setAttribute('depth', '1'); // Adjust marker depth as needed
+    marker.setAttribute('color', '#3882f6'); // Set the marker color
+    marker.setAttribute('opacity', '0.8'); // Set marker opacity
+    marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
+    
+    // Append the marker to the AR scene
+    document.querySelector('a-scene').appendChild(marker);
+
+    return marker; // Return the marker element
+};
+
+// Function to create lines connecting the markers
+const createLinesBetweenMarkers = (markers) => {
+    // Iterate through the markers to create lines
+    for (let i = 1; i < markers.length; i++) {
+        // Get the position of the markers (latitude and longitude)
+        const startPoint = markers[i - 1].getAttribute('gps-entity-place');
+        const endPoint = markers[i].getAttribute('gps-entity-place');
+
+        // Create a line element
+        const line = document.createElement('a-entity');
+        // Set line attributes
+        line.setAttribute('line', {
+            start: startPoint,
+            end: endPoint,
+            color: '#3882f6', // Set line color
+            opacity: 0.8 // Set line opacity
+        });
+
+        // Append the line to the AR scene
+        document.querySelector('a-scene').appendChild(line);
+    }
+};
+
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
