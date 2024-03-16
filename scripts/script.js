@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', function () {
         angleDeg = (angleDeg + 360) % 360;
 
         // Return the rotation angle
-        return angleDeg+25;
+        return angleDeg+23;
     };
 
     // Function to create a marker at a specified coordinate
