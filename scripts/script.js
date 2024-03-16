@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const angleDeg = (angleRad * 180) / Math.PI;
 
         // Return the rotation in format "x y z" (for example, "0 45 0" for a 45-degree rotation around the y-axis)
-        return angleDeg;
+        return angleDeg -50;
     };
 
     // Function to create a marker at a specified coordinate
