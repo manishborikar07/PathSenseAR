@@ -295,8 +295,8 @@ const connectCoordinates = (startCoordinate, endCoordinate) => {
 
     // Set the line's start and end points based on the coordinates
     line.setAttribute('line', {
-        from: `${startCoordinate[0]} ${startCoordinate[1]} 0`,
-        to: `${endCoordinate[0]} ${endCoordinate[1]} 0`,
+        from: `${startCoordinate[1]} ${startCoordinate[0]} 0`,
+        to: `${endCoordinate[1]} ${endCoordinate[0]} 0`,
         color: '#3882f6', // Set the line color
         opacity: 0.8 // Set the line opacity
     });
