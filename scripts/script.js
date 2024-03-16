@@ -341,14 +341,14 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create a box element as the marker
         const marker = document.createElement('a-box');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '3'); // Adjust marker width as needed
+        marker.setAttribute('width', '5'); // Adjust marker width as needed
         marker.setAttribute('height', '0.2'); // Adjust marker height as needed
         marker.setAttribute('depth', '3'); // Adjust marker depth based on distance
         marker.setAttribute('rotation', `0 ${rotation} 0`); // Rotate the marker
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
         // marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
-        marker.setAttribute('position', '0 -15 0'); // Adjust position relative to camera
+        marker.setAttribute('position', '0 -20 0'); // Adjust position relative to camera
         
         document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
     };
