@@ -290,19 +290,18 @@ const createMarkerAtCoordinate = (coordinate) => {
 
 // Function to connect two coordinates with a line
 const connectCoordinates = (startCoordinate, endCoordinate) => {
-    // Create a line element
+    // Create a line entity
     const line = document.createElement('a-entity');
+    const startPos = `${startCoordinate[0]} ${startCoordinate[1]} 0`;
+    const endPos = `${endCoordinate[0]} ${endCoordinate[1]} 0`;
 
-    // Set the line's start and end points based on the coordinates
-    line.setAttribute('line', {
-        from: `${startCoordinate[1]} ${startCoordinate[0]} 0`,
-        to: `${endCoordinate[1]} ${endCoordinate[0]} 0`,
-        color: '#3882f6', // Set the line color
-        opacity: 0.8 // Set the line opacity
-    });
+    // Set line properties
+    line.setAttribute('line', { start: startPos, end: endPos, color: '#3882f6', opacity: 0.8 });
 
-    document.querySelector('a-scene').appendChild(line); // Append the line to the AR scene
+    // Append line to scene
+    document.querySelector('a-scene').appendChild(line);
 };
+
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
