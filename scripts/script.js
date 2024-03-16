@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const createGLBMarkerAtCoordinate = (coordinate) => {
         // Create an <a-entity> element for the GLB marker
         const glbMarker = document.createElement('a-entity');
-        glbMarker.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
+        // glbMarker.setAttribute('look-at', '[gps-new-camera]'); // Make the text face the camera
         glbMarker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
         glbMarker.setAttribute('gltf-model', '../models/map_pointer_3d_icon.glb'); // Set the path to your GLB model file
         glbMarker.setAttribute('scale', '0.5 0.5 0.5'); // Adjust scale as needed
