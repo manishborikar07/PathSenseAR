@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
             mapboxgl.accessToken = 'pk.eyJ1IjoicHJhbmtpdGEiLCJhIjoiY2xydnB6aXQzMHZqejJpdGV1NnByYW1kZyJ9.OedTGDqNQXNv-DJOV2HXuw';
             map = new mapboxgl.Map({
                 container: mapContainer,
-                style: 'mapbox://styles/mapbox/satellite-streets-v11',
+                style: 'mapbox://styles/mapbox/standard',
                 center: [78, 20], // Default center
                 zoom: 0,
                 bearing: 0, // Initial bearing
@@ -322,12 +322,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to calculate the rotation angle between two points (in degrees)
     const calculateRotation = (startPoint, endPoint) => {
+        const [startLng, startLat] = startPoint;
+        const [endLng, endLat] = endPoint;
+
         // Calculate the difference in longitude and latitude
-        const deltaLongitude = endPoint[0] - startPoint[0];
-        const deltaLatitude = endPoint[1] - startPoint[1];
+        const deltaLng = endLng - startLng;
+        const deltaLat = endLat - startLat;
 
         // Calculate the angle (in radians) using the arctangent function
-        const angleRad = Math.atan2(deltaLongitude, deltaLatitude);
+        const angleRad = Math.atan2(deltaLng, deltaLat);
 
         // Convert the angle from radians to degrees
         const angleDeg = (angleRad * 180) / Math.PI;
