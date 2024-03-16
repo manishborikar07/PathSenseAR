@@ -333,12 +333,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // Create a box element as the marker
         const marker = document.createElement('a-box');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '1'); // Adjust marker width as needed
+        marker.setAttribute('width', '3'); // Adjust marker width as needed
         marker.setAttribute('height', '1'); // Adjust marker height as needed
-        marker.setAttribute('depth', '1'); // Adjust marker depth as needed
+        marker.setAttribute('depth', '3'); // Adjust marker depth as needed
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
         marker.setAttribute('rotation', `0 ${rotation} 0`); // Rotate the marker
+        marker.setAttribute('position', '0 -20 0'); // Adjust position relative to camera
         
         document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
     };
