@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const angleDeg = (angleRad * 180) / Math.PI;
 
         // Return the rotation in format "x y z" (for example, "0 45 0" for a 45-degree rotation around the y-axis)
-        return angleDeg -50;
+        return angleDeg;
     };
 
     // Function to create a marker at a specified coordinate
@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function () {
         marker.setAttribute('width', '1'); // Adjust marker width as needed
         marker.setAttribute('height', '0.2'); // Adjust marker height as needed
         marker.setAttribute('depth', '1'); // Adjust marker depth based on distance
-        marker.setAttribute('rotation', `0 ${rotation} 0`); // Rotate the marker
+        marker.setAttribute('rotation', `0 ${rotation} 45`); // Rotate the marker
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
         // marker.setAttribute('scale', '1 1 1'); // Adjust scale as needed
