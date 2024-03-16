@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
             // Remove all markers representing the route
-             const routeMarkers = document.querySelectorAll('a-box');
+             const routeMarkers = document.querySelectorAll('a-cylinder');
              routeMarkers.forEach(marker => marker.remove());
 
             // Loop through the route coordinates to create AR elements
@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const distance = calculateDistance(currentCoordinate, nextCoordinate);
 
                 // Create intermediary points along the route
-                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 3); // Adjust the distance between intermediary points if needed
+                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 2); // Adjust the distance between intermediary points if needed
 
                 // Create markers at intermediary points
                 intermediaryPoints.forEach(intermediaryPoint => {
@@ -326,8 +326,8 @@ document.addEventListener('DOMContentLoaded', function () {
         marker.setAttribute('height', '0.2'); // Adjust marker height as needed
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '1'); // Set marker opacity
-        // marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
-        // marker.setAttribute('position', '0 -20 0'); // Adjust position relative to camera
+        // marker.setAttribute('scale', '1 1 1'); // Adjust scale as needed
+        marker.setAttribute('position', '0 -0.2 0'); // Adjust position relative to camera
 
         document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
     };
@@ -422,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         // Remove all markers representing the route
-        const routeMarkers = document.querySelectorAll('a-box');
+        const routeMarkers = document.querySelectorAll('a-cylinder');
         routeMarkers.forEach(marker => marker.remove());
 
         // Check if the 'route' source and layer exist
