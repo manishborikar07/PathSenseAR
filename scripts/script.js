@@ -325,12 +325,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const [startLng, startLat] = startPoint;
         const [endLng, endLat] = endPoint;
 
-        // Calculate the difference in longitude and latitude
-        const deltaLng = endLng - startLng;
-        const deltaLat = endLat - startLat;
+        // Convert coordinates from degrees to radians
+        const startLatRad = startLat * Math.PI / 180;
+        const endLatRad = endLat * Math.PI / 180;
+        const deltaLng = (endLng - startLng) * Math.PI / 180;
 
-        // Calculate the angle (in radians) using the arctangent function
-        let angleRad = Math.atan2(deltaLng, deltaLat);
+        // Calculate the bearing or azimuth angle
+        const y = Math.sin(deltaLng) * Math.cos(endLatRad);
+        const x = Math.cos(startLatRad) * Math.sin(endLatRad) -
+            Math.sin(startLatRad) * Math.cos(endLatRad) * Math.cos(deltaLng);
+        let angleRad = Math.atan2(y, x);
 
         // Convert the angle from radians to degrees
         let angleDeg = (angleRad * 180) / Math.PI;
@@ -338,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Adjust angle to ensure it is between 0 and 360 degrees
         angleDeg = (angleDeg + 360) % 360;
 
-        // Return the rotation in format "x y z" (for example, "0 45 0" for a 45-degree rotation around the y-axis)
+        // Return the rotation angle
         return angleDeg;
     };
 
