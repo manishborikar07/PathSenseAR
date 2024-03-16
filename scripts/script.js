@@ -330,10 +330,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const deltaLat = endLat - startLat;
 
         // Calculate the angle (in radians) using the arctangent function
-        const angleRad = Math.atan2(deltaLng, deltaLat);
+        let angleRad = Math.atan2(deltaLng, deltaLat);
 
         // Convert the angle from radians to degrees
-        const angleDeg = (angleRad * 180) / Math.PI;
+        let angleDeg = (angleRad * 180) / Math.PI;
+
+        // Adjust angle to ensure it is between 0 and 360 degrees
+        angleDeg = (angleDeg + 360) % 360;
 
         // Return the rotation in format "x y z" (for example, "0 45 0" for a 45-degree rotation around the y-axis)
         return angleDeg;
