@@ -322,18 +322,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function to calculate the rotation angle between two points (in degrees)
     const calculateRotation = (startPoint, endPoint) => {
-        // Calculate the difference in longitude and latitude
-        const deltaLongitude = endPoint[0] - startPoint[0];
-        const deltaLatitude = endPoint[1] - startPoint[1];
+        const [startLng, startLat] = startPoint;
+        const [endLng, endLat] = endPoint;
 
-        // Calculate the angle (in radians) using the arctangent function
-        const angleRad = Math.atan2(deltaLongitude, deltaLatitude);
+        // Convert coordinates from degrees to radians
+        const startLatRad = startLat * Math.PI / 180;
+        const endLatRad = endLat * Math.PI / 180;
+        const deltaLng = (endLng - startLng);
 
-        // Convert the angle from radians to degrees
-        const angleDeg = (angleRad * 180) / Math.PI;
-
-        // Return the rotation in format "x y z" (for example, "0 45 0" for a 45-degree rotation around the y-axis)
-        return angleDeg + 7;
+        // Calculate bearing angle
+        const y = Math.sin(deltaLng) * Math.cos(endLatRad);
+        const x = Math.cos(startLatRad) * Math.sin(endLatRad) -
+                Math.sin(startLatRad) * Math.cos(endLatRad) * Math.cos(deltaLng);
+        let bearing = Math.atan2(y, x);
+        bearing = (bearing * 180 / Math.PI + 360) % 360; // Convert bearing to degrees
+        return bearing;
     };
 
     // Function to create a marker at a specified coordinate
