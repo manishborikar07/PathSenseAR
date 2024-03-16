@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         const distance = earthRadius * c;
 
-        return distance; // Distance in meters
+        return distance + 10; // Distance in meters
     };
 
     // Function to calculate the rotation angle between two points (in degrees)
