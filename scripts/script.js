@@ -327,9 +327,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Convert coordinates from degrees to radians
         const startLatRad = startLat * Math.PI / 180;
+        const startLngRad = startLng * Math.PI / 180;
         const endLatRad = endLat * Math.PI / 180;
-        const deltaLng = (endLng - startLng);
+        const endLngRad = endLng * Math.PI / 180;
 
+        // Calculate delta values
+        const deltaLng = endLngRad - startLngRad;
+        
         // Calculate bearing angle
         const y = Math.sin(deltaLng) * Math.cos(endLatRad);
         const x = Math.cos(startLatRad) * Math.sin(endLatRad) -
