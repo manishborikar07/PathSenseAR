@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const distance = calculateDistance(currentCoordinate, nextCoordinate);
 
                 // Create intermediary points along the route
-                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 1); // Adjust the distance between intermediary points if needed
+                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 3); // Adjust the distance between intermediary points if needed
 
                 // Create markers at intermediary points
                 intermediaryPoints.forEach(intermediaryPoint => {
