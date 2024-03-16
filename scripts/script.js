@@ -249,60 +249,60 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to update AR elements based on Mapbox directions
-    const updateARDirections = (directionsData) => {
-        // Check if directions data is valid and contains route information
-        if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
-            // Extract route coordinates from directions data
-            const routeCoordinates = directionsData.routes[0].geometry.coordinates;
+const updateARDirections = (directionsData) => {
+    // Check if directions data is valid and contains route information
+    if (directionsData && directionsData.routes && directionsData.routes.length > 0) {
+        // Extract route coordinates from directions data
+        const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
-            // Loop through the route coordinates to create AR elements
-            for (let i = 0; i < routeCoordinates.length; i++) {
-                const coordinate = routeCoordinates[i];
+        // Loop through the route coordinates to create AR elements
+        for (let i = 0; i < routeCoordinates.length; i++) {
+            const coordinate = routeCoordinates[i];
 
-                // Create a box marker at each route coordinate
-                createMarkerAtCoordinate(coordinate);
-                
-                // If not the last coordinate, connect this coordinate to the next one with a line
-                if (i < routeCoordinates.length - 1) {
-                    const nextCoordinate = routeCoordinates[i + 1];
-                    connectCoordinates(coordinate, nextCoordinate);
-                }
+            // Create a box marker at each route coordinate
+            createMarkerAtCoordinate(coordinate);
+            
+            // If not the last coordinate, connect this coordinate to the next one with a line
+            if (i < routeCoordinates.length - 1) {
+                const nextCoordinate = routeCoordinates[i + 1];
+                connectCoordinates(coordinate, nextCoordinate);
             }
-        } else {
-            console.error('Invalid directions data or missing route coordinates.');
         }
-    };
+    } else {
+        console.error('Invalid directions data or missing route coordinates.');
+    }
+};
 
-    // Function to create a marker at a specified coordinate
-    const createMarkerAtCoordinate = (coordinate) => {
-        // Create a box element as the marker
-        const marker = document.createElement('a-box');
-        marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '3'); // Adjust marker width as needed
-        marker.setAttribute('height', '0.2'); // Adjust marker height as needed
-        marker.setAttribute('depth', '3'); // Adjust marker depth as needed
-        marker.setAttribute('color', '#3882f6'); // Set the marker color
-        marker.setAttribute('opacity', '0.8'); // Set marker opacity
-        // marker.setAttribute('position', '0 -10 0'); // Adjust position relative to camera
-        
-        document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
-    };
+// Function to create a marker at a specified coordinate
+const createMarkerAtCoordinate = (coordinate) => {
+    // Create a box element as the marker
+    const marker = document.createElement('a-box');
+    marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
+    marker.setAttribute('width', '3'); // Adjust marker width as needed
+    marker.setAttribute('height', '0.2'); // Adjust marker height as needed
+    marker.setAttribute('depth', '1'); // Adjust marker depth as needed
+    marker.setAttribute('color', '#3882f6'); // Set the marker color
+    marker.setAttribute('opacity', '0.8'); // Set marker opacity
+    marker.setAttribute('position', '0 0 0'); // Adjust position relative to camera
+    
+    document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
+};
 
-    // Function to connect two coordinates with a line
-    const connectCoordinates = (startCoordinate, endCoordinate) => {
-        // Create a line element
-        const line = document.createElement('a-entity');
+// Function to connect two coordinates with a line
+const connectCoordinates = (startCoordinate, endCoordinate) => {
+    // Create a line element
+    const line = document.createElement('a-entity');
 
-        // Set the line's start and end points based on the coordinates
-        line.setAttribute('line', {
-            start: `${startCoordinate[0]} ${startCoordinate[1]} 0`,
-            end: `${endCoordinate[0]} ${endCoordinate[1]} 0`,
-            color: '#3882f6', // Set the line color
-            opacity: 0.8 // Set the line opacity
-        });
+    // Set the line's start and end points based on the coordinates
+    line.setAttribute('line', {
+        start: `${startCoordinate[0]} ${startCoordinate[1]} 0`,
+        end: `${endCoordinate[0]} ${endCoordinate[1]} 0`,
+        color: '#3882f6', // Set the line color
+        opacity: 0.8 // Set the line opacity
+    });
 
-        document.querySelector('a-scene').appendChild(line); // Append the line to the AR scene
-    };
+    document.querySelector('a-scene').appendChild(line); // Append the line to the AR scene
+};
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
