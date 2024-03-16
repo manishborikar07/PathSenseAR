@@ -264,9 +264,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 const currentCoordinate = routeCoordinates[i];
                 const nextCoordinate = routeCoordinates[i + 1];
 
-                // Calculate the distance between current and next coordinates
-                const distance = calculateDistance(currentCoordinate, nextCoordinate);
-
                 // Create intermediary points along the route
                 const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 2); // Adjust the distance between intermediary points if needed
 
@@ -275,6 +272,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     createMarkerAtCoordinate(intermediaryPoint);
                 });
             }
+
+            // Add OBJ location marker at the last coordinate
+            const lastCoordinate = routeCoordinates[routeCoordinates.length - 1];
+            createGLBMarkerAtCoordinate(lastCoordinate);
+
         } else {
             console.error('Invalid directions data or missing route coordinates.');
         }
@@ -327,10 +329,22 @@ document.addEventListener('DOMContentLoaded', function () {
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '1'); // Set marker opacity
         // marker.setAttribute('scale', '1 1 1'); // Adjust scale as needed
-        marker.setAttribute('position', '0 3 0'); // Adjust position relative to camera
+        //marker.setAttribute('position', '0 3 0'); // Adjust position relative to camera
 
         document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
     };
+
+    // Function to create a GLB marker at the specified coordinate
+    const createGLBMarkerAtCoordinate = (coordinate) => {
+        // Create an <a-entity> element for the GLB marker
+        const glbMarker = document.createElement('a-entity');
+        glbMarker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
+        glbMarker.setAttribute('gltf-model', '../models/map_pointer_3d_icon.glb'); // Set the path to your GLB model file
+        glbMarker.setAttribute('scale', '1 1 1'); // Adjust scale as needed
+        
+        document.querySelector('a-scene').appendChild(glbMarker); // Append the GLB marker to the AR scene
+    };
+
 
     // Function to update the 2D map with the route
     const updateMapWithRoute = (directionsData) => {
