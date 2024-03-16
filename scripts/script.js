@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to add AR label for the selected destination
-    const addDestinationAREntity = (latitude, longitude, name) => {
+    /*const addDestinationAREntity = (latitude, longitude, name) => {
         // Remove existing entities
         const existingLabels = document.querySelectorAll('#ar-destination-entity a-text');
         
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Append the label to the A-Frame scene
         document.querySelector('#ar-destination-entity').appendChild(arLabel);
-    };
+    };*/
 
     // Function to update AR elements based on Mapbox directions
     const updateARDirections = (directionsData) => {
@@ -486,7 +486,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const destinationMarker = addDestinationMarker(destination.latitude, destination.longitude, destination.name);
 
                 // Add AR entity for the selected destination
-                addDestinationAREntity(destination.latitude, destination.longitude, destination.name);
+                // addDestinationAREntity(destination.latitude, destination.longitude, destination.name);
 
                 // Update AR elements
                 updateARDirections(directionsData);
