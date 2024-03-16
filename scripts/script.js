@@ -256,96 +256,52 @@ document.addEventListener('DOMContentLoaded', function () {
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
             // Loop through the route coordinates to create AR elements
-            for (let i = 0; i < routeCoordinates.length - 1; i++) {
-                const currentCoordinate = routeCoordinates[i];
-                const nextCoordinate = routeCoordinates[i + 1];
+            for (let i = 0; i < routeCoordinates.length; i++) {
+                const coordinate = routeCoordinates[i];
 
-                // Calculate the distance between current and next coordinates
-                const distance = calculateDistance(currentCoordinate, nextCoordinate);
-
-                // Create intermediary points along the route
-                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, distance);
-
-                // Calculate the rotation angle between current and next coordinates
-                const rotation = calculateRotation(currentCoordinate, nextCoordinate);
-
-                // Create markers at intermediary points
-                intermediaryPoints.forEach(intermediaryPoint => {
-                    createMarkerAtCoordinate(intermediaryPoint, rotation);
-                });
+                // Create a box marker at each route coordinate
+                createMarkerAtCoordinate(coordinate);
+                
+                // If not the last coordinate, connect this coordinate to the next one with a line
+                if (i < routeCoordinates.length - 1) {
+                    const nextCoordinate = routeCoordinates[i + 1];
+                    connectCoordinates(coordinate, nextCoordinate);
+                }
             }
         } else {
             console.error('Invalid directions data or missing route coordinates.');
         }
     };
 
-    // Function to calculate intermediary points between two coordinates
-    const generateIntermediaryPoints = (startPoint, endPoint, distance) => {
-        const intermediaryPoints = [];
-        const segments = Math.ceil(distance / 10); // Adjust the distance between intermediary points if needed
-
-        for (let i = 1; i < segments; i++) {
-            const fraction = i / segments;
-            const intermediateLng = startPoint[0] + (endPoint[0] - startPoint[0]) * fraction;
-            const intermediateLat = startPoint[1] + (endPoint[1] - startPoint[1]) * fraction;
-            intermediaryPoints.push([intermediateLng, intermediateLat]);
-        }
-
-        return intermediaryPoints;
-    };
-
-    // Function to calculate the distance between two coordinates (in meters) using the Haversine formula
-    const calculateDistance = (startPoint, endPoint) => {
-        const earthRadius = 6371000; // Radius of the Earth in meters
-        const [startLng, startLat] = startPoint;
-        const [endLng, endLat] = endPoint;
-
-        // Convert coordinates from degrees to radians
-        const startLatRad = startLat * Math.PI / 180;
-        const endLatRad = endLat * Math.PI / 180;
-        const latDiffRad = (endLat - startLat) * Math.PI / 180;
-        const lngDiffRad = (endLng - startLng) * Math.PI / 180;
-
-        // Haversine formula to calculate distance
-        const a = Math.sin(latDiffRad / 2) * Math.sin(latDiffRad / 2) +
-                Math.cos(startLatRad) * Math.cos(endLatRad) *
-                Math.sin(lngDiffRad / 2) * Math.sin(lngDiffRad / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        const distance = earthRadius * c;
-
-        return distance + 100; // Distance in meters
-    };
-
-    // Function to calculate the rotation angle between two points (in degrees)
-    const calculateRotation = (startPoint, endPoint) => {
-        // Calculate the difference in longitude and latitude
-        const deltaLongitude = endPoint[0] - startPoint[0];
-        const deltaLatitude = endPoint[1] - startPoint[1];
-
-        // Calculate the angle (in radians) using the arctangent function
-        const angleRad = Math.atan2(deltaLongitude, deltaLatitude);
-
-        // Convert the angle from radians to degrees
-        const angleDeg = (angleRad * 180) / Math.PI;
-
-        // Return the rotation in format "x y z" (for example, "0 45 0" for a 45-degree rotation around the y-axis)
-        return angleDeg + 30;
-    };
-
     // Function to create a marker at a specified coordinate
-    const createMarkerAtCoordinate = (coordinate, rotation) => {
+    const createMarkerAtCoordinate = (coordinate) => {
         // Create a box element as the marker
         const marker = document.createElement('a-box');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
         marker.setAttribute('width', '3'); // Adjust marker width as needed
         marker.setAttribute('height', '0.2'); // Adjust marker height as needed
-        marker.setAttribute('depth', '5'); // Adjust marker depth based on distance
-        marker.setAttribute('rotation', `0 ${rotation} 0`); // Rotate the marker
+        marker.setAttribute('depth', '3'); // Adjust marker depth as needed
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
-        marker.setAttribute('position', '0 -20 0'); // Adjust position relative to camera
+        marker.setAttribute('position', '0 -10 0'); // Adjust position relative to camera
         
         document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
+    };
+
+    // Function to connect two coordinates with a line
+    const connectCoordinates = (startCoordinate, endCoordinate) => {
+        // Create a line element
+        const line = document.createElement('a-entity');
+
+        // Set the line's start and end points based on the coordinates
+        line.setAttribute('line', {
+            start: `${startCoordinate[0]} ${startCoordinate[1]} 0`,
+            end: `${endCoordinate[0]} ${endCoordinate[1]} 0`,
+            color: '#3882f6', // Set the line color
+            opacity: 0.8 // Set the line opacity
+        });
+
+        document.querySelector('a-scene').appendChild(line); // Append the line to the AR scene
     };
 
     // Function to update the 2D map with the route
