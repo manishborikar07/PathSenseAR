@@ -260,11 +260,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 const currentCoordinate = routeCoordinates[i];
                 const nextCoordinate = routeCoordinates[i + 1];
 
-                // Calculate the rotation angle between current and next coordinates
-                const rotation = calculateRotation(currentCoordinate, nextCoordinate);
+                // Calculate the distance between current and next coordinates
+                const distance = calculateDistance(currentCoordinate, nextCoordinate);
 
                 // Create intermediary points along the route
-                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 10); // Adjust the distance between intermediary points if needed
+                const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, distance);
+
+                // Calculate the rotation angle between current and next coordinates
+                const rotation = calculateRotation(currentCoordinate, nextCoordinate);
 
                 // Create markers at intermediary points
                 intermediaryPoints.forEach(intermediaryPoint => {
@@ -277,9 +280,9 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // Function to calculate intermediary points between two coordinates
-    const generateIntermediaryPoints = (startPoint, endPoint, distanceBetweenPoints) => {
+    const generateIntermediaryPoints = (startPoint, endPoint, distance) => {
         const intermediaryPoints = [];
-        const segments = Math.ceil(calculateDistance(startPoint, endPoint) / distanceBetweenPoints);
+        const segments = Math.ceil(distance / 10); // Adjust the distance between intermediary points if needed
 
         for (let i = 1; i < segments; i++) {
             const fraction = i / segments;
@@ -325,7 +328,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Convert the angle from radians to degrees
         const angleDeg = (angleRad * 180) / Math.PI;
 
-        return angleDeg;
+        // Return the rotation in format "x y z" (for example, "0 45 0" for a 45-degree rotation around the y-axis)
+        return angleDeg + 30;
     };
 
     // Function to create a marker at a specified coordinate
@@ -334,11 +338,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const marker = document.createElement('a-box');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
         marker.setAttribute('width', '3'); // Adjust marker width as needed
-        marker.setAttribute('height', '1'); // Adjust marker height as needed
-        marker.setAttribute('depth', '3'); // Adjust marker depth as needed
+        marker.setAttribute('height', '0.2'); // Adjust marker height as needed
+        marker.setAttribute('depth', '5'); // Adjust marker depth based on distance
+        marker.setAttribute('rotation', `0 ${rotation} 0`); // Rotate the marker
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '0.8'); // Set marker opacity
-        marker.setAttribute('rotation', `0 ${rotation} 0`); // Rotate the marker
         marker.setAttribute('position', '0 -20 0'); // Adjust position relative to camera
         
         document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
