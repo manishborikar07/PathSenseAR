@@ -267,15 +267,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Calculate the distance between current and next coordinates
                 const distance = calculateDistance(currentCoordinate, nextCoordinate);
 
-                // Calculate the rotation angle between current and next coordinates
-                const rotation = calculateRotation(currentCoordinate, nextCoordinate);
-
                 // Create intermediary points along the route
                 const intermediaryPoints = generateIntermediaryPoints(currentCoordinate, nextCoordinate, 1); // Adjust the distance between intermediary points if needed
 
                 // Create markers at intermediary points
                 intermediaryPoints.forEach(intermediaryPoint => {
-                    createMarkerAtCoordinate(intermediaryPoint, rotation);
+                    createMarkerAtCoordinate(intermediaryPoint);
                 });
             }
         } else {
@@ -320,46 +317,18 @@ document.addEventListener('DOMContentLoaded', function () {
         return distance; // Distance in meters
     };
 
-    // Function to calculate the rotation angle between two points (in degrees)
-    const calculateRotation = (startPoint, endPoint) => {
-        const [startLng, startLat] = startPoint;
-        const [endLng, endLat] = endPoint;
-
-        // Convert coordinates from degrees to radians
-        const startLatRad = startLat * Math.PI / 180;
-        const endLatRad = endLat * Math.PI / 180;
-        const deltaLng = (endLng - startLng) * Math.PI / 180;
-
-        // Calculate the bearing or azimuth angle
-        const y = Math.sin(deltaLng) * Math.cos(endLatRad);
-        const x = Math.cos(startLatRad) * Math.sin(endLatRad) -
-            Math.sin(startLatRad) * Math.cos(endLatRad) * Math.cos(deltaLng);
-        let angleRad = Math.atan2(y, x);
-
-        // Convert the angle from radians to degrees
-        let angleDeg = (angleRad * 180) / Math.PI;
-
-        // Adjust angle to ensure it is between 0 and 360 degrees
-        angleDeg = (angleDeg + 360) % 360;
-
-        // Return the rotation angle
-        return angleDeg+20;
-    };
-
     // Function to create a marker at a specified coordinate
-    const createMarkerAtCoordinate = (coordinate, rotation) => {
-        // Create a box element as the marker
-        const marker = document.createElement('a-box');
+    const createMarkerAtCoordinate = (coordinate) => {
+        // Create a cylinder element as the marker
+        const marker = document.createElement('a-cylinder');
         marker.setAttribute('gps-new-entity-place', `latitude: ${coordinate[1]}; longitude: ${coordinate[0]}`);
-        marker.setAttribute('width', '1'); // Adjust marker width as needed
+        marker.setAttribute('radius', '0.5'); // Adjust marker radius as needed
         marker.setAttribute('height', '0.2'); // Adjust marker height as needed
-        marker.setAttribute('depth', '1'); // Adjust marker depth based on distance
-        marker.setAttribute('rotation', `0 ${rotation} 0`); // Rotate the marker
         marker.setAttribute('color', '#3882f6'); // Set the marker color
         marker.setAttribute('opacity', '1'); // Set marker opacity
-        // marker.setAttribute('scale', '1 1 1'); // Adjust scale as needed
-        // marker.setAttribute('position', '0 0 0'); // Adjust position relative to camera
-        
+        // marker.setAttribute('scale', '4 4 4'); // Adjust scale as needed
+        // marker.setAttribute('position', '0 -20 0'); // Adjust position relative to camera
+
         document.querySelector('a-scene').appendChild(marker); // Append the marker to the AR scene
     };
 
