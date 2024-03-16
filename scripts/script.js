@@ -255,6 +255,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Extract route coordinates from directions data
             const routeCoordinates = directionsData.routes[0].geometry.coordinates;
 
+            // Remove all markers representing the route
+             const routeMarkers = document.querySelectorAll('a-box');
+             routeMarkers.forEach(marker => marker.remove());
+
             // Loop through the route coordinates to create AR elements
             for (let i = 0; i < routeCoordinates.length - 1; i++) {
                 const currentCoordinate = routeCoordinates[i];
@@ -330,7 +334,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Return the rotation in format "x y z" (for example, "0 45 0" for a 45-degree rotation around the y-axis)
         // return angleDeg;
-        return 20;
+        return 10;
     };
 
     // Function to create a marker at a specified coordinate
